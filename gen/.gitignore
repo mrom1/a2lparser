@@ -1,0 +1,5 @@
+# This directory will contain the generated A2L yacc tables
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
