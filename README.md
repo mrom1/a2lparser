@@ -69,7 +69,7 @@ A2L_KEYWORD : ([?]Parametername_Simple[*|**], ...)
 |(nothing) | Simple attribut without reference (String, Int etc.)   |
 
 For example the A2L keyword ``USER_RIGHTS`` is defined like this:
-```c
+```
 ## User Rights definitions
 USER_RIGHTS : (UserLevelId, ?OptionalParams*)
 USER_RIGHTS_OPT : (?Read_Only, ?Ref_Group**)
@@ -81,11 +81,11 @@ REF_GROUP : (Identifier)
 Which could parse a A2L ``USER_RIGHTS`` section as this:
 ```c
 /begin USER_RIGHTS calibration_engineers /* Required: User Level ID */
-	/begin REF_GROUP group_1			 /* Ref Group: Identifier   */
+	/begin REF_GROUP group_1	 /* Ref Group: Identifier   */
 	/end REF_GROUP
-	/begin REF_GROUP group_2			 /* Ref Group: Identifier   */
+	/begin REF_GROUP group_2	 /* Ref Group: Identifier   */
 	/end REF_GROUP
-	READ_ONLY							 /* Read Only: Boolean		*/
+	READ_ONLY			 /* Read Only: Boolean		*/
 /end USER_RIGHTS
 ```
 
@@ -96,19 +96,19 @@ Let's say you want to parse a A2L file which which uses a optional ``VERSION`` t
 ```c
 // Example_A2L_file.a2l
 
-/begin COMPU_METHOD     TMPCON1 /* name */
+/begin COMPU_METHOD     TMPCON1 	/* name */
                         "conversion method for engine temperature"
-                        TAB_NOINTP /* convers_type */
-                        "%4.2" /* display format */
-                        "°C" /* physical unit */
+                        TAB_NOINTP 	/* convers_type */
+                        "%4.2" 		/* display format */
+                        "°C" 		/* physical unit */
     COMPU_TAB_REF       MOTEMP1
-    VERSION             "BG5.0815" /* This parameter is not expected */
-    							   /* in 'normal' ASAM MCD version */
+    VERSION             "BG5.0815" 	/* This parameter is not expected */
+    					/* in 'normal' ASAM MCD version */
 /end COMPU_METHOD
 ```
 
 So we change the ``COMPU_METHOD_OPT`` line in the config file like this: 
-```c
+```
 ## Pre-defined version identifier
 VERSION : (VersoinIdentifier)
 
