@@ -85,7 +85,7 @@ Which could parse a A2L ``USER_RIGHTS`` section as this:
 	/end REF_GROUP
 	/begin REF_GROUP group_2	 /* Ref Group: Identifier   */
 	/end REF_GROUP
-	READ_ONLY			 /* Read Only: Boolean		*/
+	READ_ONLY			 /* Read Only: Boolean	    */
 /end USER_RIGHTS
 ```
 
