@@ -18,16 +18,9 @@ class Parser(object):
             self.logger.info("Initializing Parser ...")
 
         self.parser = A2lYacc(config=config)
-        # self.parser = A2lParser(config=config,
-        #                         lex_optimize=config.optimize,
-        #                         yacc_optimize=config.optimize,
-        #                         taboutputdir=config.gen_dir,
-        #                         gen_tables=config.write_tables,
-        #                         debug_output=config.debug_active,
-        #                         error_resolve=config.error_resolve_active
-        #                         )
 
-    def parseFile(self, fileName, xmlFileName=''):
+
+    def parseFile(self, fileName, xmlFileName='', createXML=True):
         for file in glob.glob(fileName):
             if os.path.exists(file):
                 try:
@@ -39,7 +32,6 @@ class Parser(object):
                         file_length_2 =f.read().count('\n')
 
                         self.logger.info("Parsing file: " + file)
-                        #t_start = time.time()
                         abstract_syntax_tree = self.__timeFunction( self.parser.parse,
                                                                     filename=file,
                                                                     start_of_a2ml=start_of_a2ml_section,
@@ -47,35 +39,16 @@ class Parser(object):
                                                                     input_string=input_string,
                                                                     filelength=file_length
                                                                     )
-                        # abstract_syntax_tree = self.parser.parse(filename=file,
-                        #                                          start_of_a2ml=start_of_a2ml_section,
-                        #                                          end_of_a2ml=end_of_a2ml_section,
-                        #                                          input_string=input_string,
-                        #                                          filelength=file_length)
-                        #t_end = time.time()
-                        #print "\n"
-                        #self.logger.info("elapsed time: %s %s" %((t_end -t_start), "sec"))
-
-                        self.logger.info("Creating XML File...")
-                        # t_start = time.time()
-                        xmlFileName = self.__timeFunction(  self.__printXml,
-                                                            fileName=file,
-                                                            xmlFileName=xmlFileName,
-                                                            AstObject=abstract_syntax_tree
-                                                          )
-                        # xmlFileName = self.__printXml(fileName=file,
-                        #                               xmlFileName=xmlFileName,
-                        #                               AstObject=abstract_syntax_tree)
-
-                        self.logger.info("XML File: " + xmlFileName + " created.")
-                        # t_end = time.time()
-                        # self.logger.info("elapsed time: %s %s" % ((t_end - t_start), "sec"))
-
-                        # if self.testcase:
-                        #     try:
-                        #         os.remove(xmlFileName)
-                        #     except OSError:
-                        #         pass
+                        if createXML:
+                            self.logger.info("Creating XML File...")
+                            xmlFileName = self.__timeFunction(  self.__printXml,
+                                                                fileName=file,
+                                                                xmlFileName=xmlFileName,
+                                                                AstObject=abstract_syntax_tree
+                                                              )
+                            self.logger.info("XML File: " + xmlFileName + " created.")
+                        
+                        return abstract_syntax_tree
 
                 except IOError as e:
                     print(e.errno)

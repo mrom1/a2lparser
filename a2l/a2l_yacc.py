@@ -13,21 +13,7 @@ except:
 
 class A2lYacc(object):
     def __init__(self,
-                 config
-                 # lex_optimize = False,
-                 # yacc_optimize = False,
-                 #
-                 # lextab = '_a2l_lextables',
-                 # yacctab = '_a2l_yacctables',
-                 # taboutputdir = '',
-                 #
-                 # yacc_debug = False,
-                 # debug_output=0,
-                 # gen_tables = 1,
-                 #
-                 # error_buffer = sys.stderr,
-                 # error_resolve = False
-                 ):
+                 config):
 
         self.logger_manager = Logger()
         self.logger = self.logger_manager.new_module("YACC")
