@@ -1,5 +1,7 @@
 # Python A2L Parser
 
+![main_workflow](https://github.com/mrom1/a2lparser/actions/workflows/main.yml/badge.svg)
+
 An A2L file is a description file that defines the implementation of an ECU (electrical control unit).
 
 It is a formatted text file containing measurement definitions, computation methods, events and various configuration information. An A2L file allows a XCP master to communicate with a XCP slave through a XCP connection. It is used for acquiring and stimulating data and to perform other functions.
