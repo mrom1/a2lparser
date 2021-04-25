@@ -1,6 +1,8 @@
 # Python A2L Parser
 
 ![main_workflow](https://github.com/mrom1/a2lparser/actions/workflows/main.yml/badge.svg)
+[![codecov](https://codecov.io/gh/mrom1/a2lparser/branch/main/graph/badge.svg?token=CZ74J83NO2)](https://codecov.io/gh/mrom1/a2lparser)
+
 
 An A2L file is a description file that defines the implementation of an ECU (electrical control unit).
 
