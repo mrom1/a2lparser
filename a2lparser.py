@@ -1,11 +1,11 @@
 import sys
 import argparse
-from argparse import RawTextHelpFormatter
 
+from argparse import RawTextHelpFormatter
 
 from a2l.parser import Parser
 from a2l.config.config import Config
-#from gen.ast_generator import ASTGenerator
+from a2l.config.config_builder import ConfigBuilder
 
 
 _A2LPARSER_DESCRIPTION = \
@@ -31,7 +31,6 @@ def main():
 
 
     if args.gen_ast:
-        from a2l.config.config_builder import ConfigBuilder
         ConfigBuilder(config=args.gen_ast, output_filename="a2l/ast/a2l_ast.py")
         sys.exit(0)
 

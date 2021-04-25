@@ -1,7 +1,12 @@
 import unittest
+import platform
 import xml.etree.ElementTree as et
 from a2l.xml.a2l_xml import A2lXml
-from cStringIO import StringIO
+
+if platform.python_version_tuple()[0] == "2":
+    from cStringIO import StringIO
+else:
+    from io import StringIO
 
 
 class Testhandler(unittest.TestCase):

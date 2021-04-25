@@ -1,3 +1,6 @@
+import platform
+import xml.etree.ElementTree as et
+from a2l.xml.a2l_xml import A2lXml
 from tests.testhandler import Testhandler
 
 _TEST_CHARACTERISTIC_BLOCK = """
@@ -133,9 +136,10 @@ _TEST_CHARACTERISTIC_BLOCK_EMPTY = """
 
 class TestCharacteristic(Testhandler):
     def test_characteristic_block(self):
-        import xml.etree.ElementTree as et
-        from a2l.xml.a2l_xml import A2lXml
-        from cStringIO import StringIO
+        if platform.python_version_tuple()[0] == "2":
+            from cStringIO import StringIO
+        else:
+            from io import StringIO
 
         p = self.param.parser
         ast = p.parse(filename="test_characteristic_block",

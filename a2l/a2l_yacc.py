@@ -3,7 +3,7 @@ import sys,re
 from a2l.a2l_lex import A2lLex
 from a2l.config.config import Config
 from logger.logger import Logger
-from libs.ply.yacc import yacc
+from ply.yacc import yacc
 
 try:
     from a2l.ast import a2l_ast as A2l_ast

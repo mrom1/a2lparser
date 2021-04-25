@@ -1,4 +1,5 @@
 import sys
+import platform
 
 from a2l.config.config import Config
 from logger.logger import Logger
@@ -18,10 +19,16 @@ class A2lXml(object):
             self.logger_manager.set_level("ERROR")
             self.logger.error("Abstract Syntax Tree does not contain any valid A2L elements.")
         else:
-            buffer.write(('<?xml version="1.0" encoding="' + self.encoding + '"?>').decode(self.encoding))
-            buffer.write(('\n' + '<A2L-File>').decode(self.encoding))
-            self.parseAST(AST, buf=buffer)
-            buffer.write(('\n' + '</A2L-File>').decode(self.encoding))
+            if platform.python_version_tuple()[0] == "2":
+                buffer.write(('<?xml version="1.0" encoding="' + self.encoding + '"?>').decode(self.encoding))
+                buffer.write(('\n' + '<A2L-File>').decode(self.encoding))
+                self.parseAST(AST, buf=buffer)
+                buffer.write(('\n' + '</A2L-File>').decode(self.encoding))
+            else:
+                buffer.write('<?xml version="1.0" encoding="' + self.encoding + '"?>')
+                buffer.write('\n' + '<A2L-File>')
+                self.parseAST(AST, buf=buffer)
+                buffer.write('\n' + '</A2L-File>')
 
 
     def parseAST(self, AST, offset=0, last_offset=0, buf=sys.stdout):
@@ -48,9 +55,15 @@ class A2lXml(object):
                         if v and ref:
                             if isinstance(v, (list, tuple)):
                                 for a in v:
-                                    buf.write('\n' + (' ' * (offset + 2)) + '<' + AST.__class__.__name__ + ' ' + ref + '=' + '"' + self.encodeString(self.tryDecodeValue(a)) + '"' + '/>')
+                                    if platform.python_version_tuple()[0] == "2":
+                                        buf.write('\n' + (' ' * (offset + 2)) + '<' + AST.__class__.__name__ + ' ' + ref + '=' + '"' + self.encodeString(self.tryDecodeValue(a)) + '"' + '/>')
+                                    else:
+                                        buf.write('\n' + (' ' * (offset + 2)) + '<' + AST.__class__.__name__ + ' ' + ref + '=' + '"' + self.encodeString(a) + '"' + '/>')
                             else:
-                                buf.write('\n' + (' ' * (offset + 2)) + '<' + AST.__class__.__name__ + ' ' + ref + '=' + '"' + self.encodeString(self.tryDecodeValue(v)) + '"' + '/>')
+                                if platform.python_version_tuple()[0] == "2":
+                                    buf.write('\n' + (' ' * (offset + 2)) + '<' + AST.__class__.__name__ + ' ' + ref + '=' + '"' + self.encodeString(self.tryDecodeValue(v)) + '"' + '/>')
+                                else:
+                                    buf.write('\n' + (' ' * (offset + 2)) + '<' + AST.__class__.__name__ + ' ' + ref + '=' + '"' + self.encodeString(v) + '"' + '/>')
                 else:
                     for attr in AST.attr_names:
                         v = self.getEncodedValue(AST, attr)
@@ -81,15 +94,18 @@ class A2lXml(object):
                     r = var.replace('"', '')
                 else:
                     r = str(var)
-
-            return self.encodeString(self.tryDecodeValue(r))
+            if platform.python_version_tuple()[0] == "2":
+                return self.encodeString(self.tryDecodeValue(r))
+            else:
+                return self.encodeString(r)
 
 
     def encodeString(self, s):
-        try:
-            s = s.encode(self.encoding)
-        except UnicodeError:
-            print("UnicodeError: Failed to encode " + str(s) + " to '" + self.encoding + "'.")
+        if platform.python_version_tuple()[0] == "2":
+            try:
+                s = s.encode(self.encoding)
+            except UnicodeError:
+                print("UnicodeError: Failed to encode " + str(s) + " to '" + self.encoding + "'.")
 
         s = s.replace( '&', '&amp;')
         s = s.replace( '<', '&lt;')

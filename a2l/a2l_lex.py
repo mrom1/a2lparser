@@ -1,8 +1,8 @@
 import re
 
 from logger.logger import Logger
-from libs.ply.lex import lex
-from libs.ply.lex import TOKEN
+from ply.lex import lex
+from ply.lex import TOKEN
 
 class A2lLex(object):
     def __init__(self,

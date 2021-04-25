@@ -23,7 +23,6 @@ class Testsuite():
         suite.addTest(Testhandler.parametrize(test_compu_vtab.TestCompuVtab, param=self.parser))
         suite.addTest(Testhandler.parametrize(test_compu_vtab_range.TestCompuVtabRange, param=self.parser))
         suite.addTest(Testhandler.parametrize(test_encoding.TestEncoding, param=self.parser))
-        # suite.addTest(Testhandler.parametrize(test_error_handling.TestErrorHandling, param=self.parser))
         suite.addTest(Testhandler.parametrize(test_frame.TestFrame, param=self.parser))
         suite.addTest(Testhandler.parametrize(test_function.TestFunction, param=self.parser))
         suite.addTest(Testhandler.parametrize(test_function_list.TestFunctionList, param=self.parser))
@@ -48,6 +47,3 @@ class Testsuite():
         suite.addTest(Testhandler.parametrize(test_xml_escape.TestXmlEscape, param=self.parser))
 
         unittest.TextTestRunner(verbosity=2).run(suite)
-
-
-

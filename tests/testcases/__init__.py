@@ -11,7 +11,6 @@ __all__ = [
     "test_compu_vtab",
     "test_compu_vtab_range",
     "test_encoding",
-    "test_error_handling",
     "test_frame",
     "test_function_list",
     "test_function",
