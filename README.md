@@ -8,8 +8,26 @@ Oftentimes one only needs measurements from specific addresses, or specific comp
 
 This parser enables the possibility to parse a A2L file into a abstract syntax tree, which can be accessed or modified in memory, or additionally export it to the simpler format XML.
 
+## How to build
+```
+git clone https://github.com/mrom1/a2lparser.git
+cd a2lparser
 
-***Important: Currently only supports Python 2!***
+## Create virtual environment
+python -m venv .venv
+
+## For Windows users
+.venv\Scripts\activate.bat
+
+## For Unix users
+source .venv/bin/activate
+
+## Install requirements
+pip install -r requirements.txt
+
+## Start using the A2L Parser! See Basic Usage below
+python a2lparser.py 
+```
 
 ## Basic Usage
 To parse a A2L file and generate the corresponding XML file use this command:
@@ -167,5 +185,5 @@ def p_COMPU_METHOD_opt_params(self, p):
 ```
 
 ## ToDo
-- [ ] Update to Python 3
+- [x] Done: Update to Python 3
 - [ ] Reach 100% test coverage
