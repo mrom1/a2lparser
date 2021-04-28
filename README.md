@@ -13,7 +13,7 @@ Oftentimes one only needs measurements from specific addresses, or specific comp
 This parser enables the possibility to parse a A2L file into a abstract syntax tree, which can be accessed or modified in memory, or additionally export it to the simpler format XML.
 
 ## How to build
-```
+```console
 git clone https://github.com/mrom1/a2lparser.git
 cd a2lparser
 
@@ -35,13 +35,17 @@ python a2lparser.py
 
 ## Basic Usage
 To parse a A2L file and generate the corresponding XML file use this command:
-```
+```console
 python a2lparser.py [file.a2l] --xml
 ```
+
+
 You can also glob multiple files together. For example if you have a directory ``a2l_files`` containing A2L files ending on ``*.a2l`` you can use this to convert all of them at once.
-```
+```console
 python a2lparser.py a2l_files/*.a2l --xml
 ```
+
+
 If you wish to just generate the abstract syntax tree and manipulate or read the data in memory without generating a XML file, you could do something like this:
 ```python
 from a2l.parser import Parser
@@ -56,8 +60,10 @@ ast = p.parseFile(fileName="path/to/your/file.a2l")
 if p.config.validateAST(ast):
 	print("AST is valid!")
 ```
+
+
 To run all of the unit tests invoke the parser with the ``--testcases`` argument like this:
-```
+```console
 python a2lparser.py --testcases
 ```
 This is especially useful if you start to change the configuration file or add / update your own rules.
@@ -69,7 +75,7 @@ The `A2L_ASAM.cfg` file is specified for the use of the ASAM MCD-2 MC Version 1.
 
 If you need to support different keywords or parameters you should update this file\
 and generate a new abstract syntax tree skeleton by using this command:
-```
+```console
 python a2lparser.py --gen-ast [your_config_file.cfg]
 ```
 
@@ -91,7 +97,7 @@ A2L_KEYWORD : ([?]Parametername_Simple[*|**], ...)
 |(nothing) | Simple attribut without reference (String, Int etc.)   |
 
 For example the A2L keyword ``USER_RIGHTS`` is defined like this:
-```
+```properties
 ## User Rights definitions
 USER_RIGHTS : (UserLevelId, ?OptionalParams*)
 USER_RIGHTS_OPT : (?Read_Only, ?Ref_Group**)
@@ -101,7 +107,7 @@ READ_ONLY : (Boolean)
 REF_GROUP : (Identifier)
 ```
 Which could parse a A2L ``USER_RIGHTS`` section as this:
-```c
+```properties
 /begin USER_RIGHTS calibration_engineers /* Required: User Level ID */
 	/begin REF_GROUP group_1	 /* Ref Group: Identifier   */
 	/end REF_GROUP
@@ -115,7 +121,7 @@ Which could parse a A2L ``USER_RIGHTS`` section as this:
 ### Changing the config file
 Let's say you want to parse a A2L file which which uses a optional ``VERSION`` tag for their computation method.
 
-```c
+```cpp
 // Example_A2L_file.a2l
 
 /begin COMPU_METHOD     TMPCON1 	/* name */
@@ -130,7 +136,7 @@ Let's say you want to parse a A2L file which which uses a optional ``VERSION`` t
 ```
 
 So we change the ``COMPU_METHOD_OPT`` line in the config file like this: 
-```
+```properties
 ## Pre-defined version identifier
 VERSION : (VersoinIdentifier)
 
