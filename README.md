@@ -10,27 +10,28 @@ It is a formatted text file containing measurement definitions, computation meth
 
 Oftentimes one only needs measurements from specific addresses, or specific computation methods, or a simple way to parse large datasets over multiple files.
 
-This parser enables the possibility to parse a A2L file into a abstract syntax tree, which can be accessed or modified in memory, or additionally export it to the simpler format XML.
+This parser enables the possibility to parse a A2L file into an abstract syntax tree, which can be accessed or modified in memory, or additionally export it to the simpler format XML.
 
 ## How to build
 ```console
+# Clone repository
 git clone https://github.com/mrom1/a2lparser.git
 cd a2lparser
 
-## Create virtual environment
+# Create virtual environment
 python -m venv .venv
 
-## For Windows users
+# For Windows users
 .venv\Scripts\activate.bat
 
-## For Unix users
+# For Unix users
 source .venv/bin/activate
 
-## Install requirements
+# Install requirements
 pip install -r requirements.txt
 
-## Start using the A2L Parser! See Basic Usage below
-python a2lparser.py 
+# Start using the A2L Parser! See Basic Usage below
+python a2lparser.py --help
 ```
 
 ## Basic Usage
