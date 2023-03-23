@@ -1,0 +1,10 @@
+[flake8]
+show-source = True
+
+count = True
+
+statistics = True
+
+max-line-length = 128
+
+exclude = .tox,.venv,.env,venv,env,build,dist,doc
