@@ -58,7 +58,7 @@ cfg = Config()
 # Parse file into abstract syntax tree
 p = Parser(config=cfg)
 ast = p.parseFile(fileName="path/to/your/file.a2l")
-if p.config.validateAST(ast):
+if p.config.validate_abstract_syntax_tree(ast):
 	print("AST is valid!")
 ```
 

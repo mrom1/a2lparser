@@ -19,45 +19,69 @@
 #######################################################################################
 
 
-from a2lparser.unittests.testhandler import Testhandler
+from a2lparser.a2l.a2l_yacc import A2lYacc as A2LYacc
+from a2lparser.a2l.config.config import Config
+from a2lparser.a2l.abstract_syntax_tree import AbstractSyntaxTree
 
 
-_TEST_CALIBRATION_HANDLE_BLOCK = """
-/begin CALIBRATION_HANDLE
+def test_unit_ast_empty():
+    """
+    Creates an AST from an empty A2L file
+    """
+    A2L_FILE_EMPTY = ""
+    a2l_yacc = A2LYacc(Config())
+    ast = a2l_yacc.generate_ast(A2L_FILE_EMPTY, A2L_FILE_EMPTY.count("\n"))
+    assert ast
+    assert isinstance(ast, AbstractSyntaxTree)
+
+
+def test_unit_ast_calibration_handle_node():
+    """
+    Creates an AST from a A2L calibration block.
+    """
+    A2L_CALIBRATION_HANDLE = """
+    /begin CALIBRATION_HANDLE
         0x10000 /* start address of pointer table */
         0x200 /* length of pointer table */
         0x4 /* size of one pointer table entry */
         0x30000 /* start address of flash section */
         0x20000 /* length of flash section */
         CALIBRATION_HANDLE_TEXT "12345"
-/end CALIBRATION_HANDLE
-"""
+    /end CALIBRATION_HANDLE
+    """
+    A2L_CALIBRATION_HANDLE_EMPTY = """
+    /begin CALIBRATION_HANDLE
+    /end CALIBRATION_HANDLE
+    """
+    a2l_yacc = A2LYacc(Config())
+    ast = a2l_yacc.generate_ast(A2L_CALIBRATION_HANDLE_EMPTY, A2L_CALIBRATION_HANDLE_EMPTY.count("\n"))
+    assert isinstance(ast, AbstractSyntaxTree)
+    assert ast.ast
 
-_TEST_CALIBRATION_HANDLE_BLOCK_EMPTY = """
-/begin CALIBRATION_HANDLE
-/end CALIBRATION_HANDLE
-"""
+    ast = a2l_yacc.generate_ast(A2L_CALIBRATION_HANDLE, A2L_CALIBRATION_HANDLE.count("\n"))
+    assert isinstance(ast, AbstractSyntaxTree)
+    assert ast.ast
 
 
-class TestCalibrationHandle(Testhandler):
-    def test_calibration_handle_block(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_calibration_handle_block",
-                      start_of_a2ml=0,
-                      end_of_a2ml=0,
-                      input_string=_TEST_CALIBRATION_HANDLE_BLOCK,
-                      filelength=_TEST_CALIBRATION_HANDLE_BLOCK.count('\n'))
+def test_unit_ast_simple_project():
+    """
+    Create an AST from a simple A2L project.
+    """
+    A2L_FILE = """
+    ASAM VERSION "1.7.0"
+    /BEGIN PROJECT
+    PROJECT "My Project"
+      VERSION "1.0"
+    /END PROJECT
 
-        tree = self.getXmlFromAst(ast)
-        self.assertEqual(tree.find('.//Calibration_Handle/Handle').text, "0x10000, 0x200, 0x4, 0x30000, 0x20000")
-        self.assertEqual(tree.find('.//Calibration_Handle/Calibration_Handle_Text').text, "12345")
-
-    def test_calibration_handle_block_empty(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_calibration_handle_block_empty",
-                      start_of_a2ml=0,
-                      end_of_a2ml=0,
-                      input_string=_TEST_CALIBRATION_HANDLE_BLOCK_EMPTY,
-                      filelength=_TEST_CALIBRATION_HANDLE_BLOCK_EMPTY.count('\n'))
-
-        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)
+    /BEGIN HEADER
+    HEADER
+      AUTHOR ""
+      PROJECT "My Project"
+      VERSION "1.0"
+      DATE "2023-03-24"
+    /END HEADER
+    """
+    a2l_yacc = A2LYacc(Config())
+    ast = a2l_yacc.generate_ast(A2L_FILE, A2L_FILE.count("\n"))
+    assert ast

@@ -69,4 +69,4 @@ class TestCompuVtab(Testhandler):
                       input_string=_TEST_COMPU_VTAB_BLOCK_EMPTY,
                       filelength=_TEST_COMPU_VTAB_BLOCK_EMPTY.count('\n'))
 
-        self.assertEqual(p.config.validateAST(ast), False)
+        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)

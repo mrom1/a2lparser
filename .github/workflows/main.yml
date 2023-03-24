@@ -1,4 +1,3 @@
-
 name: a2lparser
 
 # Controls when the action will run. 
@@ -15,17 +14,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [2.7, 3.11]
-
     steps:
       # Checkout the repository under $GITHUB_WORKSPACE and install python
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.11
 
       # Set up virtual environment
       - name: Install virtualenv
@@ -47,6 +42,7 @@ jobs:
       - name: Testcases
         run: | 
           coverage run -m a2lparser.a2lparser --unittests
+          coverage run -m pytest -v --timeout=30 --ignore=a2lparser/unittests
           coverage report -m
           coverage xml
 

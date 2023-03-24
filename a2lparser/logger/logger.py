@@ -20,59 +20,76 @@
 
 
 import sys
+from typing import TextIO
 from threading import Lock
+from a2lparser.logger.logger_module import LoggerModule
 
 
-class Logger(object):
+class Logger:
+    """
+    Helper class for logging information.
+
+    Usage:
+        >>> logger_manager = Logger()
+        >>> log = logger.new_module("MODULE")
+        >>> log.error("Some error message.")
+    """
+
     Levels = ["none", "ERROR", "WARNING", "INFO", "DEBUG"]
     Format = "[{module}][{level}] {msg}\n"
 
-    def __init__(self, output=sys.stdout):
+    def __init__(self, output: TextIO = sys.stdout) -> None:
+        """
+        Logger Constructor.
+
+        Args:
+            - output: TextIO object used for output. Defaults to sys.stdout
+        """
         self.output = output
         self.level = 0
         self.lock = Lock()
 
-    def new_module(self, module):
+    def new_module(self, module: str) -> LoggerModule:
+        """
+        Returns a new LoggerModule with the given module name.
+        """
         return LoggerModule(self, module)
 
-    def set_level(self, level):
+    def set_level(self, level: str) -> None:
+        """
+        Sets the verbositoy level of the logger.
+
+        Args:
+            - level: filters the importance of the messages.
+                     Values can be "debug", "info", "warning", "error"
+        """
         try:
             index = Logger.Levels.index(level)
-        except ValueError:
+        except ValueError as ex:
+            print(f"Unable to set the Logger level to '{level}': {ex}")
             return
 
         self.level = index
 
-    def set_output(self, output):
+    def set_output(self, output: TextIO):
+        """
+        Sets the output medium of the logger.
+
+        Args:
+            - output: TextIO buffer which will be written to.
+        """
         self.output = output
 
     def msg(self, module, level, msg, *args, **kwargs):
+        """
+        Writes a logging message to the output.
+        """
         if self.level < level or level > len(Logger.Levels):
             return
 
         msg = msg.format(*args, **kwargs)
 
         with self.lock:
-            self.output.write(Logger.Format.format(module=module,
-                                                   level=Logger.Levels[level],
-                                                   msg=msg))
+            self.output.write(Logger.Format.format(module=module, level=Logger.Levels[level], msg=msg))
             if hasattr(self.output, "flush"):
                 self.output.flush()
-
-
-class LoggerModule(object):
-    def __init__(self, manager, module):
-        self.manager = manager
-        self.module = module
-
-    def error(self, msg, *args, **kwargs):
-        self.manager.msg(self.module, 1, msg, *args, **kwargs)
-
-    def warning(self, msg, *args, **kwargs):
-        self.manager.msg(self.module, 2, msg, *args, **kwargs)
-
-    def info(self, msg, *args, **kwargs):
-        self.manager.msg(self.module, 3, msg, *args, **kwargs)
-
-    def debug(self, msg, *args, **kwargs):
-        self.manager.msg(self.module, 4, msg, *args, **kwargs)

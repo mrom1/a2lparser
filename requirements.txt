@@ -1,2 +1,2 @@
-six
+lxml
 ply==3.11

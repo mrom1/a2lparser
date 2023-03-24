@@ -12,32 +12,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  #################
-  # Windows Build #
-  #################
-  build-Windows:
-    runs-on: windows-latest
+  build:
+  runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [2.7, 3.11]
+        os: [ubuntu-latest, windows-latest]
 
-    steps:
       # Checkout the repository under $GITHUB_WORKSPACE and install python
       - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 3.11
 
       # Set up virtual environment
-      - name: Install virtualenv
+      - name: Set up virtual environment
         run: |
           python -m pip install --upgrade pip
-          python -m pip install virtualenv
-      - name: Create virtual environment
+          python -m venv .venv
+      - name: Activate virtual environment
         run: |
-          virtualenv .venv
-          cmd.exe \c call .venv\Scripts\activate.bat
+          if [[ "$RUNNER_OS" == "Linux" ]]; then
+            source .venv/bin/activate
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            cmd.exe \c call .venv\Scripts\activate.bat
+          fi
 
       # Install build dependencies
       - name: Install build dependencies
@@ -49,49 +48,10 @@ jobs:
         run: |
           python -m pip install .
 
-      # Running a2lparser unittests.
-      - name: Test the package
+      # Running a2lparser.
+      - name: Print package version
         run: |
-          a2lparser --testcases
-
-  ###############
-  # Linux Build #
-  ###############
-  build-Linux:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [2.7, 3.11]
-
-    steps:
-      # Checkout the repository under $GITHUB_WORKSPACE and install python
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      # Set up virtual environment
-      - name: Install virtualenv
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install virtualenv
-      - name: Create virtual environment
-        run: |
-          virtualenv .venv
-          source .venv/bin/activate
-
-      # Install build dependencies
-      - name: Install build dependencies
-        run: |
-          python -m pip install setuptools wheel
-
-      # Building the package
-      - name: Build package
-        run: |
-          python -m pip install .
-
-      # Running a2lparser unittests.
+          a2lparser --version
       - name: Test the package
         run: |
           a2lparser --testcases

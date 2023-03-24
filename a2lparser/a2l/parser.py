@@ -23,7 +23,7 @@ import glob, os, time
 from a2lparser.logger.logger import Logger
 from a2lparser.a2l.config.config import Config
 from a2lparser.a2l.a2l_yacc import A2lYacc
-from a2lparser.a2l.xml.a2l_xml import A2lXml
+from a2lparser.a2l.converter.xml_converter import A2lXml
 
 
 class Parser(object):

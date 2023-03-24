@@ -36,7 +36,7 @@ class A2lXml(object):
 
 
     def output(self, AST, buffer=sys.stdout):
-        if not self.config.validateAST(AST):
+        if not self.config.validate_abstract_syntax_tree(AST):
             self.logger_manager.set_level("ERROR")
             self.logger.error("Abstract Syntax Tree does not contain any valid A2L elements.")
         else:

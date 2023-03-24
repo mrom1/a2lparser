@@ -73,4 +73,4 @@ class TestModCommon(Testhandler):
                       input_string=_TEST_FRAME_BLOCK_EMPTY,
                       filelength=_TEST_FRAME_BLOCK_EMPTY.count('\n'))
 
-        self.assertEqual(p.config.validateAST(ast), False)
+        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)

@@ -66,4 +66,4 @@ class TestUserRights(Testhandler):
                       input_string=_TEST_USER_RIGHTS_block_EMPTY,
                       filelength=_TEST_USER_RIGHTS_block_EMPTY.count('\n'))
 
-        self.assertEqual(p.config.validateAST(ast), False)
+        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)

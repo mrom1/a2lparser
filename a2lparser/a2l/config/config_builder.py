@@ -19,18 +19,31 @@
 #######################################################################################
 
 
-import os
+from pathlib import Path
+from a2lparser.a2l.ast.ast_generator import ASTGenerator
+from a2lparser.a2l.config.config_exception import ConfigException
 
 
-class ConfigBuilder():
-    def __init__(self, config, output_filename):
-        self.__build_config(cfg=config, file=output_filename)
+class ConfigBuilder:
+    """
+    ConfiguBuilder utility to intialize a configuration used py the A2LParser.
+    """
 
-    def __build_config(self, cfg, file):
+    GENERATED_AST_PYTHON_FILE = Path(__file__).parent / ".." / "ast" / "a2l_ast.py"
+
+    @staticmethod
+    def build_config(
+        config_file: str, output_file: str = GENERATED_AST_PYTHON_FILE.as_posix(), use_clean_names: bool = True
+    ) -> None:
+        """
+        Builds the AST node classes.
+
+        Args:
+            - config_file: The A2L configuration file containing the ASAM A2L specification.
+            - output_file: The python file that will contain the generated AST nodes.
+        """
         try:
-            from a2l.ast.ast_generator import ASTGenerator
-            ast_gen = ASTGenerator(cfg, file)
-            ast_gen.generate(cleanNames=True)
-        except ImportError:
-            config.logger.set_level("ERROR")
-            config.logger.error("Unable to generate config file")
+            generator = ASTGenerator(config_file, output_file)
+            generator.generate(use_clean_names)
+        except Exception as ex:
+            raise ConfigException(ex) from ex

@@ -19,6 +19,7 @@
 #######################################################################################
 
 
+from a2lparser.a2l.parser import Parser
 from a2lparser.unittests.testhandler import Testhandler
 
 
@@ -44,7 +45,13 @@ _TEST_ANNOTATION_BLOCK_EMPTY = """
 
 
 class TestAnnotation(Testhandler):
+    """
+    Tests the Annotation blocks of an A2L file.
+    """
     def test_annotation_block_empty(self):
+        """
+        Empty Annotation.
+        """
         p = self.param.parser
         ast = p.parse(filename="test_annotation_block_empty",
                       start_of_a2ml=0,
@@ -52,19 +59,21 @@ class TestAnnotation(Testhandler):
                       input_string=_TEST_ANNOTATION_BLOCK_EMPTY,
                       filelength=_TEST_ANNOTATION_BLOCK_EMPTY.count('\n'))
 
-        self.assertEqual(p.config.validateAST(ast), False)
+        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)
 
     def test_annotation_block(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_annotation_block",
+        """
+        Regular Annotation block.
+        """
+        parser: Parser = self.param.parser
+        ast = parser.parse(filename="test_annotation_block",
                       start_of_a2ml=0,
                       end_of_a2ml=0,
                       input_string=_TEST_ANNOTATION_BLOCK,
                       filelength=_TEST_ANNOTATION_BLOCK.count('\n'))
 
-        tree = self.getXmlFromAst(ast)
+        tree = self.get_xml_tree_from_ast(ast)
 
         self.assertEqual(tree.find('.//Annotation_Origin').text, "ANNOTATION_ORIGIN")
         self.assertEqual(tree.find('.//Annotation_Label').text, "ANNOTATION_LABEL")
         self.assertEqual(tree.find('.//Annotation_Text').text, "STRING_LINE_1, STRING_LINE_2")
-

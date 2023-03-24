@@ -19,60 +19,59 @@
 #######################################################################################
 
 
-import unittest
-import xml.etree.ElementTree as et
-from io import StringIO
-from typing import Any
-from xml.etree.ElementTree import Element
-from a2lparser.a2l.converter.xml_converter import XMLConverter
+import sys
+from typing import TextIO
+from lxml import etree as et
+from lxml.etree import Element
+from a2lparser.logger.logger import Logger
 from a2lparser.a2l.abstract_syntax_tree import AbstractSyntaxTree
 
 
-class Testhandler(unittest.TestCase):
+class XMLConverter:
     """
-    TestCase classes that want to be parametrized should inherit from this class.
+    Converter class for converting an A2L abstract syntax tree to an XML file.
+
+    Usage:
+        >>> with open(xmlFileName, 'w') as f:
+        >>>     xml = XMLConverter(config=Config())
+        >>>     xml.generate_xml(abstract_syntax_tree=AST, buffer=f)
     """
 
-    def __init__(self, methodName="runTest", param: Any = None):
+    def __init__(self, config, encoding="utf-8"):
         """
-        Testhandler Constructor.
+        XMLConverter Constructor.
 
         Args:
-            - methodName: Name of the method to be called.
-            - param: Parameter to be passed.
+            - config: Config object.
+            - encoding: The encoding to use for the XML file.
         """
-        super(Testhandler, self).__init__(methodName)
-        self.param = param
+        self.logger_manager = Logger()
+        self.logger = self.logger_manager.new_module("XML")
+        self.config = config
+        self.encoding = encoding
 
-    @staticmethod
-    def parametrize(testcase_klass, param=None):
+    def generate_xml_file(self, abstract_syntax_tree: AbstractSyntaxTree, buffer: TextIO = sys.stdout) -> None:
         """
-        Create a suite containing all tests taken from the given
-        subclass, passing them the parameter 'param'.
-        """
-        testloader = unittest.TestLoader()
-        testnames = testloader.getTestCaseNames(testcase_klass)
-        suite = unittest.TestSuite()
-        for name in testnames:
-            suite.addTest(testcase_klass(name, param=param))
-        return suite
+        Generates the XML file.
 
-    def get_xml_tree_from_ast(self, abstract_syntax_tree: AbstractSyntaxTree) -> Element:
+        Args:
+            - abstract_syntax_tree: The parsed AbstractSyntaxTree object.
+            - buffer: A TextIO buffer to write to.
         """
-        Retruns an XML tree from the abstract syntax tree.
-        """
-        if not hasattr(self.param, "parser"):
-            return Element("")
-        if not hasattr(self.param.parser, "config"):
-            return Element("")
 
-        buffer = StringIO()
-        xml = XMLConverter(self.param.parser.config)
-        xml.generate_xml(abstract_syntax_tree, buffer=buffer)
-        content = buffer.getvalue()
-        buffer.close()
-        try:
-            tree = et.fromstring(content)
-            return tree
-        except Exception as ex:
-            raise RuntimeError() from ex
+    def generate_xml(self, abstract_syntax_tree: AbstractSyntaxTree) -> Element:  # type: ignore
+        """
+        Generates an XML element containing the given abstract syntax tree.
+        """
+        # create the XML header
+        xml_declaration = et.Element("xml", version="1.0", encoding="UTF-8")
+
+        # create the root element
+        root = et.Element("File") # type: ignore
+
+        # create the XML document and add the header and root element to it
+        xml_doc = et.ElementTree(root)
+        xml_doc._setroot(root)
+        xml_doc.addprevious(xml_declaration)
+
+        return root

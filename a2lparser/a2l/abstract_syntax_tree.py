@@ -19,40 +19,68 @@
 #######################################################################################
 
 
-from a2lparser.unittests.testhandler import Testhandler
+from typing import Any
+import a2lparser.a2l.ast.a2l_ast as nodes
 
 
-_TEST_VAR_FORBIDDEN_COMB_BLOCK = """
-/begin VAR_FORBIDDEN_COMB
-		Car Limousine /* variant value 'Limousine' of criterion 'Car' */
-		Gear Manual /* variant value 'Manual' of criterion 'Gear' */
-/end VAR_FORBIDDEN_COMB
-"""
+class AbstractSyntaxTree:
+    """
+    Utility class for the Abstract Syntax Tree created from YACC.
+    """
 
-_TEST_VAR_FORBIDDEN_COMB_BLOCK_EMPTY = """
-/begin VAR_FORBIDDEN_COMB
-/end VAR_FORBIDDEN_COMB
-"""
+    def __init__(self, abstract_syntax_tree) -> None:
+        """
+        AbstractSyntaxTree Constructor.
 
+        Args:
+            - abstract_syntax_tree: A genereated abstract syntax tree from YACC.
+        """
+        self.ast = abstract_syntax_tree
+        self.ast_dict = {}
+        self.index = 0
+        self._create_ast_dictionary()
 
-class TestVarForbiddenComb(Testhandler):
-    def test_var_forbidden_comb_block(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_var_forbidden_comb_block",
-                      start_of_a2ml=0,
-                      end_of_a2ml=0,
-                      input_string=_TEST_VAR_FORBIDDEN_COMB_BLOCK,
-                      filelength=_TEST_VAR_FORBIDDEN_COMB_BLOCK.count('\n'))
+    def __iter__(self):
+        self.index = 0
+        return self.index
 
-        tree = self.getXmlFromAst(ast)
-        self.assertEqual(tree.find('.//CriterionList').text, "['Car', 'Limousine'], ['Gear', 'Manual']")
+    def __next__(self):
+        return "value"
 
-    def test_var_forbidden_comb_block_empty(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_var_forbidden_comb_block_empty",
-                      start_of_a2ml=0,
-                      end_of_a2ml=0,
-                      input_string=_TEST_VAR_FORBIDDEN_COMB_BLOCK_EMPTY,
-                      filelength=_TEST_VAR_FORBIDDEN_COMB_BLOCK_EMPTY.count('\n'))
+    def find_entry(self, entry_name: str, entry_value: Any = None) -> dict:
+        """
+        Finds a parsed section of the A2L file.
+        """
+        entry = {}
+        if self.validate_ast() is False:
+            return entry
 
-        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)
+        return entry
+
+    def validate_ast(self) -> bool:
+        """
+        Validates the abstract syntax tree.
+        """
+        if not isinstance(self.ast, nodes.Abstract_Syntax_Tree):
+            return False
+
+        ast_node = getattr(self.ast, "node")
+        if ast_node is None:
+            return False
+
+        return True
+
+    def validate_node(self) -> bool:
+        """
+        Validates an abstract syntax tree node.
+        """
+        return True
+
+    def _create_ast_dictionary(self) -> None:
+        """
+        Creates a dictionary from the AST.
+        """
+        for node in self.ast.node:
+            key = node.__class__.__name__
+            for attribute in node.attr_names:
+                self.ast_dict[key] = attribute

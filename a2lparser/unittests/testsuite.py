@@ -20,51 +20,105 @@
 
 
 import unittest
-from a2lparser.unittests.units import *
+from a2lparser.a2l.parser import Parser
 from a2lparser.unittests.testhandler import Testhandler
+from a2lparser.unittests.units.test_annotation import TestAnnotation
+from a2lparser.unittests.units.test_axis_descr import TestAxisDescr
+from a2lparser.unittests.units.test_axis_pts import TestAxisPts
+from a2lparser.unittests.units.test_bit_operation import TestBitOperation
+from a2lparser.unittests.units.test_calibration_handle import TestCalibrationHandle
+from a2lparser.unittests.units.test_calibration_method import TestCalibrationMethod
+from a2lparser.unittests.units.test_characteristic import TestCharacteristic
+from a2lparser.unittests.units.test_compu_method import TestCompuMethod
+from a2lparser.unittests.units.test_compu_tab import TestCompuTab
+from a2lparser.unittests.units.test_compu_vtab import TestCompuVtab
+from a2lparser.unittests.units.test_compu_vtab_range import TestCompuVtabRange
+from a2lparser.unittests.units.test_encoding import TestEncoding
+from a2lparser.unittests.units.test_frame import TestFrame
+from a2lparser.unittests.units.test_function import TestFunction
+from a2lparser.unittests.units.test_function_list import TestFunctionList
+from a2lparser.unittests.units.test_group import TestGroup
+from a2lparser.unittests.units.test_header import TestHeader
+from a2lparser.unittests.units.test_if_data import TestIfData
+from a2lparser.unittests.units.test_logger import TestLogger
+from a2lparser.unittests.units.test_measurement import TestMeasurement
+from a2lparser.unittests.units.test_memory_layout import TestMemoryLayout
+from a2lparser.unittests.units.test_memory_segment import TestMemorySegment
+from a2lparser.unittests.units.test_mod_common import TestModCommon
+from a2lparser.unittests.units.test_mod_par import TestModPar
+from a2lparser.unittests.units.test_module import TestModule
+from a2lparser.unittests.units.test_record_layout import TestRecordLayout
+from a2lparser.unittests.units.test_string_handling import TestStringHandling
+from a2lparser.unittests.units.test_unit import TestUnit
+from a2lparser.unittests.units.test_user_rights import TestUserRights
+from a2lparser.unittests.units.test_var_characteristic import TestVarCharacteristic
+from a2lparser.unittests.units.test_var_criterion import TestVarCriterion
+from a2lparser.unittests.units.test_var_forbidden_comb import TestVarForbiddenComb
+from a2lparser.unittests.units.test_variant_coding import TestVariantCoding
 
 
-class Testsuite():
-    def __init__(self, parser, debug=0, optimize=0, gen_tables=0, xml_output_file=None):
+class Testsuite:
+    """
+    Test suite for testing the A2L units.
+
+    Usage:
+        >>> parser = Parser(config=Config())
+        >>> suite = Testsuite(parser)
+        >>> suite.run()
+    """
+
+    def __init__(self, parser: Parser) -> None:
+        """
+        Testsuite Constructor.
+        Will automatically add the unit tests to the test suite.
+
+        Args:
+            - parser: Initialized Parser object.
+        """
         self.parser = parser
         self.ast_node_counter = 0
 
-
         suite = unittest.TestSuite()
+        suite.addTest(Testhandler.parametrize(TestAnnotation, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestAxisDescr, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestAxisPts, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestBitOperation, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCalibrationHandle, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCalibrationMethod, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCharacteristic, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCompuMethod, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCompuTab, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCompuVtab, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestCompuVtabRange, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestEncoding, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestFrame, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestFunction, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestFunctionList, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestGroup, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestHeader, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestIfData, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestLogger, param=None))
+        suite.addTest(Testhandler.parametrize(TestMeasurement, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestMemoryLayout, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestMemorySegment, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestModCommon, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestModPar, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestModule, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestRecordLayout, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestStringHandling, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestUnit, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestUserRights, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestVarCharacteristic, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestVarCriterion, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestVarForbiddenComb, param=self.parser))
+        suite.addTest(Testhandler.parametrize(TestVariantCoding, param=self.parser))
+        self.suite = suite
 
-        suite.addTest(Testhandler.parametrize(test_annotation.TestAnnotation, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_axis_descr.TestAxisDescr, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_axis_pts.TestAxisPts, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_bit_operation.TestBitOperation, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_calibration_handle.TestCalibrationHandle, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_calibration_method.TestCalibrationMethod, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_characteristic.TestCharacteristic, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_compu_method.TestCompuMethod, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_compu_tab.TestCompuTab, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_compu_vtab.TestCompuVtab, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_compu_vtab_range.TestCompuVtabRange, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_encoding.TestEncoding, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_frame.TestFrame, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_function.TestFunction, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_function_list.TestFunctionList, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_group.TestGroup, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_header.TestHeader, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_if_data.TestIfData, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_logger.TestLogger, param=None))
-        suite.addTest(Testhandler.parametrize(test_measurement.TestMeasurement, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_memory_layout.TestMemoryLayout, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_memory_segment.TestMemorySegment, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_mod_common.TestModCommon, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_mod_par.TestModPar, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_module.TestModule, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_record_layout.TestRecordLayout, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_string_handling.TestStringHandling, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_unit.TestUnit, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_user_rights.TestUserRights, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_var_characteristic.TestVarCharacteristic, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_var_criterion.TestVarCriterion, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_var_forbidden_comb.TestVarForbiddenComb, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_variant_coding.TestVariantCoding, param=self.parser))
-        suite.addTest(Testhandler.parametrize(test_xml_escape.TestXmlEscape, param=self.parser))
+    def run(self, verbosity: int = 2) -> None:
+        """
+        Runs the registered unit tests.
 
-        unittest.TextTestRunner(verbosity=2).run(suite)
+        Args:
+            - verbosity: Integer value for verbosity level.
+        """
+        unittest.TextTestRunner(verbosity=verbosity).run(self.suite)

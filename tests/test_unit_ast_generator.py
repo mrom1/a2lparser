@@ -19,40 +19,31 @@
 #######################################################################################
 
 
-from a2lparser.unittests.testhandler import Testhandler
+import os
+import tempfile
+import importlib.util
+from pathlib import Path
+from a2lparser.a2l.ast.ast_generator import ASTGenerator
 
 
-_TEST_VAR_FORBIDDEN_COMB_BLOCK = """
-/begin VAR_FORBIDDEN_COMB
-		Car Limousine /* variant value 'Limousine' of criterion 'Car' */
-		Gear Manual /* variant value 'Manual' of criterion 'Gear' */
-/end VAR_FORBIDDEN_COMB
-"""
+def test_unit_ast_generator():
+    """
+    Attempts to create the python file containing the AST node classes.
+    """
+    with tempfile.TemporaryDirectory() as tempdir:
+        config_file = Path(__file__).parent / ".." / "a2lparser" / "configs" / "A2L_ASAM.cfg"
+        ast_python_file = os.path.join(tempdir, "test_a2l_ast.py")
+        ast_generator = ASTGenerator(cfg_filename=str(config_file), out_filename=ast_python_file)
+        ast_generator.generate(use_clean_names=True)
 
-_TEST_VAR_FORBIDDEN_COMB_BLOCK_EMPTY = """
-/begin VAR_FORBIDDEN_COMB
-/end VAR_FORBIDDEN_COMB
-"""
+        # Load the module from the generated file
+        spec = importlib.util.spec_from_file_location("test_a2l_ast", ast_python_file)
+        assert spec is not None
+        assert spec.loader is not None
+        a2l_ast = importlib.util.module_from_spec(spec)  # type: ignore
+        spec.loader.exec_module(a2l_ast)
 
-
-class TestVarForbiddenComb(Testhandler):
-    def test_var_forbidden_comb_block(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_var_forbidden_comb_block",
-                      start_of_a2ml=0,
-                      end_of_a2ml=0,
-                      input_string=_TEST_VAR_FORBIDDEN_COMB_BLOCK,
-                      filelength=_TEST_VAR_FORBIDDEN_COMB_BLOCK.count('\n'))
-
-        tree = self.getXmlFromAst(ast)
-        self.assertEqual(tree.find('.//CriterionList').text, "['Car', 'Limousine'], ['Gear', 'Manual']")
-
-    def test_var_forbidden_comb_block_empty(self):
-        p = self.param.parser
-        ast = p.parse(filename="test_var_forbidden_comb_block_empty",
-                      start_of_a2ml=0,
-                      end_of_a2ml=0,
-                      input_string=_TEST_VAR_FORBIDDEN_COMB_BLOCK_EMPTY,
-                      filelength=_TEST_VAR_FORBIDDEN_COMB_BLOCK_EMPTY.count('\n'))
-
-        self.assertEqual(p.config.validate_abstract_syntax_tree(ast), False)
+        # Instantiate the A2ml_Version class
+        a2ml_version = a2l_ast.A2ml_Version("1", "2")
+        assert a2ml_version.VersionNo == "1"
+        assert a2ml_version.UpgradeNo == "2"

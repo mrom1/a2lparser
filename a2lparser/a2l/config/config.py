@@ -19,29 +19,43 @@
 #######################################################################################
 
 
-import os, sys
 from a2lparser.logger.logger import Logger
+from a2lparser.a2l.ast import a2l_ast as A2L_ast
 
 
-class Config():
-    def __init__(self,
-                 debug = False,
-                 gen_dir = 'gen',
-                 optimize = 1,
-                 write_buffer='sys.stdout',
-                 write_tables = True,
-                 error_resolve = False,
-                 verbosity=0,
-                 a2l_yacc_tab_name = '_a2l_yacctables',
-                 a2l_lex_tab_name = '_a2l_lextables',
-                 ):
+class Config:
+    """
+    Config uitlity class.
 
+    Builds, intializes, and stores values used by the A2LParser.
+    """
 
+    def __init__(
+        self,
+        debug: bool = False,
+        optimize: int = 1,
+        # write_buffer="sys.stdout",
+        write_tables=True,
+        verbosity: int = 0,
+        a2l_yacc_tab_name: str = "_a2l_yacctables",
+        a2l_lex_tab_name: str = "_a2l_lextables",
+    ) -> None:
+        """
+        Config Constructor builds a config object with an initialized AST.
+
+        Args:
+            - debug: Whether to show lex and yacc debug information
+            - optimize: integer indicating the optimization level
+            - write_tables: will generate yacc tables
+            - verbosity: integer indicating the logger level. info, warning, etc.
+            - a2l_yacc_tab_name: name of the generated yacc table python file
+            - a2l_lex_tab_name: name of the generated lex table python file
+        """
+        self.error_resolve_active = True
+        self.gen_dir = "gen"
         self.debug_active = debug
-        self.error_resolve_active = error_resolve
-        self.gen_dir = gen_dir
         self.optimize = optimize
-        self.write_buffer = write_buffer
+        # self.write_buffer = write_buffer
         self.write_tables = write_tables
         self.verbosity = verbosity
         self.yacc_tab = a2l_yacc_tab_name
@@ -50,59 +64,59 @@ class Config():
         self.logger_manager = Logger()
         self.logger = self.logger_manager.new_module("CONFIG")
 
-        try:
-            from a2lparser.a2l.ast import a2l_ast as A2l_ast
-        except ImportError:
-            try:
-                from a2lparser.a2l.config.config_builder import ConfigBuilder
-                cfg_file_name = os.getcwd() + "/gen/_A2L_ast.cfg"
-                out_filename = os.getcwd() + "/a2l/ast/a2l_ast.py"
-                cfg_file = open(cfg_file_name, "w")
-                cfg_file.write(_DEFAULT_CONFIG)
-                cfg_file.close()
-                ConfigBuilder(config=cfg_file_name, output_filename=out_filename)
-                sys.exit()
-            except ImportError:
-                pass
-
-            from a2lparser.a2l.ast import a2l_ast as A2l_ast
-
-        fn = A2l_ast.__dict__
-        self.ast_a2l_nodes = {i:fn[i] for i in fn if (i != 'sys' and not i.startswith('_')) and (not(i.endswith('_Opt') or i.endswith('_Opt_List') or i == 'Abstract_Syntax_Tree' or i == 'If_Data_Block_List')) }
-        self.ast_a2l_nodes_opt_only = {i:fn[i] for i in fn if (i != 'sys' and not i.startswith('_')) and (i.endswith('_Opt') or i.endswith('_Opt_List')) or (i == 'Abstract_Syntax_Tree' or i == 'If_Data_Block_List')}
+        fn_dict = A2L_ast.__dict__
+        self.ast_a2l_nodes = {
+            i: v
+            for i, v in fn_dict.items()
+            if (i != "sys" and not i.startswith("_"))
+            and not (i.endswith("_Opt") or i.endswith("_Opt_List") or i == "Abstract_Syntax_Tree" or i == "If_Data_Block_List")
+        }
+        self.ast_a2l_nodes_opt_only = {
+            i: v
+            for i, v in fn_dict.items()
+            if (i != "sys" and not i.startswith("_"))
+            and (i.endswith("_Opt") or i.endswith("_Opt_List"))
+            or (i in ["Abstract_Syntax_Tree", "If_Data_Block_List"])
+        }
 
         self.xml_types = ["Measurement", "Characteristic", "Compu_Method", "Compu_Tab"]
         self.xml_types_ref = ["Ref_Measurement", "Ref_Characteristic"]
-        self.xml_ref_names = {"Measurement" : "signalMeasurementId",
-                              "Characteristic" : "characteristicId",
-                              "Compu_Method" : "compuMethodId",
-                              "Compu_Tab" : "compuTabId",
-                              "Ref_Measurement" : "signalMeasurementId",
-                              "Ref_Characteristic" : "characteristicId"
-                              }
+        self.xml_ref_names = {
+            "Measurement": "signalMeasurementId",
+            "Characteristic": "characteristicId",
+            "Compu_Method": "compuMethodId",
+            "Compu_Tab": "compuTabId",
+            "Ref_Measurement": "signalMeasurementId",
+            "Ref_Characteristic": "characteristicId",
+        }
         if verbosity > 1:
-            self.printConfiguration()
+            self.print_configuration()
 
-
-    def printConfiguration(self):
+    def print_configuration(self) -> None:
+        """
+        Prints the configuration information.
+        """
         self.logger_manager.set_level("INFO")
         self.logger.info("Configuration initilized with params:")
-        self.logger.info("Debugging active: %s" % bool(self.debug_active))
-        self.logger.info("Error resolving active: %s" % bool(self.error_resolve_active))
-        self.logger.info("Optimiziation active: %s" % bool(self.optimize))
-        self.logger.info("Write YACC Tables: %s" % bool(self.write_tables))
-        self.logger.info("Generation Files Folder: %s" % os.path.abspath(self.gen_dir))
+        self.logger.info(f"Debugging active: {self.debug_active}")
+        self.logger.info(f"Error resolving active: {self.error_resolve_active}")
+        self.logger.info(f"Optimiziation active: {self.optimize}")
+        self.logger.info(f"Write YACC Tables: {self.write_tables}")
+        self.logger.info(f"Generation Files Folder: {self.gen_dir}")
 
-
-    def validateAST(self, AST):
-        if hasattr(AST, "children"):
-            children = AST.children()
-            for (child_name, child) in children:
+    def validate_abstract_syntax_tree(self, abstract_syntax_tree) -> bool:
+        """
+        Validates the given abstract syntax tree.
+        """
+        if hasattr(abstract_syntax_tree, "children"):
+            children = abstract_syntax_tree.children()
+            for _, child in children:
                 if child.__class__.__name__ in self.ast_a2l_nodes:
                     return True
         return False
 
 
+# flake8: noqa E501
 _DEFAULT_CONFIG = """
 ABSTRACT_SYNTAX_TREE : (node**)
 A2ML_VERSION: (VersionNo*, UpgradeNo*)

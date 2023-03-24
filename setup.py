@@ -23,7 +23,7 @@ from setuptools import setup
 import a2lparser
 
 # Read requirements.txt
-with open("requirements.txt") as f:
+with open("requirements.txt", encoding="utf-8") as f:
     install_requirements = f.read().strip().split("\n")
 
 setup(

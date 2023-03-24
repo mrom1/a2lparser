@@ -19,4 +19,7 @@
 #######################################################################################
 
 
-__all__ = ["A2lXml"]
+class ConfigException(Exception):
+    """
+    ConfigException used to indicate an error within the configuration.
+    """
