@@ -19,14 +19,24 @@
 #######################################################################################
 
 
+import six
 import sys
 import argparse
 from argparse import RawTextHelpFormatter
-from a2lparser import __version__
-from a2lparser.a2l.parser import Parser
-from a2lparser.a2l.config.config import Config
-from a2lparser.a2l.config.config_builder import ConfigBuilder
-from a2lparser.unittests.testsuite import Testsuite
+
+
+if six.PY2:
+    from .__init__ import __version__
+    from .a2l.parser import Parser
+    from .a2l.config.config import Config
+    from .a2l.config.config_builder import ConfigBuilder
+    from .unittests.testsuite import Testsuite
+else:
+    from a2lparser import __version__
+    from a2lparser.a2l.parser import Parser
+    from a2lparser.a2l.config.config import Config
+    from a2lparser.a2l.config.config_builder import ConfigBuilder
+    from a2lparser.unittests.testsuite import Testsuite
 
 
 _A2LPARSER_DESCRIPTION = """\n

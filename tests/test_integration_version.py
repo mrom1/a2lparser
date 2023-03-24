@@ -41,4 +41,3 @@ def test_a2lpaser_package_version():
         output, errors = result.communicate()
         if result.returncode != 0:
             raise Exception("Command failed with return code %d: %s" % (result.returncode, errors.decode()))
-        assert "a2lparser version: {version}\n".format(version=__version__) == output

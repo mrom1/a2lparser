@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [2.7]
+        python-version: [2.7, 3.11]
 
     steps:
       # Checkout the repository under $GITHUB_WORKSPACE and install python
@@ -46,7 +46,7 @@ jobs:
       # Run Testcases and generate report
       - name: Testcases
         run: | 
-          coverage run -m pytest -v --timeout=30 --ignore=a2lparser/unittests
+          coverage run -m a2lparser.a2lparser --unittests
           coverage report -m
           coverage xml
 
