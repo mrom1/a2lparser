@@ -27,9 +27,9 @@ def test_a2lpaser_package_version():
     """
     Test case that runs a2lparser with version as an argument.
 
-    $ python -m a2lparser.a2lparser --version
+    $ a2lparser --version
     """
     args = ["python", "-m", "a2lparser.a2lparser", "--version"]
     result = subprocess.run(args, capture_output=True, text=True, check=True)
     assert result.returncode == 0  # Assert that the program ran successfully
-    assert f"a2lparser version: {__version__}\n" == result.stdout
+    assert "a2lparser version: {version}\n".format(version=__version__) == result.stdout

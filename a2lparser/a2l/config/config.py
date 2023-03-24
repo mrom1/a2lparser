@@ -51,10 +51,10 @@ class Config():
         self.logger = self.logger_manager.new_module("CONFIG")
 
         try:
-            from a2l.ast import a2l_ast as A2l_ast
+            from a2lparser.a2l.ast import a2l_ast as A2l_ast
         except ImportError:
             try:
-                from .config_builder import ConfigBuilder
+                from a2lparser.a2l.config.config_builder import ConfigBuilder
                 cfg_file_name = os.getcwd() + "/gen/_A2L_ast.cfg"
                 out_filename = os.getcwd() + "/a2l/ast/a2l_ast.py"
                 cfg_file = open(cfg_file_name, "w")
@@ -65,7 +65,7 @@ class Config():
             except ImportError:
                 pass
 
-            from a2l.ast import a2l_ast as A2l_ast
+            from a2lparser.a2l.ast import a2l_ast as A2l_ast
 
         fn = A2l_ast.__dict__
         self.ast_a2l_nodes = {i:fn[i] for i in fn if (i != 'sys' and not i.startswith('_')) and (not(i.endswith('_Opt') or i.endswith('_Opt_List') or i == 'Abstract_Syntax_Tree' or i == 'If_Data_Block_List')) }

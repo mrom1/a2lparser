@@ -44,15 +44,14 @@ def main():
     argparser.add_argument("-x", "--xml", action="store_true", help="XML output file")
     argparser.add_argument("-o1", action="store_true", help="initial generated table")
     argparser.add_argument("-o2", action="store_true", help="don't generate a table")
-    argparser.add_argument("--testcases", action="store_true", help="start all testcases")
-    argparser.add_argument("--error-resolve", action="store_true", help="use error resolve function")
+    argparser.add_argument("--unittests", action="store_true", help="start all testcases")
     argparser.add_argument("--gen-ast", nargs="?", help="generate ast file")
     argparser.add_argument("--gen-rules", action="store_true", help="generate a2l yacc rules file")
     argparser.add_argument(
         "-v",
         "--version",
         action="version",
-        version=f"a2lparser version: {__version__}",
+        version="a2lparser version: {version}".format(version=__version__),
         help="show version of the a2lparser package.",
     )
     args = argparser.parse_args()
@@ -61,7 +60,7 @@ def main():
         ConfigBuilder(config=args.gen_ast, output_filename="a2l/ast/a2l_ast.py")
         sys.exit(0)
 
-    if args.filename is None and args.testcases is False:
+    if args.filename is None and args.unittests is False:
         print(_A2LPARSER_DESCRIPTION)
         print("\nPlease specifiy a A2L file.")
         print("For more information use the -h or --help flag.")
@@ -77,7 +76,7 @@ def main():
         _optimize = 0
         _gen_tables = 1
 
-    if args.testcases:
+    if args.unittests:
         _verbosity = 0
         _optimize = 0
         _gen_tables = 1
@@ -88,7 +87,7 @@ def main():
 
     p = Parser(config=cfg)
 
-    if args.testcases:
+    if args.unittests:
         Testsuite(p)
     else:
         p.parseFile(fileName=args.filename)

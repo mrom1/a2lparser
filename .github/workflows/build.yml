@@ -37,7 +37,7 @@ jobs:
       - name: Create virtual environment
         run: |
           virtualenv .venv
-          call .venv\Scripts\activate.bat
+          cmd.exe \c call .venv\Scripts\activate.bat
 
       # Install build dependencies
       - name: Install build dependencies
