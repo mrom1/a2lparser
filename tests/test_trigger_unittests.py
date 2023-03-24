@@ -19,6 +19,7 @@
 #######################################################################################
 
 
+import six
 import subprocess
 
 
@@ -29,5 +30,11 @@ def test_a2lpaser_trigger_unittests():
     $ a2lparser --unittests
     """
     args = ["python", "-m", "a2lparser.a2lparser", "--unittests"]
-    result = subprocess.run(args, capture_output=True, text=True, check=True)
+    if six.PY3:
+        result = subprocess.run(args, capture_output=True, text=True, check=True)
+    else:
+        result = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, errors = result.communicate()
+        if result.returncode != 0:
+            raise Exception("Command failed with return code %d: %s" % (result.returncode, errors.decode()))
     assert result.returncode == 0  # Assert that the program ran successfully
