@@ -33,6 +33,7 @@ class A2LLex:
         >>> y = yacc(...)
         >>> y.parse(lexer=lexer, input=...)
     """
+
     def __init__(self, **args) -> None:
         """
         A2L Lexer Constructor.
@@ -43,12 +44,8 @@ class A2LLex:
         """
         self.logger_manager = Logger()
         self.logger = self.logger_manager.new_module("LEX")
-        self.start_of_a2ml = 0
-        self.end_of_a2ml = 0
 
-        self.filename = ''
         self.last_token: LexToken
-
         self.lexer = lex(object=self, **args)
         self.lexer.lineno = 1
 
@@ -56,34 +53,36 @@ class A2LLex:
         """
         Retruns the current token the lexer processes.
         """
-        self.last_token = self.lexer.token()
-        return self.last_token
+        token = self.lexer.token()
+        if token:
+            self.last_token = token
+        return token
 
-    def get_line_number(self):
+    def get_current_line_position(self) -> int:
         """
         Get the current line number.
         """
         return self.lexer.lineno
 
-    def reset_line_number(self):
+    def reset_line_position(self) -> None:
         """
         Resets the current line number of the lexer to 1.
         """
         self.lexer.lineno = 1
 
-    def set_line_numer(self, lineno):
+    def set_line_position(self, lineno) -> None:
         """
         Sets the current line number to lineno.
         """
         self.lexer.lineno = lineno
 
-    def input(self, text):
+    def input(self, text) -> None:
         """
         Passes the input text to the lexer.
         """
         self.lexer.input(text)
 
-    def _error_handling(self, msg, token):
+    def _error_handling(self, msg, token) -> None:
         """
         This function is called when an error occurs.
         Error handling is to report the error and skip the token.
@@ -91,9 +90,9 @@ class A2LLex:
         self.logger.error(f"{msg} at {self.lexer.lineno} on {token}")
         self.lexer.skip(1)
 
+    # fmt: off
     # A2L Keywords
-    keywords = ('BEGIN', 'END',
-
+    keywords = (
                 # Predefined Keywords
                 'A2ML_VERSION', 'ADDR_EPK', 'ASAP2_VERSION',
 
@@ -114,8 +113,7 @@ class A2LLex:
                 'BIT_MASK', 'BIT_OPERATION', 'BYTE_ORDER',
 
                 # Calibrations
-                'CALIBRATION_ACCESS', 'CALIBRATION_HANDLE', 'CALIBRATION_HANDLE_TEXT',
-                'CALIBRATION_METHOD',
+                'CALIBRATION_ACCESS', 'CALIBRATION_HANDLE', 'CALIBRATION_HANDLE_TEXT', 'CALIBRATION_METHOD',
 
                 'CHARACTERISTIC', 'COEFFS', 'COEFFS_LINEAR', 'COMPARISON_QUANTITY',
 
@@ -184,7 +182,6 @@ class A2LLex:
                 'VARIANT_CODING',  'VERSION',  'VIRTUAL',
                 'VIRTUAL_CHARACTERISTIC',
 
-
                 # byte_order_enum
                 'MSB_FIRST', 'MSB_LAST', 'LITTLE_ENDIAN', 'BIG_ENDIAN',
 
@@ -247,47 +244,52 @@ class A2LLex:
                 'FLOAT32_IEEE',
                 'FLOAT64_IEEE',
                 )
+    # fmt: on
 
-    map = {}
-    for keyword in keywords:
-        map[keyword.upper()] = keyword
-
-    tokens = keywords + ('ID', 'STRING_LITERAL', 'INT_CONST_DEC', 'INT_CONST_HEX', 'FLOAT_CONST', 'HEX_FLOAT_CONST')
+    tokens = keywords + (
+        "ID",
+        "BEGIN",
+        "END",
+        "KEYWORD",
+        "STRING_LITERAL",
+        "INT_CONST_DEC",
+        "INT_CONST_HEX",
+        "FLOAT_CONST",
+        "HEX_FLOAT_CONST",
+    )
 
     # Identifier RegEx
-    identifier = r'[a-zA-Z_][0-9a-zA-Z_\-.\[\]]*'
+    identifier = r"[a-zA-Z_][0-9a-zA-Z_\-.\[\]]*"
 
     # Constant Numbers RegEx
-    hex_prefix = '[+-]?0[xX]'
-    hex_digits = '[0-9a-fA-F]+'
-    bin_prefix = '[+-]?0[bB]'
+    hex_prefix = "[+-]?0[xX]"
+    hex_digits = "[0-9a-fA-F]+"
+    bin_prefix = "[+-]?0[bB]"
     # bin_digits = '[01]+'
-    integer_suffix_opt = r'(([uU]ll)|([uU]LL)|(ll[uU]?)|(LL[uU]?)|([uU][lL])|([lL][uU]?)|[uU])?'
-    decimal_constant = '([+-]?0' + integer_suffix_opt + ')|([+-]?[1-9][0-9]*' + integer_suffix_opt + ')'
+    integer_suffix_opt = r"(([uU]ll)|([uU]LL)|(ll[uU]?)|(LL[uU]?)|([uU][lL])|([lL][uU]?)|[uU])?"
+    decimal_constant = "([+-]?0" + integer_suffix_opt + ")|([+-]?[1-9][0-9]*" + integer_suffix_opt + ")"
     hex_constant = hex_prefix + hex_digits + integer_suffix_opt
 
     exponent_part = r"""([eE][-+]?[0-9]+)"""
     fractional_constant = r"""([+-]?[0-9]+\.[0-9]+)|([+-]?\.[0-9]+)|([+-]?[0-9]+\.)"""
     floating_constant = (
-        '( ( ((' + fractional_constant + ')' + exponent_part + '?)'
-        ' | ([0-9]+' + exponent_part + ')'
-        ' | ([+-]?[0-9]+' + exponent_part + ') )'
-        '[FfLl]?)'
+        "( ( ((" + fractional_constant + ")" + exponent_part + "?)"
+        " | ([0-9]+" + exponent_part + ")"
+        " | ([+-]?[0-9]+" + exponent_part + ") )"
+        "[FfLl]?)"
     )
-    binary_exponent_part = r'''([pP][+-]?[0-9]+)'''
-    hex_fractional_constant = '(((' + hex_digits + r""")?\.""" + hex_digits + ')|(' + hex_digits + r"""\.))"""
+    binary_exponent_part = r"""([pP][+-]?[0-9]+)"""
+    hex_fractional_constant = "(((" + hex_digits + r""")?\.""" + hex_digits + ")|(" + hex_digits + r"""\.))"""
     hex_floating_constant = (
-        '(' + hex_prefix + '('
-        + hex_digits + '|' + hex_fractional_constant +
-        ')' + binary_exponent_part + '[FfLl]?)'
+        "(" + hex_prefix + "(" + hex_digits + "|" + hex_fractional_constant + ")" + binary_exponent_part + "[FfLl]?)"
     )
 
     # Constant String RegEx
     simple_escape = r"""([a-zA-Z._~!=&\^\-\\?'"])"""
     decimal_escape = r"""(\d+)"""
     hex_escape = r"""(x[0-9a-fA-F]+)"""
-    escape_sequence = r"""(\\(""" + simple_escape + '|' + decimal_escape + '|' + hex_escape + '))'
-    string_char = r"""([^"\\\n]|""" + escape_sequence + ')'
+    escape_sequence = r"""(\\(""" + simple_escape + "|" + decimal_escape + "|" + hex_escape + "))"
+    string_char = r"""([^"\\\n]|""" + escape_sequence + ")"
     # string_literal = '"'+string_char+'*"'
 
     string_literal = r'("(\\"|[^"])*")|(\'(\\\'|[^\'])*\')'
@@ -295,28 +297,31 @@ class A2LLex:
     # a2ml_regex = r'[a-zA-Z0-9\"\{\};\/\'\*\\\[\]_\s\:\(\)\.\=\,\-\&\>\%\']+'
     # a2ml_regex = r'/begin A2ML((.|\n)*)/end A2ML'
 
-    newline = r'\n+'
+    newline = r"\n+"
 
-#    comment_singleline = r'\/\/.*\n'
-#    comment_multiline = r'/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+/'
     comment_singleline = r"\/\/.*"
     comment_multiline = r"\/\*[^*]*\*+(?:[^/*][^*]*\*+)*\/"
 
+    begin_section = r"/\s*begin|/\s*BEGIN"
+    end_section = r"/\s*end|/\s*END"
+
     t_STRING_LITERAL = string_literal
-    t_ignore = ' \t\r'
+    t_ignore = " \t\r"
 
     # Disable docstring and camel case
     # pylint: disable=C0103, C0116
     @TOKEN(newline)
     def t_NEWLINE(self, t):
-        if self.lexer.lineno == self.start_of_a2ml:
-            self.lexer.lineno = self.end_of_a2ml
-        else:
-            self.lexer.lineno += len(t.value)
+        self.lexer.lineno += len(t.value)
 
     @TOKEN(identifier)
     def t_ID(self, t):
-        t.type = self.map.get(t.value, "ID")
+        t.type = "ID"
+        if t.value.upper() in self.keywords:
+            if self.last_token:
+                if self.last_token.type == "BEGIN" or self.last_token.type == "END":  # type: ignore
+                    t.type = "KEYWORD"
+                    t.value = t.value.upper()
         return t
 
     @TOKEN(floating_constant)
@@ -335,26 +340,20 @@ class A2LLex:
     def t_INT_CONST_DEC(self, t):
         return t
 
-    @TOKEN(r'/begin')
+    @TOKEN(begin_section)
     def t_BEGIN(self, t):
         return t
 
-    @TOKEN(r'/end')
+    @TOKEN(end_section)
     def t_END(self, t):
         return t
 
     @TOKEN(comment_singleline)
     def t_COMMENT_SINGLELINE(self, t):
-        # t.lexer.lineno += len([a for a in t.value if a == "\n"])
         pass
 
     @TOKEN(comment_multiline)
     def t_COMMENT_MULTILINE(self, t):
-        # if t.value.startswith("/**") or t.value.startswith("/*!"):
-        #     v = t.value.replace("\n\n", "\n")
-        #
-        #     v = re.sub(r"\n[\s]+\*", "\n*", v)
-        # t.lexer.lineno += len([a for a in t.value if a == "\n"])
         pass
 
     def t_error(self, t):
