@@ -40,7 +40,6 @@ from a2lparser.unittests.units.test_function_list import TestFunctionList
 from a2lparser.unittests.units.test_group import TestGroup
 from a2lparser.unittests.units.test_header import TestHeader
 from a2lparser.unittests.units.test_if_data import TestIfData
-from a2lparser.unittests.units.test_logger import TestLogger
 from a2lparser.unittests.units.test_measurement import TestMeasurement
 from a2lparser.unittests.units.test_memory_layout import TestMemoryLayout
 from a2lparser.unittests.units.test_memory_segment import TestMemorySegment
@@ -97,7 +96,6 @@ class Testsuite:
         suite.addTest(Testhandler.parametrize(TestGroup, param=self.parser))
         suite.addTest(Testhandler.parametrize(TestHeader, param=self.parser))
         suite.addTest(Testhandler.parametrize(TestIfData, param=self.parser))
-        suite.addTest(Testhandler.parametrize(TestLogger, param=None))
         suite.addTest(Testhandler.parametrize(TestMeasurement, param=self.parser))
         suite.addTest(Testhandler.parametrize(TestMemoryLayout, param=self.parser))
         suite.addTest(Testhandler.parametrize(TestMemorySegment, param=self.parser))

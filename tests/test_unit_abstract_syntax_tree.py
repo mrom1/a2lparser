@@ -19,9 +19,9 @@
 #######################################################################################
 
 
-from a2lparser.a2l.a2l_yacc import A2lYacc as A2LYacc
+from a2lparser.a2l.a2l_yacc import A2LYacc
 from a2lparser.a2l.config.config import Config
-from a2lparser.a2l.abstract_syntax_tree import AbstractSyntaxTree
+from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 
 
 def test_unit_ast_empty():
@@ -30,7 +30,7 @@ def test_unit_ast_empty():
     """
     A2L_FILE_EMPTY = ""
     a2l_yacc = A2LYacc(Config())
-    ast = a2l_yacc.generate_ast(A2L_FILE_EMPTY, A2L_FILE_EMPTY.count("\n"))
+    ast = a2l_yacc.generate_ast(A2L_FILE_EMPTY)
     assert ast
     assert isinstance(ast, AbstractSyntaxTree)
 
@@ -54,11 +54,11 @@ def test_unit_ast_calibration_handle_node():
     /end CALIBRATION_HANDLE
     """
     a2l_yacc = A2LYacc(Config())
-    ast = a2l_yacc.generate_ast(A2L_CALIBRATION_HANDLE_EMPTY, A2L_CALIBRATION_HANDLE_EMPTY.count("\n"))
+    ast = a2l_yacc.generate_ast(A2L_CALIBRATION_HANDLE_EMPTY)
     assert isinstance(ast, AbstractSyntaxTree)
     assert ast.ast
 
-    ast = a2l_yacc.generate_ast(A2L_CALIBRATION_HANDLE, A2L_CALIBRATION_HANDLE.count("\n"))
+    ast = a2l_yacc.generate_ast(A2L_CALIBRATION_HANDLE)
     assert isinstance(ast, AbstractSyntaxTree)
     assert ast.ast
 
@@ -83,5 +83,5 @@ def test_unit_ast_simple_project():
     /END HEADER
     """
     a2l_yacc = A2LYacc(Config())
-    ast = a2l_yacc.generate_ast(A2L_FILE, A2L_FILE.count("\n"))
+    ast = a2l_yacc.generate_ast(A2L_FILE)
     assert ast

@@ -19,7 +19,7 @@
 #######################################################################################
 
 
-from a2lparser.a2l.a2l_yacc import A2lYacc as A2LYacc
+from a2lparser.a2l.a2l_yacc import A2LYacc
 from a2lparser.a2l.config.config import Config
 
 
@@ -28,7 +28,7 @@ def test_unit_ast_error_resolve():
     Tests the error resolve functionality of the parser.
     Will receive some valid and some invalid A2L blocks as input.
     """
-    A2L_CONTENT = """
+    a2l_content = """
     ASAM VERSION "1.7.0"
     /BEGIN PROJECT
     PROJECT "My Project"
@@ -71,5 +71,5 @@ def test_unit_ast_error_resolve():
     /end AXIS_DESCR
     """
     a2l_yacc = A2LYacc(Config())
-    ast = a2l_yacc.generate_ast(A2L_CONTENT, A2L_CONTENT.count("\n"))
+    ast = a2l_yacc.generate_ast(a2l_content)
     assert ast

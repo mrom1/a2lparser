@@ -25,7 +25,7 @@ from io import StringIO
 from typing import Any
 from xml.etree.ElementTree import Element
 from a2lparser.a2l.converter.xml_converter import XMLConverter
-from a2lparser.a2l.abstract_syntax_tree import AbstractSyntaxTree
+from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 
 
 class Testhandler(unittest.TestCase):

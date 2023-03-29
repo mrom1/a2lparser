@@ -20,7 +20,7 @@
 
 
 from ply.lex import lex, LexToken, TOKEN
-from a2lparser.logger.logger import Logger
+from a2lparser import A2L_GENERATED_FILES_DIR
 
 
 class A2LLex:
@@ -34,19 +34,32 @@ class A2LLex:
         >>> y.parse(lexer=lexer, input=...)
     """
 
-    def __init__(self, **args) -> None:
+    def __init__(
+        self,
+        debug: bool = False,
+        optimize: bool = True,
+        lex_table_file: str = "_a2l_lex_tables",
+        generated_files_dir: str = str(A2L_GENERATED_FILES_DIR),
+    ) -> None:
         """
         A2L Lexer Constructor.
         Builds an instance of the ply lex object with an A2L configuration.
 
         Args:
-            - **args: Arguments to be passed to ply.lex(**args)
+            - debug: will output debug information from ply
+            - optimize: optimize flag for the ply lexer
+            - lex_table_file: the name of the lex table file
+            - generated_files_dir: the directory to write the generated files to
         """
-        self.logger_manager = Logger()
-        self.logger = self.logger_manager.new_module("LEX")
-
         self.last_token: LexToken
-        self.lexer = lex(object=self, **args)
+        self.progressbar = None
+        self.lexer = lex(
+            module=self,
+            debug=debug,
+            optimize=optimize,
+            lextab=lex_table_file,
+            outputdir=generated_files_dir,
+        )
         self.lexer.lineno = 1
 
     def token(self) -> LexToken:
@@ -82,12 +95,11 @@ class A2LLex:
         """
         self.lexer.input(text)
 
-    def _error_handling(self, msg, token) -> None:
+    def _error_handling(self, msg, token) -> None:  # pylint: disable=W0613
         """
         This function is called when an error occurs.
         Error handling is to report the error and skip the token.
         """
-        self.logger.error(f"{msg} at {self.lexer.lineno} on {token}")
         self.lexer.skip(1)
 
     # fmt: off
@@ -244,13 +256,16 @@ class A2LLex:
                 'FLOAT32_IEEE',
                 'FLOAT64_IEEE',
                 )
-    # fmt: on
+    map = {}
+    for keyword in keywords:
+        map[keyword.upper()] = keyword
 
+    # fmt: on
     tokens = keywords + (
         "ID",
         "BEGIN",
         "END",
-        "KEYWORD",
+        # "KEYWORD",
         "STRING_LITERAL",
         "INT_CONST_DEC",
         "INT_CONST_HEX",
@@ -313,15 +328,18 @@ class A2LLex:
     @TOKEN(newline)
     def t_NEWLINE(self, t):
         self.lexer.lineno += len(t.value)
+        if self.progressbar:
+            self.progressbar()  # pylint: disable=E1102
 
     @TOKEN(identifier)
     def t_ID(self, t):
-        t.type = "ID"
-        if t.value.upper() in self.keywords:
-            if self.last_token:
-                if self.last_token.type == "BEGIN" or self.last_token.type == "END":  # type: ignore
-                    t.type = "KEYWORD"
-                    t.value = t.value.upper()
+        t.type = self.map.get(t.value, "ID")
+        # t.type = "ID"
+        # if t.value.upper() in self.keywords:
+        #     if self.last_token:
+        #         if self.last_token.type == "BEGIN" or self.last_token.type == "END":  # type: ignore
+        #             t.type = "KEYWORD"
+        #             t.value = t.value.upper()
         return t
 
     @TOKEN(floating_constant)

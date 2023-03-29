@@ -23,8 +23,8 @@ import sys
 from typing import TextIO
 from lxml import etree as et
 from lxml.etree import Element
-from a2lparser.logger.logger import Logger
-from a2lparser.a2l.abstract_syntax_tree import AbstractSyntaxTree
+from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
+import a2lparser.gen.a2l_ast as ASTNodes
 
 
 class XMLConverter:
@@ -45,10 +45,34 @@ class XMLConverter:
             - config: Config object.
             - encoding: The encoding to use for the XML file.
         """
-        self.logger_manager = Logger()
-        self.logger = self.logger_manager.new_module("XML")
         self.config = config
         self.encoding = encoding
+
+        fn_dict = ASTNodes.__dict__
+        self.ast_a2l_nodes = {
+            i: v
+            for i, v in fn_dict.items()
+            if (i != "sys" and not i.startswith("_"))
+            and not (i.endswith("_Opt") or i.endswith("_Opt_List") or i == "Abstract_Syntax_Tree" or i == "If_Data_Block_List")
+        }
+        self.ast_a2l_nodes_opt_only = {
+            i: v
+            for i, v in fn_dict.items()
+            if (i != "sys" and not i.startswith("_"))
+            and (i.endswith("_Opt") or i.endswith("_Opt_List"))
+            or (i in ["Abstract_Syntax_Tree", "If_Data_Block_List"])
+        }
+
+        self.xml_types = ["Measurement", "Characteristic", "Compu_Method", "Compu_Tab"]
+        self.xml_types_ref = ["Ref_Measurement", "Ref_Characteristic"]
+        self.xml_ref_names = {
+            "Measurement": "signalMeasurementId",
+            "Characteristic": "characteristicId",
+            "Compu_Method": "compuMethodId",
+            "Compu_Tab": "compuTabId",
+            "Ref_Measurement": "signalMeasurementId",
+            "Ref_Characteristic": "characteristicId",
+        }
 
     def generate_xml_file(self, abstract_syntax_tree: AbstractSyntaxTree, buffer: TextIO = sys.stdout) -> None:
         """
@@ -67,7 +91,7 @@ class XMLConverter:
         xml_declaration = et.Element("xml", version="1.0", encoding="UTF-8")
 
         # create the root element
-        root = et.Element("File") # type: ignore
+        root = et.Element("File")  # type: ignore
 
         # create the XML document and add the header and root element to it
         xml_doc = et.ElementTree(root)
@@ -75,3 +99,14 @@ class XMLConverter:
         xml_doc.addprevious(xml_declaration)
 
         return root
+
+    def validate_abstract_syntax_tree(self, abstract_syntax_tree) -> bool:
+        """
+        Validates the given abstract syntax tree.
+        """
+        if hasattr(abstract_syntax_tree, "children"):
+            children = abstract_syntax_tree.children()
+            for _, child in children:
+                if child.__class__.__name__ in self.ast_a2l_nodes:
+                    return True
+        return False

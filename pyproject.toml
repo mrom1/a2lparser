@@ -19,5 +19,5 @@ exclude = '''
 norecursedirs = "a2lparser/unittests"
 [tool.pylint.messages_control]
 max-line-length = 128
-disable="C0114, R0903, W0718, W0401"
+disable="C0114, R0903, W0718, W0401, C0302"
 # [tool.pylint.'disable']

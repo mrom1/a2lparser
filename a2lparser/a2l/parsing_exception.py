@@ -19,43 +19,7 @@
 #######################################################################################
 
 
-class LoggerModule:
+class ParsingException(Exception):
     """
-    Provides utility for the Logger class.
-    Represents the LoggerModule which holds the instance for the message methods.
+    Exception thrown when encountering a fatal error during parsing.
     """
-
-    def __init__(self, manager, module) -> None:
-        """
-        LoggerModule Constructor.
-
-        Args:
-            - manager: A reference to the Logger class which manages the stream.
-            - module: The name of the module which this will be registered to.
-        """
-        self.manager = manager
-        self.module = module
-
-    def error(self, msg, *args, **kwargs) -> None:
-        """
-        Prints the message to the error channel.
-        """
-        self.manager.msg(self.module, 1, msg, *args, **kwargs)
-
-    def warning(self, msg, *args, **kwargs) -> None:
-        """
-        Prints the message to the warning channel.
-        """
-        self.manager.msg(self.module, 2, msg, *args, **kwargs)
-
-    def info(self, msg, *args, **kwargs) -> None:
-        """
-        Prints the message to the info channel.
-        """
-        self.manager.msg(self.module, 3, msg, *args, **kwargs)
-
-    def debug(self, msg, *args, **kwargs) -> None:
-        """
-        Prints the message to the debug channel.
-        """
-        self.manager.msg(self.module, 4, msg, *args, **kwargs)

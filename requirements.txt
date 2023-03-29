@@ -1,2 +1,5 @@
-lxml
 ply==3.11
+lxml
+loguru
+readline
+alive-progress

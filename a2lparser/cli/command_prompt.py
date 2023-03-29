@@ -19,7 +19,37 @@
 #######################################################################################
 
 
-class ConfigException(Exception):
+import readline
+from a2lparser import A2L_PARSER_HEADLINE
+
+
+class CommandPrompt:
     """
-    ConfigException used to indicate an error within the configuration.
+    CommandPrompt class which lets the user evaluate any input.
+    Used to access the generated AST dictionary.
+
+    Usage:
+        >>> parser = Parser()
+        >>> ast = parser.parse_content(a2l_content)
+        >>> CommandPrompt.prompt(ast)
     """
+
+    @staticmethod
+    def prompt(ast):
+        """
+        Prompts the user for input..
+        """
+        print(A2L_PARSER_HEADLINE)
+        print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
+        while True:
+            user_input = input(">>> ")
+            if user_input == "exit":
+                break
+            else:
+                try:
+                    result = eval(user_input, {}, {"ast": ast})
+                    if result:
+                        print(result)
+                except Exception as ex:
+                    print(str(ex))
+            readline.add_history(user_input)

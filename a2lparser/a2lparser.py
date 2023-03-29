@@ -21,22 +21,18 @@
 
 import sys
 import argparse
-from pathlib import Path
-from a2lparser import __version__  # Make sure to trigger __init__.py imports
+from loguru import logger
+from a2lparser import __version__
+from a2lparser import A2L_PARSER_HEADLINE
+from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.parser import Parser
-from a2lparser.a2l.config.config import Config
-from a2lparser.a2l.config.config_builder import ConfigBuilder
-from a2lparser.a2l.config.config_exception import ConfigException
 from a2lparser.unittests.testsuite import Testsuite
+from a2lparser.cli.command_prompt import CommandPrompt
+from a2lparser.a2l.ast.ast_generator import ASTGenerator
+from a2lparser.a2l.parsing_exception import ParsingException
 
 
-_A2LPARSER_DESCRIPTION = """\n
-* * * * * * * * * * * * *\n
-*    A2L File Parser    *\n
-* * * * * * * * * * * * *\n
-"""
-
-
+@logger.catch
 def main() -> None:
     """
     Main function of the a2lparser.
@@ -52,63 +48,79 @@ def main() -> None:
     try:
         args = parse_arguments(sys.argv[1:])
 
+        # Set log level
+        if args.debug:
+            logger.level("DEBUG")
+        else:
+            logger.level("INFO")
+
         # Generates the AST node classes for the A2L objects using the ASTGenerator
         if args.gen_ast:
             print("Generating python file containing the AST nodes...")
-            generated_file = Path(__file__).parent / "a2l" / "ast" / "a2l_ast.py"
-            ConfigBuilder.build_config(config_file=args.gen_ast, output_file=generated_file.as_posix())
+            generated_file = A2L_GENERATED_FILES_DIR / "a2l_ast.py"
+            generator = ASTGenerator(args.gen_ast, generated_file.as_posix())
+            generator.generate()
             print(f"Generated {generated_file.as_posix()}")
             sys.exit(0)
 
         # Either trigger a run through A2L unit tests or provide a file to work with
-        if args.filename is None and args.unittests is False:
-            print(_A2LPARSER_DESCRIPTION)
-            print("\nPlease specifiy a A2L file.")
-            print("For more information use the -h or --help flag.")
-            sys.exit(2)
+        # if args.filename is None and args.unittests is False:
+        #     print(A2L_PARSER_HEADLINE)
+        #     print("\nPlease specifiy a A2L file.")
+        #     print("For more information use the -h or --help flag.")
+        #     sys.exit(1)
 
-        # Set config values
-        if args.o2 is True:
-            _optimize = 1
-            _gen_tables = False
-        elif args.o1 is True:
-            _optimize = 1
-            _gen_tables = True
-        else:
-            _optimize = 0
-            _gen_tables = True
-
-        if args.unittests:
-            _verbosity = 0
-            _optimize = 0
-            _gen_tables = True
-        else:
-            _verbosity = 2
-
-        # Initialize the config
-        cfg = Config(debug=args.debug, optimize=_optimize, write_tables=_gen_tables, verbosity=_verbosity)
-        parser = Parser(config=cfg)
+        # Initializing the A2L Parser
+        parser = Parser(debug=args.debug, optimize=args.optimize)
 
         if args.unittests:
             Testsuite(parser)
+            sys.exit(0)
+
+        # ast = parser.parse_files(args.filename)
+        a2l_content = """
+        /begin ANNOTATION
+            ANNOTATION_LABEL "ANNOTATION_LABEL"
+            ANNOTATION_ORIGIN "ORIGIN_ORIGIN"
+            /begin ANNOTATION_TEXT
+                "STRING_LINE_1"
+                "STRING_LINE_2"
+                0x41feed22
+            /end ANNOTATION_TEXT
+            ANNOTATION_ORIGIN "ANNOTATION_ORIGIN"
+        /end ANNOTATION
+        /begin ANNOTATION
+            ANNOTATION_ORIGIN "ORIGIN_ORIGIN"
+            /begin ANNOTATION_TEXT
+                "STRING_LINE_1"
+                "STRING_LINE_2"
+                "0x41feed22"
+            /end ANNOTATION_TEXT
+            ANNOTATION_ORIGIN "ANNOTATION_ORIGIN"
+        /end ANNOTATION
+        """
+        ast = parser.parse_content(a2l_content)
+
+        if args.xml:
+            raise NotImplementedError("A2L to XML converter not implemented yet.")
         else:
-            parser.parseFile(fileName=args.filename)
-    except ConfigException as ex:
-        print(ex)
+            CommandPrompt.prompt(ast)
+
+    except ParsingException as ex:
+        logger.error(ex)
 
 
 def parse_arguments(args: list) -> argparse.Namespace:
     """
     Parse the command line arguments.
     """
-    parser = argparse.ArgumentParser(prog="a2lparser", description=_A2LPARSER_DESCRIPTION)
+    parser = argparse.ArgumentParser(prog="a2lparser", description=A2L_PARSER_HEADLINE)
     parser.add_argument("filename", nargs="?", help="relativ path to the full filename")
-    parser.add_argument("-d", "--debug", action="store_true", help="enable debug output on stderr")
+    parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
+    parser.add_argument("-o", "--optimize", action="store_true", default=True, help="enables optimize mode")
     parser.add_argument("-x", "--xml", action="store_true", help="XML output file")
-    parser.add_argument("-o1", action="store_true", help="initial generated table")
-    parser.add_argument("-o2", action="store_true", help="will not generate a table")
-    parser.add_argument("--unittests", action="store_true", help="start all testcases")
-    parser.add_argument("--gen-ast", nargs="?", help="input ASAM config to generate AST nodes")
+    parser.add_argument("--gen-ast", nargs="?", help="generates python file containing AST node classes")
+    parser.add_argument("--unittests", action="store_true", help="runs all unit tests on A2L section parsing")
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
 
     return parser.parse_args(args)

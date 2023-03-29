@@ -22,7 +22,28 @@
 from string import Template
 
 
-_FILE_COMMENT = r"""
+_FILE_COMMENT = r"""\
+#######################################################################################
+# a2lparser: https://github.com/mrom1/a2lparser                                       #
+# author: https://github.com/mrom1                                                    #
+#                                                                                     #
+# This file is part of the a2lparser package.                                         #
+#                                                                                     #
+# a2lparser is free software: you can redistribute it and/or modify it                #
+# under the terms of the GNU General Public License as published by the               #
+# Free Software Foundation, either version 3 of the License, or (at your option)      #
+# any later version.                                                                  #
+#                                                                                     #
+# a2lparser is distributed in the hope that it will be useful,                        #
+# but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY      #
+# or FITNESS FOR A PARTICULAR PURPOSE.                                                #
+# See the GNU General Public License for more details.                                #
+#                                                                                     #
+# You should have received a copy of the GNU General Public License                   #
+# along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
+#######################################################################################
+# pylint: disable-all
+
 # ---------------------------------------------------------------------- #
 # *** IMPORTENT ***                                                      #
 # This code was generated from the config file:                          #
@@ -55,7 +76,6 @@ class Node(object):
 
 
 class NodeVisitor(object):
-
     def visit(self, node):
         method = 'visit_' + node.__class__.__name__
         visitor = getattr(self, method, self.generic_visit)
@@ -64,6 +84,22 @@ class NodeVisitor(object):
     def generic_visit(self, node):
         for ast_class_name, ast_class in node.children():
             self.visit(ast_class)
+
+
+class NodeCorrupted(Node):
+    __slots__ = ('Corrupted', 'node_name', 'node_obj', '__weakref__')
+    def __init__(self, node_name, node_obj):
+        self.Corrupted = True
+        self.node_name = node_name
+        self.node_obj = node_obj
+
+    def children(self):
+        nodelist = []
+        if (node_name := self.node_name) and (node_obj := self.node_obj):
+            nodelist.append((node_name, node_obj))
+        return tuple(nodelist)
+
+    attr_names = ('Corrupted', )
 
 
 """
