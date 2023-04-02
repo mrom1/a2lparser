@@ -28,7 +28,6 @@ class RulesMeta:
     def p_meta_block_empty(self, p):
         """
         meta_block_empty : BEGIN meta_block_keyword END meta_block_keyword
-                         | BEGIN meta_block_keyword END
         """
 
     def p_meta_block(self, p):

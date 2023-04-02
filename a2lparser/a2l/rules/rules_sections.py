@@ -88,10 +88,9 @@ class RulesSections:
     def p_A2L_section_error(self, p):
         """
         a2l_section_error : BEGIN meta_block_keyword error END meta_block_keyword
-                          | BEGIN meta_block_keyword error END
         """
         if len(self.ast_scope_stack) > 0:
-            p[0] = ASTNodes.NodeCorrupted(p[2], self.ast_scope_stack[-1])
+            p[0] = ASTNodes.NodeCorrupted(p[2], self.ast_scope_stack.pop())
 
     def p_A2ML_VERSION(self, p):
         """

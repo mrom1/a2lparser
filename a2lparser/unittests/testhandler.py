@@ -20,12 +20,7 @@
 
 
 import unittest
-import xml.etree.ElementTree as et
-from io import StringIO
 from typing import Any
-from xml.etree.ElementTree import Element
-from a2lparser.a2l.converter.xml_converter import XMLConverter
-from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 
 
 class Testhandler(unittest.TestCase):
@@ -56,23 +51,3 @@ class Testhandler(unittest.TestCase):
         for name in testnames:
             suite.addTest(testcase_klass(name, param=param))
         return suite
-
-    def get_xml_tree_from_ast(self, abstract_syntax_tree: AbstractSyntaxTree) -> Element:
-        """
-        Retruns an XML tree from the abstract syntax tree.
-        """
-        if not hasattr(self.param, "parser"):
-            return Element("")
-        if not hasattr(self.param.parser, "config"):
-            return Element("")
-
-        buffer = StringIO()
-        xml = XMLConverter(self.param.parser.config)
-        xml.generate_xml(abstract_syntax_tree, buffer=buffer)
-        content = buffer.getvalue()
-        buffer.close()
-        try:
-            tree = et.fromstring(content)
-            return tree
-        except Exception as ex:
-            raise RuntimeError() from ex

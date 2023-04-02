@@ -61,7 +61,7 @@ class Testsuite:
     Test suite for testing the A2L units.
 
     Usage:
-        >>> parser = Parser(config=Config())
+        >>> parser = Parser()
         >>> suite = Testsuite(parser)
         >>> suite.run()
     """

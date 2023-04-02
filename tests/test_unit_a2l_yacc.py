@@ -20,7 +20,6 @@
 
 
 from a2lparser.a2l.a2l_yacc import A2LYacc
-from a2lparser.a2l.config.config import Config
 
 
 def test_a2l_yacc_error_resolve():
@@ -48,7 +47,7 @@ def test_a2l_yacc_error_resolve():
         ANNOTATION_ORIGIN "ANNOTATION_ORIGIN"
     /end ANNOTATION
     """
-    yacc = A2LYacc(Config())
+    yacc = A2LYacc()
     ast = yacc.generate_ast(faulty_section)
     assert ast
 
@@ -67,7 +66,7 @@ def test_a2l_yacc_annotation():
         /end ANNOTATION_TEXT
     /end ANNOTATION
     """
-    yacc = A2LYacc(Config())
+    yacc = A2LYacc()
     ast = yacc.generate_ast(annotation_text)
     print(ast)
     assert ast
@@ -87,7 +86,7 @@ def test_a2l_yacc_project_sections():
         VERSION "2.1"
     /end project
     """
-    yacc = A2LYacc(Config())
+    yacc = A2LYacc()
     ast = yacc.generate_ast(project_block)
     assert ast
     print(ast)
@@ -107,6 +106,6 @@ def test_a2l_yacc_error_handling():
         VERSION "2.1"
     /end project
     """
-    yacc = A2LYacc(Config())
+    yacc = A2LYacc()
     ast = yacc.generate_ast(sections_with_errors)
     assert ast

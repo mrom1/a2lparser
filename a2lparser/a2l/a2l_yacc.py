@@ -37,8 +37,8 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
     A2LYacc class which represents the an instance of the YACC module from ply.yacc.
 
     Usage:
-        >>> yacc = A2LYacc(Config())
-        >>> ast = yacc.generate_ast(input=content)
+        >>> yacc = A2LYacc()
+        >>> ast: AbstractSyntaxTree = yacc.generate_ast(input=content)
     """
 
     def __init__(
@@ -72,12 +72,13 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
             module=self,
             start="abstract_syntax_tree_final",
             debug=debug,
-            optimize=optimize,  # type: ignore
+            optimize=optimize,
             tabmodule=yacc_table_file,
             outputdir=generated_files_dir,
             write_tables=write_tables,
         )
         self.debug = debug
+        self.a2l_sections_list = []
 
     def generate_ast(self, content: str) -> AbstractSyntaxTree:
         """
@@ -101,14 +102,21 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
     # look into a2lparser.a2l.rules                  #
     ##################################################
     # pylint: disable=C0103
-    def p_error(self, p):
+    def p_error(self, p):  # pylint: disable=W0613
         """
         Error handler function.
         """
         # We just do nothing for now and wait for the next valid section
-        if p:
-            if self.experimental_error_resolve:
-                raise NotImplementedError("Experimental error resolving is not implemented yet.")
+        if self.experimental_error_resolve:
+            raise NotImplementedError("Experimental error resolving is not implemented yet.")
+        # while True:
+        #     if p.type == "END":
+        #         break
+        #     tok = self.a2l_lex.token()  # Get the next token
+        #     if not tok or tok.type == "END":
+        #         break  # Stop skipping when we reach the end of the section
+        # # Return an empty list to continue parsing the remaining sections
+        # return []
 
     def p_empty(self, p):
         """
@@ -128,19 +136,36 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
 
     def p_a2l_final(self, p):
         """
-        a2l_final   : a2l_sections
+        a2l_final : a2l_sections
         """
-        p[0] = p[1]
+        if isinstance(p[1], (list, tuple)):
+            if len(self.a2l_sections_list) > len(p[1]):
+                p[0] = self.a2l_sections_list
+            else:
+                p[0] = p[1]
+        elif len(self.a2l_sections_list) > 1:
+            p[0] = self.a2l_sections_list
+        else:
+            p[0] = p[1]
 
     def p_a2l_sections(self, p):
         """
-        a2l_sections : a2l_section
-                     | a2l_sections a2l_section
+        a2l_sections : a2l_section_list
+        """
+        p[0] = p[1]
+
+    def p_a2l_section_list(self, p):
+        """
+        a2l_section_list : a2l_section
+                         | a2l_section_list a2l_section
         """
         if len(p) == 2:
+            self.a2l_sections_list.append(p[1])
             p[0] = [p[1]]
         else:
-            p[1].append(p[2])
+            if p[2]:
+                p[1].append(p[2])
+                self.a2l_sections_list.append(p[2])
             p[0] = p[1]
 
     def p_a2l_section(self, p):

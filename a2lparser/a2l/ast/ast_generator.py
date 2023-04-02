@@ -22,7 +22,7 @@
 from string import Template
 
 
-_FILE_COMMENT = r"""\
+_FILE_COMMENT = r"""
 #######################################################################################
 # a2lparser: https://github.com/mrom1/a2lparser                                       #
 # author: https://github.com/mrom1                                                    #
@@ -43,7 +43,7 @@ _FILE_COMMENT = r"""\
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
 # pylint: disable-all
-
+# flake8: noqa
 # ---------------------------------------------------------------------- #
 # *** IMPORTENT ***                                                      #
 # This code was generated from the config file:                          #
@@ -63,10 +63,6 @@ _FILE_COMMENT = r"""\
 
 
 _FILE_CODE = """
-
-
-import sys
-
 
 class Node(object):
     __slots__ = ()

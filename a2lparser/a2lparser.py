@@ -64,42 +64,21 @@ def main() -> None:
             sys.exit(0)
 
         # Either trigger a run through A2L unit tests or provide a file to work with
-        # if args.filename is None and args.unittests is False:
-        #     print(A2L_PARSER_HEADLINE)
-        #     print("\nPlease specifiy a A2L file.")
-        #     print("For more information use the -h or --help flag.")
-        #     sys.exit(1)
+        if args.filename is None and args.unittests is False:
+            print(A2L_PARSER_HEADLINE)
+            print("\nPlease specifiy a A2L file.")
+            print("For more information use the -h or --help flag.")
+            sys.exit(1)
 
         # Initializing the A2L Parser
         parser = Parser(debug=args.debug, optimize=args.optimize)
 
         if args.unittests:
-            Testsuite(parser)
+            suite = Testsuite(parser)
+            suite.run()
             sys.exit(0)
 
-        # ast = parser.parse_files(args.filename)
-        a2l_content = """
-        /begin ANNOTATION
-            ANNOTATION_LABEL "ANNOTATION_LABEL"
-            ANNOTATION_ORIGIN "ORIGIN_ORIGIN"
-            /begin ANNOTATION_TEXT
-                "STRING_LINE_1"
-                "STRING_LINE_2"
-                0x41feed22
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "ANNOTATION_ORIGIN"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_ORIGIN "ORIGIN_ORIGIN"
-            /begin ANNOTATION_TEXT
-                "STRING_LINE_1"
-                "STRING_LINE_2"
-                "0x41feed22"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "ANNOTATION_ORIGIN"
-        /end ANNOTATION
-        """
-        ast = parser.parse_content(a2l_content)
+        ast = parser.parse_files(args.filename)
 
         if args.xml:
             raise NotImplementedError("A2L to XML converter not implemented yet.")
