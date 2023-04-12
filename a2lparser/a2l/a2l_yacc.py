@@ -102,21 +102,39 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
     # look into a2lparser.a2l.rules                  #
     ##################################################
     # pylint: disable=C0103
-    def p_error(self, p):  # pylint: disable=W0613
-        """
-        Error handler function.
-        """
-        # We just do nothing for now and wait for the next valid section
-        if self.experimental_error_resolve:
-            raise NotImplementedError("Experimental error resolving is not implemented yet.")
-        # while True:
-        #     if p.type == "END":
-        #         break
-        #     tok = self.a2l_lex.token()  # Get the next token
-        #     if not tok or tok.type == "END":
-        #         break  # Stop skipping when we reach the end of the section
-        # # Return an empty list to continue parsing the remaining sections
-        # return []
+    # def p_error(self, p):  # pylint: disable=W0613
+    #     """
+    #     Error handler function.
+    #     """
+    #     # We just do nothing for now and wait for the next valid section
+    #     if self.experimental_error_resolve:
+    #         raise NotImplementedError("Experimental error resolving is not implemented yet.")
+    #     # while True:
+    #     #     if p.type == "END":
+    #     #         break
+    #     #     tok = self.a2l_lex.token()  # Get the next token
+    #     #     if not tok or tok.type == "END":
+    #     #         break  # Stop skipping when we reach the end of the section
+    #     # # Return an empty list to continue parsing the remaining sections
+    #     # return []
+
+    # def p_error(self, p):
+    #     """
+    #     error : ERROR
+    #     """
+    #     if p:
+    #         pass
+# 
+    # def p_error_list(self, p):
+    #     """
+    #     error_list : error
+    #                | error_list error
+    #     """
+    #     if len(p) == 2:
+    #         p[0] = [p[1]]
+    #     else:
+    #         p[1].extend(p[2])
+    #         p[0] = p[1]
 
     def p_empty(self, p):
         """
@@ -138,15 +156,7 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
         """
         a2l_final : a2l_sections
         """
-        if isinstance(p[1], (list, tuple)):
-            if len(self.a2l_sections_list) > len(p[1]):
-                p[0] = self.a2l_sections_list
-            else:
-                p[0] = p[1]
-        elif len(self.a2l_sections_list) > 1:
-            p[0] = self.a2l_sections_list
-        else:
-            p[0] = p[1]
+        p[0] = p[1]
 
     def p_a2l_sections(self, p):
         """
@@ -160,19 +170,16 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
                          | a2l_section_list a2l_section
         """
         if len(p) == 2:
-            self.a2l_sections_list.append(p[1])
             p[0] = [p[1]]
         else:
             if p[2]:
                 p[1].append(p[2])
-                self.a2l_sections_list.append(p[2])
             p[0] = p[1]
 
     def p_a2l_section(self, p):
         """
         a2l_section : meta_block
                     | meta_block_empty
-                    | a2l_section_error
         """
         if p[1]:
             p[0] = p[1]

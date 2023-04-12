@@ -263,37 +263,10 @@ class AbstractSyntaxTree:
             return search_expression.search(value_string) is not None
         return False
 
-    def _add_children(self, node, parent_dict):
-        children = node.children()
-        for child in children:
-            if (
-                not isinstance(child, tuple)
-                or len(child) != 2
-                or not isinstance(child[0], str)
-                or not hasattr(child[1], "children")
-            ):
-                raise ValueError("Invalid nodelist structure")
-            child_name = child[0]
-            child_obj = child[1]
-
-            if child_name == "OptionalParams":
-                child_dict = parent_dict
-            elif child_name in parent_dict:
-                if isinstance(parent_dict[child_name.upper()], dict):
-                    parent_dict[child_name.upper()] = [parent_dict[child_name.upper()]]
-                parent_dict[child_name.upper()].append({})
-                child_dict = parent_dict[child_name.upper()][-1]
-            else:
-                child_dict = {}
-                parent_dict[child_name.upper()] = child_dict
-
-            attr_names = getattr(child_obj, "attr_names", ())
-            for attr_name in attr_names:
-                attr_value = getattr(child_obj, attr_name)
-                child_dict[attr_name.upper()] = attr_value
-            self._add_children(child_obj, child_dict)
-
     def _create_dict_from_ast(self, abstract_syntax_tree) -> None:
+        """
+        Create a dictionary from parsed AST nodes.
+        """
         for node in abstract_syntax_tree:
             node_name = type(node).__name__.upper()
 
@@ -311,6 +284,45 @@ class AbstractSyntaxTree:
                 attr_value = getattr(node, attr_name)
                 node_dict[attr_name.upper()] = attr_value
             self._add_children(node, node_dict)
+
+    def _add_children(self, node, parent_dict):
+        """
+        Will recursivly add the children of the given node to the given parent dictionary.
+        """
+        if not hasattr(node, "children"):
+            return
+        for child in node.children():
+            if (
+                not isinstance(child, tuple)
+                or len(child) != 2
+                or not isinstance(child[0], str)
+                # or not hasattr(child[1], "children")
+            ):
+                raise ValueError("Invalid nodelist structure")
+            child_name = child[0]
+            child_obj = child[1]
+
+            if child_name == "OptionalParams":
+                child_dict = parent_dict
+            elif child_name in parent_dict:
+                if isinstance(parent_dict[child_name.upper()], dict):
+                    parent_dict[child_name.upper()] = [parent_dict[child_name.upper()]]
+                parent_dict[child_name.upper()].append({})
+                child_dict = parent_dict[child_name.upper()][-1]
+            else:
+                child_dict = {}
+                parent_dict[child_name.upper()] = child_dict
+
+            if isinstance(child_obj, (str, int, float, bool)):
+                parent_dict[child_name.upper()] = child_obj
+                child_dict = parent_dict[child_name.upper()]
+            else:
+                attr_names = getattr(child_obj, "attr_names", ())
+                for attr_name in attr_names:
+                    attr_value = getattr(child_obj, attr_name)
+                    child_dict[attr_name.upper()] = attr_value
+
+            self._add_children(child_obj, child_dict)
 
     def _print_dict(self, dictionary, indent=""):
         """
