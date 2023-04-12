@@ -24,8 +24,8 @@ import a2lparser.gen.a2l_ast as ASTNodes
 
 # Some of this code is generated and does not follow snake_case naming
 # Some docstrings are long
-# pylint: disable=C0103, C0301, R0904
-# flake8: noqa
+# pylint: #disable=C0103, C0301, R0904
+# flake8: #noqa
 class RulesSections:
     """
     Grammar for parsing A2L sections.
@@ -85,18 +85,47 @@ class RulesSections:
             if isinstance(param, _node):
                 setattr(node_class, param.__class__.__name__, getattr(param, param.__slots__[0]))
 
-    def p_A2L_section_error(self, p):
-        """
-        a2l_section_error : BEGIN meta_block_keyword error END meta_block_keyword
-        """
-        if len(self.ast_scope_stack) > 0:
-            p[0] = ASTNodes.NodeCorrupted(p[2], self.ast_scope_stack.pop())
+    # def p_A2L_section_error(self, p):
+    #     """
+    #     a2l_section_error : BEGIN meta_block_keyword error END meta_block_keyword
+    #     """
+    #     if len(self.ast_scope_stack) > 0:
+    #         p[0] = ASTNodes.NodeCorrupted(p[2], self.ast_scope_stack.pop())
 
-    def p_A2ML_VERSION(self, p):
+    # def p_error_list(self, p):
+    #     """
+    #     error_list : error
+    #                | error_list error
+    #     """
+    #     # p[0] = [p[1]] if len(p) == 2 else p[1] + p[2]
+    #     if len(p) == 2:
+    #         p[0] = [p[1]]
+    #     else:
+    #         p[1].extend(p[2])
+    #         p[0] = p[1]
+
+    def p_error(self, p):
+        pass
+
+    def p_a2ml_version(self, p):
         """
-        a2ml_version     : A2ML_VERSION constant constant
+        a2ml_version : A2ML_VERSION constant constant
+                     | A2ML_VERSION constant error
+                     | A2ML_VERSION error constant
+                     | A2ML_VERSION error
+                     | A2ML_VERSION error error
         """
-        p[0] = ASTNodes.A2ml_Version(VersionNo=p[2], UpgradeNo=p[3])
+        if len(p) == 2:
+            # Error detected
+            p[0] = ASTNodes.NodeError(node_name="A2ML_VERSION", node_obj=p[1])
+        else:
+            p[0] = ASTNodes.A2ml_Version(VersionNo=p[2], UpgradeNo=p[3])
+
+    def p_a2ml_version_error(self, p):
+        """
+        a2ml_version_error : A2ML_VERSION error
+        """
+        p[0] = p[2]
 
     def p_ADDR_EPK(self, p):
         """
@@ -104,11 +133,23 @@ class RulesSections:
         """
         p[0] = ASTNodes.Addr_Epk(Address=p[2])
 
-    def p_ASAP2_VERSION(self, p):
+    def p_asap2_version(self, p):
         """
         asap2_version     : ASAP2_VERSION constant constant
+                          | asap2_version_error
         """
-        p[0] = ASTNodes.Asap2_Version(VersionNo=p[2], UpgradeNo=p[3])
+        if len(p) == 2:
+            # Error detected
+            p[0] = ASTNodes.NodeError(node_name="ASAP2_VERSION", node_obj=p[1])
+        else:
+            p[0] = ASTNodes.Asap2_Version(VersionNo=p[2], UpgradeNo=p[3])
+
+    def p_asap2_version_error(self, p):
+        """
+        asap2_version_error : ASAP2_VERSION error
+                            | ASAP2_VERSION error error
+        """
+        p[0] = p[2]
 
     def p_ALIGNMENT_BYTE(self, p):
         """
