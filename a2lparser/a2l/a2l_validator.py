@@ -68,9 +68,10 @@ class A2LValidator:
             for match in re.finditer(re_pattern, line):
                 tag = match.group().lower().strip()
                 if tag == "/begin":
-                    keyword_match = re.search(r"^\s*/begin\s+(\S+)", line, re.IGNORECASE)
-                    if keyword_match:
-                        keyword = keyword_match.group(1).lower()
+                    if keyword_match := re.search(
+                        r"^\s*/begin\s+(\S+)", line, re.IGNORECASE
+                    ):
+                        keyword = keyword_match[1].lower()
                         open_stack.append((i, match.start()))
                         open_keyword_stack.append(keyword)
                     else:
@@ -81,9 +82,10 @@ class A2LValidator:
                     else:
                         _, start = open_stack.pop()
                         open_keyword = open_keyword_stack.pop()
-                        end_keyword_match = re.search(r"^\s*/end\s+(\S+)", line, re.IGNORECASE)
-                        if end_keyword_match:
-                            end_keyword = end_keyword_match.group(1).lower()
+                        if end_keyword_match := re.search(
+                            r"^\s*/end\s+(\S+)", line, re.IGNORECASE
+                        ):
+                            end_keyword = end_keyword_match[1].lower()
                             if end_keyword != open_keyword:
                                 errors.append(
                                     f"Found /end {end_keyword} tag without matching /begin {open_keyword} "
@@ -98,8 +100,7 @@ class A2LValidator:
 
         # Check for invalid characters
         for i, line in enumerate(lines, 1):
-            match = re.search(r"[^\x20-\x7E]", line)
-            if match:
+            if match := re.search(r"[^\x20-\x7E]", line):
                 errors.append(f"Invalid character '{match.group()}' found at line {i}, column {match.start()+1}.")
 
         if errors:

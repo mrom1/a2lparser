@@ -19,7 +19,7 @@
 #######################################################################################
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import a2lparser
 
 # Read requirements.txt
@@ -29,7 +29,7 @@ with open("requirements.txt", encoding="utf-8") as f:
 setup(
     name=a2lparser.__package_name__,
     version=a2lparser.__version__,
-    packages=[a2lparser.__package_name__],
+    packages=find_packages(),
     install_requires=install_requirements,
     author=a2lparser.__author__,
     author_email=a2lparser.__author_email__,
@@ -37,9 +37,8 @@ setup(
     license=a2lparser.__license__,
     license_files=("LICENSE",),
     url=a2lparser.__url__,
-    package_data={"a2lparser": ["*.yml", "*.yaml"]},
+    package_data={"a2lparser": ["*.cfg", "*.config"]},
     classifiers=[
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",

@@ -48,11 +48,20 @@ def main() -> None:
     try:
         args = parse_arguments(sys.argv[1:])
 
-        # Set log level
+        # Set the logger
+        logger.remove()
         if args.debug:
-            logger.level("DEBUG")
+            logger.add(
+                sink=sys.stderr,
+                format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
+                level="DEBUG",
+            )
         else:
-            logger.level("INFO")
+            logger.add(
+                sink=sys.stderr,
+                format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
+                level="INFO",
+            )
 
         # Generates the AST node classes for the A2L objects using the ASTGenerator
         if args.gen_ast:
@@ -65,6 +74,7 @@ def main() -> None:
 
         # Either trigger a run through A2L unit tests or provide a file to work with
         if args.filename is None and args.unittests is False:
+            print()
             print(A2L_PARSER_HEADLINE)
             print("\nPlease specifiy a A2L file.")
             print("For more information use the -h or --help flag.")
@@ -93,7 +103,7 @@ def parse_arguments(args: list) -> argparse.Namespace:
     """
     Parse the command line arguments.
     """
-    parser = argparse.ArgumentParser(prog="a2lparser", description=A2L_PARSER_HEADLINE)
+    parser = argparse.ArgumentParser(prog="a2lparser")
     parser.add_argument("filename", nargs="?", help="relativ path to the full filename")
     parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
     parser.add_argument("-o", "--optimize", action="store_true", default=True, help="enables optimize mode")

@@ -1,5 +1,5 @@
 ply
 lxml
 loguru
-readline
+pyreadline
 alive-progress

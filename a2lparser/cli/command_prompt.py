@@ -19,7 +19,7 @@
 #######################################################################################
 
 
-import readline
+from pyreadline import Readline
 from a2lparser import A2L_PARSER_HEADLINE
 
 
@@ -39,17 +39,16 @@ class CommandPrompt:
         """
         Prompts the user for input..
         """
+        readline = Readline()
         print(A2L_PARSER_HEADLINE)
         print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
         while True:
             user_input = input(">>> ")
             if user_input == "exit":
                 break
-            else:
-                try:
-                    result = eval(user_input, {}, {"ast": ast})
-                    if result:
-                        print(result)
-                except Exception as ex:
-                    print(str(ex))
+            try:
+                if result := eval(user_input, {}, {"ast": ast}):
+                    print(result)
+            except Exception as ex:
+                print(ex)
             readline.add_history(user_input)

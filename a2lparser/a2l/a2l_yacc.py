@@ -80,12 +80,12 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
         self.debug = debug
         self.a2l_sections_list = []
 
-    def generate_ast(self, content: str) -> AbstractSyntaxTree:
+    def generate_ast(self, content: str, content_title="", ) -> AbstractSyntaxTree:
         """
         Generates an AbstractSyntaxTree from an input string.
         """
         content_lines = content.count("\n")
-        with alive_bar(content_lines) as progressbar:
+        with alive_bar(content_lines, title=content_title) as progressbar:
             self.a2l_lex.progressbar = progressbar
             ast = self.a2l_yacc.parse(input=content, lexer=self.a2l_lex, debug=self.debug)
 
@@ -172,7 +172,6 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
         """
         a2l_section : meta_block
                     | meta_block_empty
-                    | a2l_section_error
         """
         if p[1]:
             p[0] = p[1]
