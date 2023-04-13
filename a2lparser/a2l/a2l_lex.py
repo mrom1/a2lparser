@@ -21,8 +21,8 @@
 
 from ply.lex import lex, LexToken, TOKEN
 from a2lparser import A2L_GENERATED_FILES_DIR
-from a2l.lex.lexer_regex import LexerRegex
-from a2l.lex.lexer_keywords import LexerKeywords
+from a2lparser.a2l.lex.lexer_regex import LexerRegex
+from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
 
 
 class A2LLex:
@@ -35,6 +35,27 @@ class A2LLex:
         >>> y = yacc(...)
         >>> y.parse(lexer=lexer, input=...)
     """
+
+    ###########################
+    # Tokens of the A2L Lexer #
+    ###########################
+    tokens_meta = [
+        "ID",
+        "BEGIN",
+        "END",
+        "KEYWORD_SECTION",
+        "KEYWORD_TYPE",
+    ]
+    tokens_datatypes = [
+        "STRING_LITERAL",
+        "INT_CONST_DEC",
+        "INT_CONST_HEX",
+        "FLOAT_CONST",
+        "HEX_FLOAT_CONST",
+    ]
+    tokens = tokens_meta + tokens_datatypes + LexerKeywords.keywords_section + LexerKeywords.keywords_type
+    t_STRING_LITERAL = LexerRegex.string_literal
+    t_ignore = " \t\r"
 
     def __init__(
         self,
@@ -104,55 +125,98 @@ class A2LLex:
         """
         self.lexer.skip(1)
 
-    tokens_meta = ["ID", "BEGIN", "END", "STRING_LITERAL", "INT_CONST_DEC", "INT_CONST_HEX", "FLOAT_CONST", "HEX_FLOAT_CONST"]
-    tokens = tokens_meta + LexerKeywords.keywords_section + LexerKeywords.keywords_type
-    t_STRING_LITERAL = LexerRegex.string_literal
-    t_ignore = " \t\r"
-
-    # Disable docstring and camel case
-    # pylint: disable=C0103, C0116
-    @TOKEN(LexerRegex.newline)
-    def t_NEWLINE(self, t):
-        self.lexer.lineno += len(t.value)
-        if self.progressbar:
-            self.progressbar()  # pylint: disable=E1102
-
-    @TOKEN(LexerRegex.identifier)
-    def t_ID(self, t):
-        return t
-
-    @TOKEN(LexerRegex.floating_constant)
-    def t_FLOAT_CONST(self, t):
-        return t
-
-    @TOKEN(LexerRegex.hex_floating_constant)
-    def t_HEX_FLOAT_CONST(self, t):
-        return t
-
-    @TOKEN(LexerRegex.hex_constant)
-    def t_INT_CONST_HEX(self, t):
-        return t
-
-    @TOKEN(LexerRegex.decimal_constant)
-    def t_INT_CONST_DEC(self, t):
-        return t
+    # Disable warning for snake case style, as we want the tokens to be uppercase.
+    # pylint: disable=C0103
+    def t_error(self, t):
+        """
+        Triggers when a token could not be interpreted.
+        """
+        msg = f"Illegal character {repr(t.value[0])}"
+        self._error_handling(msg, t)
 
     @TOKEN(LexerRegex.begin_section)
     def t_BEGIN(self, t):
+        """
+        Triggers when a begin tag token is encountered.
+        """
         return t
 
     @TOKEN(LexerRegex.end_section)
     def t_END(self, t):
+        """
+        Triggers when a end tag token is encountered.
+        """
+        return t
+
+    @TOKEN(LexerRegex.newline)
+    def t_NEWLINE(self, t):
+        """
+        Triggered when a newline token has been parsed.
+        Will call the progressbar to advance if one has been defined.
+        """
+        self.lexer.lineno += len(t.value)
+        if self.progressbar:
+            self.progressbar()  # pylint: disable=E1102
+
+    @TOKEN(r"|".join(LexerKeywords.keywords_type))
+    def t_KEYWORD_TYPE(self, t):
+        """
+        Sets the type of the token to the specific keyword found.
+        """
+        t.type = t.value
+        return t
+
+    @TOKEN(r"|".join(LexerKeywords.keywords_section))
+    def t_KEYWORD_SECTION(self, t):
+        """
+        Sets the type of the token to the specific keyword found.
+        """
+        t.type = t.value
+        return t
+
+    @TOKEN(LexerRegex.identifier)
+    def t_ID(self, t):
+        """
+        Returns a ident token which represents any string, like a name, data etc.
+        """
+        return t
+
+    @TOKEN(LexerRegex.floating_constant)
+    def t_FLOAT_CONST(self, t):
+        """
+        Returns a floating constant token like 3.14.
+        """
+        return t
+
+    @TOKEN(LexerRegex.hex_floating_constant)
+    def t_HEX_FLOAT_CONST(self, t):
+        """
+        Returns a hex floating constant token.
+        """
+        return t
+
+    @TOKEN(LexerRegex.hex_constant)
+    def t_INT_CONST_HEX(self, t):
+        """
+        Returns an integer hexadecimal token like 0x44886600.
+        """
+        return t
+
+    @TOKEN(LexerRegex.decimal_constant)
+    def t_INT_CONST_DEC(self, t):
+        """
+        Returns a decimal number token.
+        """
         return t
 
     @TOKEN(LexerRegex.comment_singleline)
     def t_COMMENT_SINGLELINE(self, t):
-        pass
+        """
+        Any single line comments like "// comment" will be ignored.
+        """
 
     @TOKEN(LexerRegex.comment_multiline)
     def t_COMMENT_MULTILINE(self, t):
-        pass
-
-    def t_error(self, t):
-        msg = f"Illegal character {repr(t.value[0])}"
-        self._error_handling(msg, t)
+        """
+        Any multi line comments like /* comment */ will be ignored.
+        """
