@@ -158,7 +158,7 @@ class A2LLex:
         if self.progressbar:
             self.progressbar()  # pylint: disable=E1102
 
-    @TOKEN(r"|".join(LexerKeywords.keywords_type))
+    @TOKEN(r"\b(" + r"|".join(LexerKeywords.keywords_type) + r")\b")
     def t_KEYWORD_TYPE(self, t):
         """
         Sets the type of the token to the specific keyword found.
@@ -166,7 +166,7 @@ class A2LLex:
         t.type = t.value
         return t
 
-    @TOKEN(r"|".join(LexerKeywords.keywords_section))
+    @TOKEN(r"\b(" + r"|".join(LexerKeywords.keywords_section) + r")\b")
     def t_KEYWORD_SECTION(self, t):
         """
         Sets the type of the token to the specific keyword found.

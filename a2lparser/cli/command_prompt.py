@@ -19,7 +19,9 @@
 #######################################################################################
 
 
-from pyreadline import Readline
+from prompt_toolkit import PromptSession
+from prompt_toolkit.history import FileHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from a2lparser import A2L_PARSER_HEADLINE
 
 
@@ -39,16 +41,23 @@ class CommandPrompt:
         """
         Prompts the user for input..
         """
-        readline = Readline()
+        session = PromptSession(history=FileHistory(".a2lparser_history"), auto_suggest=AutoSuggestFromHistory())
+
         print(A2L_PARSER_HEADLINE)
         print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
         while True:
-            user_input = input(">>> ")
+            try:
+                user_input = session.prompt(">>> ")
+            except KeyboardInterrupt:
+                continue
+            except EOFError:
+                break
+
             if user_input == "exit":
                 break
+
             try:
                 if result := eval(user_input, {}, {"ast": ast}):
                     print(result)
             except Exception as ex:
                 print(ex)
-            readline.add_history(user_input)
