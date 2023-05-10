@@ -26,7 +26,6 @@ from a2lparser import __version__
 from a2lparser import A2L_PARSER_HEADLINE
 from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.parser import Parser
-from a2lparser.unittests.testsuite import Testsuite
 from a2lparser.cli.command_prompt import CommandPrompt
 from a2lparser.a2l.ast.ast_generator import ASTGenerator
 from a2lparser.a2l.parsing_exception import ParsingException
@@ -73,7 +72,7 @@ def main() -> None:
             sys.exit(0)
 
         # Either trigger a run through A2L unit tests or provide a file to work with
-        if args.filename is None and args.unittests is False:
+        if args.filename is None:
             print()
             print(A2L_PARSER_HEADLINE)
             print("\nPlease specifiy a A2L file.")
@@ -82,12 +81,6 @@ def main() -> None:
 
         # Initializing the A2L Parser
         parser = Parser(debug=args.debug, optimize=args.optimize)
-
-        if args.unittests:
-            suite = Testsuite(parser)
-            suite.run()
-            sys.exit(0)
-
         ast = parser.parse_files(args.filename)
 
         if args.xml:
@@ -109,9 +102,7 @@ def parse_arguments(args: list) -> argparse.Namespace:
     parser.add_argument("-o", "--optimize", action="store_true", default=True, help="enables optimize mode")
     parser.add_argument("-x", "--xml", action="store_true", help="XML output file")
     parser.add_argument("--gen-ast", nargs="?", help="generates python file containing AST node classes")
-    parser.add_argument("--unittests", action="store_true", help="runs all unit tests on A2L section parsing")
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
-
     return parser.parse_args(args)
 
 
