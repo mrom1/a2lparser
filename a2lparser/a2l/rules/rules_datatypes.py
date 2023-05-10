@@ -26,74 +26,19 @@ class RulesDatatypes:
     Rules for parsing datatypes.
     """
 
-    def p_addrtype_enum(self, p):
-        """
-        addrtype_enum : PBYTE
-                      | PWORD
-                      | PLONG
-                      | DIRECT
-        """
-        p[0] = p[1]
-
-    def p_attribute_enum(self, p):
-        """
-        attribute_enum : INTERN
-                       | EXTERN
-        """
-        p[0] = p[1]
-
-    def p_byte_order_enum(self, p):
-        """
-        byte_order_enum : MSB_FIRST
-                        | MSB_LAST
-                        | LITTLE_ENDIAN
-                        | BIG_ENDIAN
-        """
-        p[0] = p[1]
-
-    def p_datatype(self, p):
-        """
-        datatype    : SBYTE
-                    | UBYTE
-                    | UWORD
-                    | SWORD
-                    | ULONG
-                    | SLONG
-                    | A_UINT64
-                    | A_INT64
-                    | FLOAT32_IEEE
-                    | FLOAT64_IEEE
-        """
-        p[0] = p[1]
-
-    def p_datasize(self, p):
-        """
-        datasize    : BYTE
-                    | WORD
-                    | LONG
-        """
-        p[0] = p[1]
-
-    def p_indexorder_enum(self, p):
-        """
-        indexorder_enum : INDEX_INCR
-                        | INDEX_DECR
-        """
-        p[0] = p[1]
-
     def p_constant(self, p):
         """
-        constant    : INT_CONST_DEC
-                    | INT_CONST_HEX
-                    | FLOAT_CONST
-                    | HEX_FLOAT_CONST
+        constant : INT_CONST_DEC
+                 | INT_CONST_HEX
+                 | FLOAT_CONST
+                 | HEX_FLOAT_CONST
         """
         p[0] = p[1]
 
     def p_constant_list(self, p):
         """
-        constant_list    : constant
-                         | constant_list constant
+        constant_list : constant
+                      | constant_list constant
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -120,14 +65,14 @@ class RulesDatatypes:
 
     def p_ident_ident(self, p):
         """
-        ident_ident    : ident ident
+        ident_ident : ident ident
         """
         p[0] = [p[1], p[2]]
 
     def p_ident_ident_list(self, p):
         """
-        ident_ident_list    : ident_ident
-                            | ident_ident_list ident_ident
+        ident_ident_list : ident_ident
+                         | ident_ident_list ident_ident
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -137,14 +82,14 @@ class RulesDatatypes:
 
     def p_string_literal(self, p):
         """
-        string_literal    : STRING_LITERAL
+        string_literal : STRING_LITERAL
         """
         p[0] = p[1]
 
     def p_string_literal_list(self, p):
         """
-        string_literal_list     : string_literal
-                                | string_literal_list string_literal
+        string_literal_list : string_literal
+                            | string_literal_list string_literal
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -154,14 +99,14 @@ class RulesDatatypes:
 
     def p_axis_points(self, p):
         """
-        axis_points    : constant constant
+        axis_points : constant constant
         """
         p[0] = [p[1], p[2]]
 
     def p_axis_points_list(self, p):
         """
-        axis_points_list    : axis_points
-                            | axis_points_list axis_points
+        axis_points_list : axis_points
+                         | axis_points_list axis_points
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -171,14 +116,14 @@ class RulesDatatypes:
 
     def p_inval_outval(self, p):
         """
-        inVal_outVal    : constant string_literal
+        inVal_outVal : constant string_literal
         """
         p[0] = [p[1], p[2]]
 
     def p_inval_outval_list(self, p):
         """
-        inVal_outVal_list    : inVal_outVal
-                             | inVal_outVal_list inVal_outVal
+        inVal_outVal_list : inVal_outVal
+                          | inVal_outVal_list inVal_outVal
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -188,14 +133,14 @@ class RulesDatatypes:
 
     def p_inval_minmax_outval(self, p):
         """
-        inVal_MinMax_outVal    : constant constant string_literal
+        inVal_MinMax_outVal : constant constant string_literal
         """
         p[0] = [p[1], p[2], p[3]]
 
     def p_inval_minmax_outval_list(self, p):
         """
-        inVal_MinMax_outVal_list    : inVal_MinMax_outVal
-                                    | inVal_MinMax_outVal_list inVal_MinMax_outVal
+        inVal_MinMax_outVal_list : inVal_MinMax_outVal
+                                 | inVal_MinMax_outVal_list inVal_MinMax_outVal
         """
         if len(p) == 2:
             p[0] = [p[1]]

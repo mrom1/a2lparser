@@ -24,8 +24,7 @@ import a2lparser.gen.a2l_ast as ASTNodes
 
 # Some of this code is generated and does not follow snake_case naming
 # Some docstrings are long
-# pylint: #disable=C0103, C0301, R0904
-# flake8: #noqa
+# pylint: disable=C0103
 class RulesSections:
     """
     Grammar for parsing A2L sections.
@@ -40,14 +39,14 @@ class RulesSections:
 
     def _get_ast_node(self, node, reverse=True):
         if reverse:
-            for _node in reversed(self.ast_scope_stack):
-                if isinstance(_node, node):
-                    return _node
-            return None
-        for _node in self.ast_scope_stack:
-            if isinstance(_node, node):
-                return _node
-        return None
+            return next(
+                (_node for _node in reversed(self.ast_scope_stack) if isinstance(_node, node)),
+                None,
+            )
+        return next(
+            (_node for _node in self.ast_scope_stack if isinstance(_node, node)),
+            None,
+        )
 
     def _get_or_create_ast_node(self, node, reverse=True):
         _node = self._get_ast_node(node=node, reverse=reverse)
@@ -91,72 +90,68 @@ class RulesSections:
         """
         p[0] = ASTNodes.A2ml_Version(VersionNo=p[2], UpgradeNo=p[3])
 
-    def p_ADDR_EPK(self, p):
+    def p_addr_epk(self, p):
         """
-        addr_epk     : ADDR_EPK constant
+        addr_epk : ADDR_EPK constant
         """
         p[0] = ASTNodes.Addr_Epk(Address=p[2])
 
     def p_asap2_version(self, p):
         """
-        asap2_version     : ASAP2_VERSION constant constant
+        asap2_version : ASAP2_VERSION constant constant
         """
-        if len(p) == 2:
-            # Error detected
-            p[0] = ASTNodes.NodeError(node_name="ASAP2_VERSION", node_obj=p[1])
-        else:
-            p[0] = ASTNodes.Asap2_Version(VersionNo=p[2], UpgradeNo=p[3])
+        p[0] = ASTNodes.Asap2_Version(VersionNo=p[2], UpgradeNo=p[3])
 
-    def p_ALIGNMENT_BYTE(self, p):
+    def p_alignment_byte(self, p):
         """
-        alignment_byte     : ALIGNMENT_BYTE constant
+        alignment_byte : ALIGNMENT_BYTE constant
         """
         p[0] = ASTNodes.Alignment_Byte(AlignmentBorder=p[2])
 
-    def p_ALIGNMENT_FLOAT32_IEEE(self, p):
+    def p_alignment_float32_ieee(self, p):
         """
-        alignment_float32_ieee     : ALIGNMENT_FLOAT32_IEEE constant
+        alignment_float32_ieee : ALIGNMENT_FLOAT32_IEEE constant
         """
         p[0] = ASTNodes.Alignment_Float32_Ieee(AlignmentBorder=p[2])
 
-    def p_ALIGNMENT_FLOAT64_IEEE(self, p):
+    def p_alignment_float64_ieee(self, p):
         """
-        alignment_float64_ieee     : ALIGNMENT_FLOAT64_IEEE constant
+        alignment_float64_ieee : ALIGNMENT_FLOAT64_IEEE constant
         """
         p[0] = ASTNodes.Alignment_Float64_Ieee(AlignmentBorder=p[2])
 
-    def p_ALIGNMENT_INT64(self, p):
+    def p_alignment_int64(self, p):
         """
-        alignment_int64     : ALIGNMENT_INT64 constant
+        alignment_int64 : ALIGNMENT_INT64 constant
         """
         p[0] = ASTNodes.Alignment_Int64(AlignmentBorder=p[2])
 
-    def p_ALIGNMENT_LONG(self, p):
+    def p_alignment_long(self, p):
         """
-        alignment_long     : ALIGNMENT_LONG constant
+        alignment_long : ALIGNMENT_LONG constant
         """
         p[0] = ASTNodes.Alignment_Long(AlignmentBorder=p[2])
 
-    def p_ALIGNMENT_WORD(self, p):
+    def p_alignment_word(self, p):
         """
-        alignment_word     : ALIGNMENT_WORD constant
+        alignment_word : ALIGNMENT_WORD constant
         """
         p[0] = ASTNodes.Alignment_Word(AlignmentBorder=p[2])
 
-    def p_ANNOTATION(self, p):
+    def p_annotation(self, p):
         """
-        annotation     : BEGIN ANNOTATION annotation_opt_list END ANNOTATION
+        annotation : BEGIN ANNOTATION annotation_opt_list END ANNOTATION
 
         """
         if len(p) > 2 and p[3]:
             p[0] = ASTNodes.Annotation(OptionalParams=p[3])
         self._remove_ast_node(ASTNodes.Annotation_Opt)
 
-    def p_ANNOTATION_opt(self, p):
+    def p_annotation_opt(self, p):
         """
-        annotation_opt    : annotation_label
-                          | annotation_origin
-                          | annotation_text
+        annotation_opt : annotation_label
+                       | annotation_origin
+                       | annotation_text
         """
         if p[1]:
             node = self._get_or_create_ast_node(ASTNodes.Annotation_Opt)
@@ -165,45 +160,47 @@ class RulesSections:
             )
             p[0] = node
 
-    def p_ANNOTATION_opt_list(self, p):
+    def p_annotation_opt_list(self, p):
         """
-        annotation_opt_list    : annotation_opt
-                               | annotation_opt_list annotation_opt
+        annotation_opt_list : annotation_opt
+                            | annotation_opt_list annotation_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_ANNOTATION_LABEL(self, p):
+    def p_annotation_label(self, p):
         """
-        annotation_label     : ANNOTATION_LABEL string_literal
+        annotation_label : ANNOTATION_LABEL string_literal
         """
         p[0] = ASTNodes.Annotation_Label(label=p[2])
 
-    def p_ANNOTATION_ORIGIN(self, p):
+    def p_annotation_origin(self, p):
         """
-        annotation_origin     : ANNOTATION_ORIGIN string_literal
+        annotation_origin : ANNOTATION_ORIGIN string_literal
         """
         p[0] = ASTNodes.Annotation_Origin(origin=p[2])
 
-    def p_ANNOTATION_TEXT(self, p):
+    def p_annotation_text(self, p):
         """
-        annotation_text     : BEGIN ANNOTATION_TEXT string_literal_list END ANNOTATION_TEXT
+        annotation_text : BEGIN ANNOTATION_TEXT string_literal_list END ANNOTATION_TEXT
         """
         if len(p) > 2:
             p[0] = ASTNodes.Annotation_Text(annotation_text=p[3])
 
-    def p_ARRAY_SIZE(self, p):
+    def p_array_size(self, p):
         """
-        array_size     : ARRAY_SIZE constant
+        array_size : ARRAY_SIZE constant
         """
         p[0] = ASTNodes.Array_Size(p[2])
 
-    def p_AXIS_DESCR(self, p):
+    def p_axis_descr(self, p):
         """
-        axis_descr     : BEGIN AXIS_DESCR axis_descr_enum ident ident constant constant constant END AXIS_DESCR
-                       | BEGIN AXIS_DESCR axis_descr_enum ident ident constant constant constant axis_descr_opt_list END AXIS_DESCR
+        axis_descr : BEGIN AXIS_DESCR \
+                        axis_descr_enum ident ident constant constant constant \
+                     END AXIS_DESCR
+
+                   | BEGIN AXIS_DESCR \
+                        axis_descr_enum ident ident constant constant constant axis_descr_opt_list \
+                     END AXIS_DESCR
         """
         if len(p) > 2:
             p[0] = ASTNodes.Axis_Descr(
@@ -215,18 +212,18 @@ class RulesSections:
 
             self._remove_ast_node(ASTNodes.Axis_Descr_Opt)
 
-    def p_AXIS_DESCR_opt_params(self, p):
+    def p_axis_descr_opt_params(self, p):
         """
-        axis_descr_opt    : axis_pts_ref
-                          | byte_order
-                          | curve_axis_ref
-                          | deposit
-                          | format
-                          | max_grad
-                          | monotony
-                          | phys_unit
-                          | read_only
-                          | step_size
+        axis_descr_opt : axis_pts_ref
+                       | byte_order
+                       | curve_axis_ref
+                       | deposit
+                       | format
+                       | max_grad
+                       | monotony
+                       | phys_unit
+                       | read_only
+                       | step_size
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Descr_Opt)
@@ -249,12 +246,12 @@ class RulesSections:
 
         p[0] = node
 
-    def p_AXIS_DESCR_opt_objects(self, p):
+    def p_axis_descr_opt_objects(self, p):
         """
-        axis_descr_opt    : extended_limits
-                          | fix_axis_par
-                          | fix_axis_par_dist
-                          | fix_axis_par_list
+        axis_descr_opt : extended_limits
+                       | fix_axis_par
+                       | fix_axis_par_dist
+                       | fix_axis_par_list
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Descr_Opt)
         self._add_ast_node_object(
@@ -269,28 +266,30 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_AXIS_DESCR_opt_objects_list(self, p):
+    def p_axis_descr_opt_objects_list(self, p):
         """
-        axis_descr_opt    : annotation
+        axis_descr_opt : annotation
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Descr_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation], param=p[1])
         p[0] = node
 
-    def p_AXIS_DESCR_opt_list(self, p):
+    def p_axis_descr_opt_list(self, p):
         """
-        axis_descr_opt_list    : axis_descr_opt
-                               | axis_descr_opt_list axis_descr_opt
+        axis_descr_opt_list : axis_descr_opt
+                            | axis_descr_opt_list axis_descr_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_AXIS_PTS(self, p):
+    def p_axis_pts(self, p):
         """
-        axis_pts     : BEGIN AXIS_PTS ident string_literal constant ident ident constant ident constant constant constant END AXIS_PTS
-                     | BEGIN AXIS_PTS ident string_literal constant ident ident constant ident constant constant constant axis_pts_opt_list END AXIS_PTS
+        axis_pts : BEGIN AXIS_PTS \
+                      ident string_literal constant ident ident constant ident constant constant constant \
+                   END AXIS_PTS
+
+                 | BEGIN AXIS_PTS \
+                      ident string_literal constant ident ident constant ident constant constant constant axis_pts_opt_list \
+                   END AXIS_PTS
         """
         if len(p) > 2:
             p[0] = self._create_ast_node(
@@ -313,20 +312,20 @@ class RulesSections:
 
             self._remove_ast_node(ASTNodes.Axis_Pts_Opt)
 
-    def p_AXIS_PTS_opt_params(self, p):
+    def p_axis_pts_opt_params(self, p):
         """
-        axis_pts_opt    : byte_order
-                        | calibration_access
-                        | deposit
-                        | display_identifier
-                        | ecu_address_extension
-                        | format
-                        | guard_rails
-                        | monotony
-                        | phys_unit
-                        | read_only
-                        | ref_memory_segment
-                        | step_size
+        axis_pts_opt : byte_order
+                     | calibration_access
+                     | deposit
+                     | display_identifier
+                     | ecu_address_extension
+                     | format
+                     | guard_rails
+                     | monotony
+                     | phys_unit
+                     | read_only
+                     | ref_memory_segment
+                     | step_size
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Pts_Opt)
@@ -351,11 +350,11 @@ class RulesSections:
 
         p[0] = node
 
-    def p_AXIS_PTS_opt_objects(self, p):
+    def p_axis_pts_opt_objects(self, p):
         """
-        axis_pts_opt    : extended_limits
-                        | symbol_link
-                        | function_list
+        axis_pts_opt : extended_limits
+                     | symbol_link
+                     | function_list
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Pts_Opt)
         self._add_ast_node_object(
@@ -363,88 +362,85 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_AXIS_PTS_opt_objects_list(self, p):
+    def p_axis_pts_opt_objects_list(self, p):
         """
-        axis_pts_opt    : annotation
-                        | if_data
+        axis_pts_opt : annotation
+                     | if_data
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Pts_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1])
         p[0] = node
 
-    def p_AXIS_PTS_opt_list(self, p):
+    def p_axis_pts_opt_list(self, p):
         """
-        axis_pts_opt_list    : axis_pts_opt
-                             | axis_pts_opt_list axis_pts_opt
+        axis_pts_opt_list : axis_pts_opt
+                          | axis_pts_opt_list axis_pts_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_AXIS_PTS_REF(self, p):
+    def p_axis_pts_ref(self, p):
         """
-        axis_pts_ref     : AXIS_PTS_REF ident
+        axis_pts_ref : AXIS_PTS_REF ident
         """
         p[0] = ASTNodes.Axis_Pts_Ref(p[2])
 
-    def p_AXIS_PTS_X(self, p):
+    def p_axis_pts_x(self, p):
         """
-        axis_pts_x     : AXIS_PTS_X constant datatype indexorder_enum addrtype_enum
+        axis_pts_x : AXIS_PTS_X constant datatype_enum indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Pts_X(Position=p[2], Datatype=p[3], IndexIncr=p[4], Addressing=p[5])
 
-    def p_AXIS_PTS_Y(self, p):
+    def p_axis_pts_y(self, p):
         """
-        axis_pts_y     : AXIS_PTS_Y constant datatype indexorder_enum addrtype_enum
+        axis_pts_y : AXIS_PTS_Y constant datatype_enum indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Pts_Y(Position=p[2], Datatype=p[3], IndexIncr=p[4], Addressing=p[5])
 
-    def p_AXIS_PTS_Z(self, p):
+    def p_axis_pts_z(self, p):
         """
-        axis_pts_z     : AXIS_PTS_Z constant datatype indexorder_enum addrtype_enum
+        axis_pts_z : AXIS_PTS_Z constant datatype_enum indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Pts_Z(Position=p[2], Datatype=p[3], IndexIncr=p[4], Addressing=p[5])
 
-    def p_AXIS_PTS_Z4(self, p):
+    def p_axis_pts_z4(self, p):
         """
-        axis_pts_z4     : AXIS_PTS_Z4 constant datatype indexorder_enum addrtype_enum
+        axis_pts_z4 : AXIS_PTS_Z4 constant datatype_enum indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Pts_Z4(Position=p[2], Datatype=p[3], IndexIncr=p[4], Addressing=p[5])
 
-    def p_AXIS_PTS_Z5(self, p):
+    def p_axis_pts_z5(self, p):
         """
-        axis_pts_z5     : AXIS_PTS_Z5 constant datatype indexorder_enum addrtype_enum
+        axis_pts_z5 : AXIS_PTS_Z5 constant datatype_enum indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Pts_Z5(Position=p[2], Datatype=p[3], IndexIncr=p[4], Addressing=p[5])
 
-    def p_AXIS_RESCALE_X(self, p):
+    def p_axis_rescale_x(self, p):
         """
-        axis_rescale_x     : AXIS_RESCALE_X constant datatype constant indexorder_enum addrtype_enum
+        axis_rescale_x : AXIS_RESCALE_X constant datatype_enum constant indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Rescale_X(
             Position=p[2], Datatype=p[3], MaxNumberOfRescalePairs=p[4], IndexIncr=p[5], Addressing=p[6]
         )
 
-    def p_BIT_MASK(self, p):
+    def p_bit_mask(self, p):
         """
-        bit_mask     : BIT_MASK constant
+        bit_mask : BIT_MASK constant
         """
         p[0] = ASTNodes.Bit_Mask(p[2])
 
-    def p_BIT_OPERATION(self, p):
+    def p_bit_operation(self, p):
         """
-        bit_operation     : BEGIN BIT_OPERATION bit_operation_opt_list END BIT_OPERATION
+        bit_operation : BEGIN BIT_OPERATION bit_operation_opt_list END BIT_OPERATION
         """
         if len(p) > 2:
             p[0] = ASTNodes.Bit_Operation(OptionalParams=p[3])
             self._remove_ast_node(ASTNodes.Bit_Operation_Opt)
 
-    def p_BIT_OPERATION_opt(self, p):
+    def p_bit_operation_opt(self, p):
         """
-        bit_operation_opt   : left_shift
-                            | right_shift
-                            | sign_extend
+        bit_operation_opt : left_shift
+                          | right_shift
+                          | sign_extend
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Bit_Operation_Opt)
@@ -459,32 +455,29 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_BIT_OPERATION_opt_list(self, p):
+    def p_bit_operation_opt_list(self, p):
         """
-        bit_operation_opt_list    : bit_operation_opt
-                | bit_operation_opt_list bit_operation_opt
+        bit_operation_opt_list : bit_operation_opt
+                               | bit_operation_opt_list bit_operation_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_BYTE_ORDER(self, p):
+    def p_byte_order(self, p):
         """
-        byte_order     : BYTE_ORDER byte_order_enum
+        byte_order : BYTE_ORDER byte_order_enum
         """
         p[0] = ASTNodes.Byte_Order(p[2])
 
-    def p_CALIBRATION_ACCESS(self, p):
+    def p_calibration_access(self, p):
         """
-        calibration_access     : CALIBRATION_ACCESS calibration_access_enum
+        calibration_access : CALIBRATION_ACCESS calibration_access_enum
         """
         p[0] = ASTNodes.Calibration_Access(p[2])
 
-    def p_CALIBRATION_HANDLE(self, p):
+    def p_calibration_handle(self, p):
         """
-        calibration_handle     : BEGIN CALIBRATION_HANDLE constant_list END CALIBRATION_HANDLE
-                               | BEGIN CALIBRATION_HANDLE constant_list calibration_handle_opt_list END CALIBRATION_HANDLE
+        calibration_handle : BEGIN CALIBRATION_HANDLE constant_list END CALIBRATION_HANDLE
+                           | BEGIN CALIBRATION_HANDLE constant_list calibration_handle_opt_list END CALIBRATION_HANDLE
         """
         if len(p) > 2:
             p[0] = ASTNodes.Calibration_Handle(Handle=p[3])
@@ -493,35 +486,35 @@ class RulesSections:
 
             self._remove_ast_node(ASTNodes.Calibration_Handle_Opt)
 
-    def p_CALIBRATION_HANDLE_opt(self, p):
+    def p_calibration_handle_opt(self, p):
         """
-        calibration_handle_opt  : calibration_handle_text
+        calibration_handle_opt : calibration_handle_text
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Calibration_Handle_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Calibration_Handle_Text], param=p[1])
         p[0] = node
 
-    def p_CALIBRATION_HANDLE_opt_list(self, p):
+    def p_calibration_handle_opt_list(self, p):
         """
         calibration_handle_opt_list : calibration_handle_opt
                                     | calibration_handle_opt_list calibration_handle_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_CALIBRATION_HANDLE_TEXT(self, p):
+    def p_calibration_handle_text(self, p):
         """
-        calibration_handle_text     : CALIBRATION_HANDLE_TEXT string_literal
+        calibration_handle_text : CALIBRATION_HANDLE_TEXT string_literal
         """
         p[0] = ASTNodes.Calibration_Handle_Text(p[2])
 
-    def p_CALIBRATION_METHOD(self, p):
+    def p_calibration_method(self, p):
         """
-        calibration_method     : BEGIN CALIBRATION_METHOD string_literal constant END CALIBRATION_METHOD
-                               | BEGIN CALIBRATION_METHOD string_literal constant calibration_method_opt_list END CALIBRATION_METHOD
+        calibration_method : BEGIN CALIBRATION_METHOD string_literal constant END CALIBRATION_METHOD
+
+                           | BEGIN CALIBRATION_METHOD \
+                                string_literal constant calibration_method_opt_list \
+                             END CALIBRATION_METHOD
         """
         if len(p) > 2:
             if len(p) == 7:
@@ -529,17 +522,16 @@ class RulesSections:
             else:
                 p[0] = ASTNodes.Calibration_Method(Method=p[3], Version=p[4], Calibration_Handle=p[5])
 
-    def p_CALIBRATION_METHOD_opt(self, p):
+    def p_calibration_method_opt(self, p):
         """
-        calibration_method_opt  : calibration_handle
-
+        calibration_method_opt : calibration_handle
         """
         p[0] = p[1]
 
-    def p_CALIBRATION_METHOD_opt_list(self, p):
+    def p_calibration_method_opt_list(self, p):
         """
-        calibration_method_opt_list     : calibration_method_opt
-                                        | calibration_method_opt_list calibration_method_opt
+        calibration_method_opt_list : calibration_method_opt
+                                    | calibration_method_opt_list calibration_method_opt
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -548,10 +540,16 @@ class RulesSections:
                 p[1].append(p[2])
             p[0] = p[1]
 
-    def p_CHARACTERISTIC(self, p):
+    def p_characteristic(self, p):
         """
-        characteristic     : BEGIN CHARACTERISTIC ident string_literal characteristic_enum constant ident constant ident constant constant END CHARACTERISTIC
-                           | BEGIN CHARACTERISTIC ident string_literal characteristic_enum constant ident constant ident constant constant characteristic_opt_list END CHARACTERISTIC
+        characteristic : BEGIN CHARACTERISTIC \
+                            ident string_literal characteristic_enum constant ident constant ident constant constant \
+                         END CHARACTERISTIC
+
+                       | BEGIN CHARACTERISTIC \
+                            ident string_literal characteristic_enum constant ident \
+                            constant ident constant constant characteristic_opt_list \
+                         END CHARACTERISTIC
         """
         if len(p) > 2:
             p[0] = ASTNodes.Characteristic(
@@ -571,22 +569,22 @@ class RulesSections:
 
         self._remove_ast_node(ASTNodes.Characteristic_Opt)
 
-    def p_CHARACTERISTIC_opt_params(self, p):
+    def p_characteristic_opt_params(self, p):
         """
-        characteristic_opt    : bit_mask
-                              | byte_order
-                              | calibration_access
-                              | comparison_quantity
-                              | discrete
-                              | display_identifier
-                              | ecu_address_extension
-                              | format
-                              | guard_rails
-                              | number
-                              | phys_unit
-                              | read_only
-                              | ref_memory_segment
-                              | step_size
+        characteristic_opt : bit_mask
+                           | byte_order
+                           | calibration_access
+                           | comparison_quantity
+                           | discrete
+                           | display_identifier
+                           | ecu_address_extension
+                           | format
+                           | guard_rails
+                           | number
+                           | phys_unit
+                           | read_only
+                           | ref_memory_segment
+                           | step_size
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Characteristic_Opt)
@@ -612,16 +610,16 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_CHARACTERISTIC_opt_objects(self, p):
+    def p_characteristic_opt_objects(self, p):
         """
-        characteristic_opt    :  dependent_characteristic
-                              |  extended_limits
-                              |  function_list
-                              |  map_list
-                              |  matrix_dim
-                              |  max_refresh
-                              |  symbol_link
-                              |  virtual_characteristic
+        characteristic_opt : dependent_characteristic
+                           | extended_limits
+                           | function_list
+                           | map_list
+                           | matrix_dim
+                           | max_refresh
+                           | symbol_link
+                           | virtual_characteristic
         """
         node = self._get_or_create_ast_node(ASTNodes.Characteristic_Opt)
         self._add_ast_node_object(
@@ -640,11 +638,11 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_CHARACTERISTIC_opt_objects_list(self, p):
+    def p_characteristic_opt_objects_list(self, p):
         """
-        characteristic_opt    :  annotation
-                              |  axis_descr
-                              |  if_data
+        characteristic_opt : annotation
+                           | axis_descr
+                           | if_data
         """
         node = self._get_or_create_ast_node(ASTNodes.Characteristic_Opt)
         self._add_ast_node_object_list(
@@ -652,44 +650,46 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_CHARACTERISTIC_opt_list(self, p):
+    def p_characteristic_opt_list(self, p):
         """
-        characteristic_opt_list    : characteristic_opt
-                | characteristic_opt_list characteristic_opt
+        characteristic_opt_list : characteristic_opt
+                                | characteristic_opt_list characteristic_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_COEFFS(self, p):
+    def p_coeffs(self, p):
         """
-        coeffs     : COEFFS constant constant constant constant constant constant
+        coeffs : COEFFS constant constant constant constant constant constant
         """
         # float a b c d e f
         # f(x) = (axx + bx + c) / (dxx + ex + f)
         # INT = f(PHYS)
         p[0] = ASTNodes.Coeffs(a=p[2], b=p[3], c=p[4], d=p[5], e=p[6], f=p[7])
 
-    def p_COEFFS_LINEAR(self, p):
+    def p_coeffs_linear(self, p):
         """
-        coeffs_linear     : COEFFS_LINEAR constant constant
+        coeffs_linear : COEFFS_LINEAR constant constant
         """
         # float a b
         # f(x) = ax + b
         # PHYS = f(INT)
         p[0] = ASTNodes.Coeffs_Linear(a=p[2], b=p[3])
 
-    def p_COMPARISON_QUANTITY(self, p):
+    def p_comparison_quantity(self, p):
         """
-        comparison_quantity     : COMPARISON_QUANTITY ident
+        comparison_quantity : COMPARISON_QUANTITY ident
         """
         p[0] = ASTNodes.Comparison_Quantity(p[2])
 
-    def p_COMPU_METHOD(self, p):
+    def p_compu_method(self, p):
         """
-        compu_method     : BEGIN COMPU_METHOD ident string_literal conversion_type_enum string_literal string_literal END COMPU_METHOD
-                         | BEGIN COMPU_METHOD ident string_literal conversion_type_enum string_literal string_literal compu_method_opt_list END COMPU_METHOD
+        compu_method : BEGIN COMPU_METHOD \
+                           ident string_literal conversion_type_enum string_literal string_literal \
+                       END COMPU_METHOD
+
+                     | BEGIN COMPU_METHOD \
+                           ident string_literal conversion_type_enum string_literal string_literal compu_method_opt_list \
+                       END COMPU_METHOD
         """
         node = self._create_ast_node(
             ASTNodes.Compu_Method(Name=p[3], LongIdentifier=p[4], ConversionType=p[5], Format=p[6], Unit=p[7])
@@ -703,13 +703,11 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Compu_Method)
         self._remove_ast_node(ASTNodes.Compu_Method_Opt)
 
-    def p_COMPU_METHOD_opt_params(self, p):
+    def p_compu_method_opt_params(self, p):
         """
-        compu_method_opt    : compu_tab_ref
-                            | ref_unit
-                            | status_string_ref
-
-
+        compu_method_opt : compu_tab_ref
+                         | ref_unit
+                         | status_string_ref
         """
         node = self._get_or_create_ast_node(ASTNodes.Compu_Method_Opt)
         self._add_ast_node_param(
@@ -718,11 +716,11 @@ class RulesSections:
 
         p[0] = node
 
-    def p_COMPU_METHOD_opt_objects(self, p):
+    def p_compu_method_opt_objects(self, p):
         """
-        compu_method_opt    : coeffs
-                            | coeffs_linear
-                            | formula
+        compu_method_opt : coeffs
+                         | coeffs_linear
+                         | formula
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Compu_Method_Opt)
@@ -737,20 +735,22 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_COMPU_METHOD_opt_list(self, p):
+    def p_compu_method_opt_list(self, p):
         """
-        compu_method_opt_list    : compu_method_opt
-                                 | compu_method_opt_list compu_method_opt
+        compu_method_opt_list : compu_method_opt
+                              | compu_method_opt_list compu_method_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_COMPU_TAB(self, p):
+    def p_compu_tab(self, p):
         """
-        compu_tab     : BEGIN COMPU_TAB ident string_literal conversion_type_enum constant axis_points_list END COMPU_TAB
-                      | BEGIN COMPU_TAB ident string_literal conversion_type_enum constant axis_points_list compu_tab_opt_list END COMPU_TAB
+        compu_tab : BEGIN COMPU_TAB \
+                        ident string_literal conversion_type_enum constant axis_points_list \
+                    END COMPU_TAB
+
+                  | BEGIN COMPU_TAB \
+                        ident string_literal conversion_type_enum constant axis_points_list compu_tab_opt_list \
+                    END COMPU_TAB
         """
         node = self._create_ast_node(
             ASTNodes.Compu_Tab(Name=p[3], LongIdentifier=p[4], ConversionType=p[5], NumberValuePairs=p[6], Axis_Points=p[7])
@@ -764,10 +764,10 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Compu_Tab)
         self._remove_ast_node(ASTNodes.Compu_Tab_Opt)
 
-    def p_COMPU_TAB_opt_params(self, p):
+    def p_compu_tab_opt_params(self, p):
         """
-        compu_tab_opt    : default_value
-                         | default_value_numeric
+        compu_tab_opt : default_value
+                      | default_value_numeric
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Compu_Tab_Opt)
@@ -782,26 +782,28 @@ class RulesSections:
 
         p[0] = node
 
-    def p_COMPU_TAB_opt_list(self, p):
+    def p_compu_tab_opt_list(self, p):
         """
-        compu_tab_opt_list    : compu_tab_opt
-                        | compu_tab_opt_list compu_tab_opt
+        compu_tab_opt_list : compu_tab_opt
+                           | compu_tab_opt_list compu_tab_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_COMPU_TAB_REF(self, p):
+    def p_compu_tab_ref(self, p):
         """
-        compu_tab_ref     : COMPU_TAB_REF ident
+        compu_tab_ref : COMPU_TAB_REF ident
         """
         p[0] = ASTNodes.Compu_Tab_Ref(p[2])
 
-    def p_COMPU_VTAB(self, p):
+    def p_compu_vtab(self, p):
         """
-        compu_vtab     : BEGIN COMPU_VTAB ident string_literal conversion_type_enum constant inVal_outVal_list END COMPU_VTAB
-                       | BEGIN COMPU_VTAB ident string_literal conversion_type_enum constant inVal_outVal_list default_value END COMPU_VTAB
+        compu_vtab : BEGIN COMPU_VTAB \
+                        ident string_literal conversion_type_enum constant inVal_outVal_list \
+                     END COMPU_VTAB
+
+                   | BEGIN COMPU_VTAB \
+                        ident string_literal conversion_type_enum constant inVal_outVal_list default_value \
+                     END COMPU_VTAB
         """
         p[0] = ASTNodes.Compu_Vtab(
             Name=p[3], LongIdentifier=p[4], ConversionType=p[5], NumberValuePairs=p[6], InVal_OutVal=p[7]
@@ -809,236 +811,243 @@ class RulesSections:
         if len(p) == 11:
             p[0].Default_Value = getattr(p[8], p[8].__slots__[0])
 
-    def p_COMPU_VTAB_RANGE(self, p):
+    def p_compu_vtab_range(self, p):
         """
-        compu_vtab_range     : BEGIN COMPU_VTAB_RANGE ident string_literal constant inVal_MinMax_outVal_list END COMPU_VTAB_RANGE
-                             | BEGIN COMPU_VTAB_RANGE ident string_literal constant inVal_MinMax_outVal_list default_value END COMPU_VTAB_RANGE
+        compu_vtab_range     : BEGIN COMPU_VTAB_RANGE \
+                                  ident string_literal constant inVal_MinMax_outVal_list \
+                               END COMPU_VTAB_RANGE
+
+                             | BEGIN COMPU_VTAB_RANGE \
+                                   ident string_literal constant inVal_MinMax_outVal_list default_value \
+                               END COMPU_VTAB_RANGE
         """
         p[0] = ASTNodes.Compu_Vtab_Range(Name=p[3], LongIdentifier=p[4], NumberValueTriples=p[5], InVal_MinMax_OutVal=p[6])
         if len(p) == 10:
             p[0].Default_Value = getattr(p[7], p[7].__slots__[0])
 
-    def p_CPU_TYPE(self, p):
+    def p_cpu_type(self, p):
         """
-        cpu_type     : CPU_TYPE string_literal
+        cpu_type : CPU_TYPE string_literal
         """
         p[0] = ASTNodes.Cpu_Type(p[2])
 
-    def p_CURVE_AXIS_REF(self, p):
+    def p_curve_axis_ref(self, p):
         """
-        curve_axis_ref     : CURVE_AXIS_REF ident
+        curve_axis_ref : CURVE_AXIS_REF ident
         """
         p[0] = ASTNodes.Curve_Axis_Ref(p[2])
 
-    def p_CUSTOMER(self, p):
+    def p_customer(self, p):
         """
-        customer     : CUSTOMER string_literal
+        customer : CUSTOMER string_literal
         """
         p[0] = ASTNodes.Customer(p[2])
 
-    def p_CUSTOMER_NO(self, p):
+    def p_customer_no(self, p):
         """
-        customer_no     : CUSTOMER_NO string_literal
+        customer_no : CUSTOMER_NO string_literal
         """
         p[0] = ASTNodes.Customer_No(p[2])
 
-    def p_DATA_SIZE(self, p):
+    def p_data_size(self, p):
         """
-        data_size     : DATA_SIZE constant
+        data_size : DATA_SIZE constant
         """
         p[0] = ASTNodes.Data_Size(p[2])
 
-    def p_DEF_CHARACTERISTIC(self, p):
+    def p_def_characteristic(self, p):
         """
-        def_characteristic     : BEGIN DEF_CHARACTERISTIC ident_list END DEF_CHARACTERISTIC
+        def_characteristic : BEGIN DEF_CHARACTERISTIC ident_list END DEF_CHARACTERISTIC
         """
         p[0] = ASTNodes.Def_Characteristic(p[3])
 
-    def p_DEFAULT_VALUE(self, p):
+    def p_default_value(self, p):
         """
-        default_value     : DEFAULT_VALUE string_literal
+        default_value : DEFAULT_VALUE string_literal
         """
         p[0] = ASTNodes.Default_Value(p[2])
 
-    def p_DEFAULT_VALUE_NUMERIC(self, p):
+    def p_default_value_numeric(self, p):
         """
-        default_value_numeric     : DEFAULT_VALUE_NUMERIC constant
+        default_value_numeric : DEFAULT_VALUE_NUMERIC constant
         """
         p[0] = ASTNodes.Default_Value_Numeric(p[2])
 
-    def p_DEPENDENT_CHARACTERISTIC(self, p):
+    def p_dependent_characteristic(self, p):
         """
-        dependent_characteristic     : BEGIN DEPENDENT_CHARACTERISTIC string_literal ident_list END DEPENDENT_CHARACTERISTIC
+        dependent_characteristic : BEGIN DEPENDENT_CHARACTERISTIC \
+                                       string_literal ident_list \
+                                   END DEPENDENT_CHARACTERISTIC
         """
         p[0] = ASTNodes.Dependent_Characteristic(Formula=p[3], Characteristic=p[4])
 
-    def p_DEPOSIT(self, p):
+    def p_deposit(self, p):
         """
-        deposit     : DEPOSIT mode_enum
+        deposit : DEPOSIT mode_enum
         """
         p[0] = ASTNodes.Deposit(p[2])
 
-    def p_DISCRETE(self, p):
+    def p_discrete(self, p):
         """
-        discrete     : DISCRETE
+        discrete : DISCRETE
         """
         p[0] = ASTNodes.Discrete(Boolean=True)
 
-    def p_DISPLAY_IDENTIFIER(self, p):
+    def p_display_identifier(self, p):
         """
-        display_identifier     : DISPLAY_IDENTIFIER ident
+        display_identifier : DISPLAY_IDENTIFIER ident
         """
         p[0] = ASTNodes.Display_Identifier(p[2])
 
-    def p_DIST_OP_X(self, p):
+    def p_dist_op_x(self, p):
         """
-        dist_op_x    : DIST_OP_X constant datatype
+        dist_op_x : DIST_OP_X constant datatype_enum
         """
         p[0] = ASTNodes.Dist_Op_X(Position=p[2], Datatype=p[3])
 
-    def p_DIST_OP_Y(self, p):
+    def p_dist_op_y(self, p):
         """
-        dist_op_y    : DIST_OP_Y constant datatype
+        dist_op_y : DIST_OP_Y constant datatype_enum
         """
         p[0] = ASTNodes.Dist_Op_Y(Position=p[2], Datatype=p[3])
 
-    def p_DIST_OP_Z(self, p):
+    def p_dist_op_z(self, p):
         """
-        dist_op_z    : DIST_OP_Z constant datatype
+        dist_op_z : DIST_OP_Z constant datatype_enum
         """
         p[0] = ASTNodes.Dist_Op_Z(Position=p[2], Datatype=p[3])
 
-    def p_DIST_OP_Z4(self, p):
+    def p_dist_op_z4(self, p):
         """
-        dist_op_z4    : DIST_OP_Z4 constant datatype
+        dist_op_z4 : DIST_OP_Z4 constant datatype_enum
         """
         p[0] = ASTNodes.Dist_Op_Z4(Position=p[2], Datatype=p[3])
 
-    def p_DIST_OP_Z5(self, p):
+    def p_dist_op_z5(self, p):
         """
-        dist_op_z5    : DIST_OP_Z5 constant datatype
+        dist_op_z5 : DIST_OP_Z5 constant datatype_enum
         """
         p[0] = ASTNodes.Dist_Op_Z5(Position=p[2], Datatype=p[3])
 
-    def p_ECU(self, p):
+    def p_ecu(self, p):
         """
-        ecu     : ECU string_literal
+        ecu : ECU string_literal
         """
         p[0] = ASTNodes.Ecu(p[2])
 
-    def p_ECU_ADDRESS(self, p):
+    def p_ecu_address(self, p):
         """
-        ecu_address     : ECU_ADDRESS constant
+        ecu_address : ECU_ADDRESS constant
         """
         p[0] = ASTNodes.Ecu_Address(p[2])
 
-    def p_ECU_ADDRESS_EXTENSION(self, p):
+    def p_ecu_address_extension(self, p):
         """
-        ecu_address_extension     : ECU_ADDRESS_EXTENSION constant
+        ecu_address_extension : ECU_ADDRESS_EXTENSION constant
         """
         p[0] = ASTNodes.Ecu_Address_Extension(p[2])
 
-    def p_ECU_CALIBRATION_OFFSET(self, p):
+    def p_ecu_calibration_offset(self, p):
         """
-        ecu_calibration_offset     : ECU_CALIBRATION_OFFSET constant
+        ecu_calibration_offset : ECU_CALIBRATION_OFFSET constant
         """
         p[0] = ASTNodes.Ecu_Calibration_Offset(p[2])
 
-    def p_EPK(self, p):
+    def p_epk(self, p):
         """
-        epk     : EPK string_literal
+        epk : EPK string_literal
         """
         p[0] = ASTNodes.Epk(p[2])
 
-    def p_ERROR_MASK(self, p):
+    def p_error_mask(self, p):
         """
-        error_mask     : ERROR_MASK constant
+        error_mask : ERROR_MASK constant
         """
         p[0] = ASTNodes.Error_Mask(p[2])
 
-    def p_EXTENDED_LIMITS(self, p):
+    def p_extended_limits(self, p):
         """
-        extended_limits     : EXTENDED_LIMITS constant constant
+        extended_limits : EXTENDED_LIMITS constant constant
         """
         p[0] = ASTNodes.Extended_Limits(LowerLimit=p[2], UpperLimit=p[3])
 
-    def p_FIX_AXIS_PAR(self, p):
+    def p_fix_axis_par(self, p):
         """
-        fix_axis_par     : FIX_AXIS_PAR constant constant constant
+        fix_axis_par : FIX_AXIS_PAR constant constant constant
         """
         p[0] = ASTNodes.Fix_Axis_Par(Offset=p[2], Shift=p[3], Numberapo=p[4])
 
-    def p_FIX_AXIS_PAR_DIST(self, p):
+    def p_fix_axis_par_dist(self, p):
         """
-        fix_axis_par_dist     : FIX_AXIS_PAR_DIST constant constant constant
+        fix_axis_par_dist : FIX_AXIS_PAR_DIST constant constant constant
         """
         p[0] = ASTNodes.Fix_Axis_Par_Dist(Offset=p[2], Distance=p[3], Numberapo=p[4])
 
-    def p_FIX_AXIS_PAR_LIST(self, p):
+    def p_fix_axis_par_list(self, p):
         """
-        fix_axis_par_list     : BEGIN FIX_AXIS_PAR_LIST constant_list END FIX_AXIS_PAR_LIST
+        fix_axis_par_list : BEGIN FIX_AXIS_PAR_LIST constant_list END FIX_AXIS_PAR_LIST
         """
         p[0] = ASTNodes.Fix_Axis_Par_List(p[3])
 
-    def p_FIX_NO_AXIS_PTS_X(self, p):
+    def p_fix_no_axis_pts_x(self, p):
         """
-        fix_no_axis_pts_x     : FIX_NO_AXIS_PTS_X constant
+        fix_no_axis_pts_x : FIX_NO_AXIS_PTS_X constant
         """
         p[0] = ASTNodes.Fix_No_Axis_Pts_X(p[2])
 
-    def p_FIX_NO_AXIS_PTS_Y(self, p):
+    def p_fix_no_axis_pts_y(self, p):
         """
-        fix_no_axis_pts_y     : FIX_NO_AXIS_PTS_Y constant
+        fix_no_axis_pts_y : FIX_NO_AXIS_PTS_Y constant
         """
         p[0] = ASTNodes.Fix_No_Axis_Pts_Y(p[2])
 
-    def p_FIX_NO_AXIS_PTS_Z(self, p):
+    def p_fix_no_axis_pts_z(self, p):
         """
-        fix_no_axis_pts_z     : FIX_NO_AXIS_PTS_Z constant
+        fix_no_axis_pts_z : FIX_NO_AXIS_PTS_Z constant
         """
         p[0] = ASTNodes.Fix_No_Axis_Pts_Z(p[2])
 
-    def p_FIX_NO_AXIS_PTS_Z4(self, p):
+    def p_fix_no_axis_pts_z4(self, p):
         """
-        fix_no_axis_pts_z4     : FIX_NO_AXIS_PTS_Z4 constant
+        fix_no_axis_pts_z4 : FIX_NO_AXIS_PTS_Z4 constant
         """
         p[0] = ASTNodes.Fix_No_Axis_Pts_Z4(p[2])
 
-    def p_FIX_NO_AXIS_PTS_Z5(self, p):
+    def p_fix_no_axis_pts_z5(self, p):
         """
-        fix_no_axis_pts_z5     : FIX_NO_AXIS_PTS_Z5 constant
+        fix_no_axis_pts_z5 : FIX_NO_AXIS_PTS_Z5 constant
         """
         p[0] = ASTNodes.Fix_No_Axis_Pts_Z5(p[2])
 
-    def p_FNC_VALUES(self, p):
+    def p_fnc_values(self, p):
         """
-        fnc_values     : FNC_VALUES constant datatype indexmode_enum addrtype_enum
+        fnc_values : FNC_VALUES constant datatype_enum indexmode_enum addrtype_enum
         """
         p[0] = ASTNodes.Fnc_Values(Position=p[2], Datatype=p[3], IndexMode=p[4], AddressType=p[5])
 
-    def p_FORMAT(self, p):
+    def p_format(self, p):
         """
-        format     : FORMAT string_literal
+        format : FORMAT string_literal
         """
         p[0] = ASTNodes.Format(p[2])
 
-    def p_FORMULA(self, p):
+    def p_formula(self, p):
         """
-        formula     : BEGIN FORMULA string_literal END FORMULA
-                    | BEGIN FORMULA string_literal formula_inv END FORMULA
+        formula : BEGIN FORMULA string_literal END FORMULA
+                | BEGIN FORMULA string_literal formula_inv END FORMULA
         """
         if len(p) == 6:
             p[0] = ASTNodes.Formula(f_x=p[3])
         else:
             p[0] = ASTNodes.Formula(f_x=p[3], Formula_Inv=p[4])
 
-    def p_FORMULA_INV(self, p):
+    def p_formula_inv(self, p):
         """
-        formula_inv     : FORMULA_INV string_literal
+        formula_inv : FORMULA_INV string_literal
         """
         p[0] = ASTNodes.Formula_Inv(g_x=p[2])
 
-    def p_FRAME(self, p):
+    def p_frame(self, p):
         """
         frame     : BEGIN FRAME ident string_literal constant constant END FRAME
                   | BEGIN FRAME ident string_literal constant constant frame_opt_list END FRAME
@@ -1053,43 +1062,40 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Frame)
         self._remove_ast_node(ASTNodes.Frame_Opt)
 
-    def p_FRAME_opt_params(self, p):
+    def p_frame_opt_params(self, p):
         """
-        frame_opt    : frame_measurement
+        frame_opt : frame_measurement
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Frame_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Frame_Measurement], param=p[1])
         p[0] = node
 
-    def p_FRAME_opt_objects_list(self, p):
+    def p_frame_opt_objects_list(self, p):
         """
-        frame_opt    : if_data
+        frame_opt : if_data
         """
         node = self._get_or_create_ast_node(ASTNodes.Frame_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.If_Data], param=p[1])
         p[0] = node
 
-    def p_FRAME_opt_list(self, p):
+    def p_frame_opt_list(self, p):
         """
-        frame_opt_list    : frame_opt
-                        | frame_opt_list frame_opt
+        frame_opt_list : frame_opt
+                       | frame_opt_list frame_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_FRAME_MEASUREMENT(self, p):
+    def p_frame_measurement(self, p):
         """
-        frame_measurement     : FRAME_MEASUREMENT ident_list
+        frame_measurement : FRAME_MEASUREMENT ident_list
         """
         p[0] = ASTNodes.Frame_Measurement(p[2])
 
-    def p_FUNCTION(self, p):
+    def p_function(self, p):
         """
-        function     : BEGIN FUNCTION ident string_literal END FUNCTION
-                     | BEGIN FUNCTION ident string_literal function_opt_list END FUNCTION
+        function : BEGIN FUNCTION ident string_literal END FUNCTION
+                 | BEGIN FUNCTION ident string_literal function_opt_list END FUNCTION
         """
         node = self._create_ast_node(ASTNodes.Function(Name=p[3], LongIdentifier=p[4]))
 
@@ -1101,21 +1107,21 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Function)
         self._remove_ast_node(ASTNodes.Function_Opt)
 
-    def p_FUNCTION_opt_params(self, p):
+    def p_function_opt_params(self, p):
         """
-        function_opt    : function_version
+        function_opt : function_version
         """
         node = self._get_or_create_ast_node(ASTNodes.Function_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Function_Version], param=p[1])
         p[0] = node
 
-    def p_FUNCTION_opt_objects(self, p):
+    def p_function_opt_objects(self, p):
         """
-        function_opt    : def_characteristic
-                        | in_measurement
-                        | loc_measurement
-                        | out_measurement
-                        | ref_characteristic
+        function_opt : def_characteristic
+                     | in_measurement
+                     | loc_measurement
+                     | out_measurement
+                     | ref_characteristic
         """
         node = self._get_or_create_ast_node(ASTNodes.Function_Opt)
         self._add_ast_node_object(
@@ -1131,11 +1137,11 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_FUNCTION_opt_objects_list(self, p):
+    def p_function_opt_objects_list(self, p):
         """
-        function_opt    : annotation
-                        | if_data
-                        | sub_function
+        function_opt : annotation
+                     | if_data
+                     | sub_function
         """
         node = self._get_or_create_ast_node(ASTNodes.Function_Opt)
         self._add_ast_node_object_list(
@@ -1143,32 +1149,29 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_FUNCTION_opt_list(self, p):
+    def p_function_opt_list(self, p):
         """
-        function_opt_list    : function_opt
-                        | function_opt_list function_opt
+        function_opt_list : function_opt
+                          | function_opt_list function_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_FUNCTION_LIST(self, p):
+    def p_function_list(self, p):
         """
-        function_list     : BEGIN FUNCTION_LIST ident_list END FUNCTION_LIST
+        function_list : BEGIN FUNCTION_LIST ident_list END FUNCTION_LIST
         """
         p[0] = ASTNodes.Function_List(Name=p[3])
 
-    def p_FUNCTION_VERSION(self, p):
+    def p_function_version(self, p):
         """
-        function_version     : FUNCTION_VERSION string_literal
+        function_version : FUNCTION_VERSION string_literal
         """
         p[0] = ASTNodes.Function_Version(p[2])
 
-    def p_GROUP(self, p):
+    def p_group(self, p):
         """
-        group     : BEGIN GROUP ident string_literal END GROUP
-                  | BEGIN GROUP ident string_literal group_opt_list END GROUP
+        group : BEGIN GROUP ident string_literal END GROUP
+              | BEGIN GROUP ident string_literal group_opt_list END GROUP
         """
         node = self._create_ast_node(ASTNodes.Group(GroupName=p[3], GroupLongIdentifier=p[4]))
 
@@ -1180,21 +1183,21 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Group)
         self._remove_ast_node(ASTNodes.Group_Opt)
 
-    def p_GROUP_opt_params(self, p):
+    def p_group_opt_params(self, p):
         """
-        group_opt    : root
+        group_opt : root
         """
         node = self._get_or_create_ast_node(ASTNodes.Group_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Root], param=p[1])
 
         p[0] = node
 
-    def p_GROUP_opt_objects(self, p):
+    def p_group_opt_objects(self, p):
         """
-        group_opt    : function_list
-                     | ref_characteristic
-                     | ref_measurement
-                     | sub_group
+        group_opt : function_list
+                  | ref_characteristic
+                  | ref_measurement
+                  | sub_group
         """
         node = self._get_or_create_ast_node(ASTNodes.Group_Opt)
         self._add_ast_node_object(
@@ -1204,35 +1207,32 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_GROUP_opt_objects_list(self, p):
+    def p_group_opt_objects_list(self, p):
         """
-        group_opt    : annotation
-                     | if_data
+        group_opt : annotation
+                  | if_data
         """
         node = self._get_or_create_ast_node(ASTNodes.Group_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1])
         p[0] = node
 
-    def p_GROUP_opt_list(self, p):
+    def p_group_opt_list(self, p):
         """
-        group_opt_list    : group_opt
-                            | group_opt_list group_opt
+        group_opt_list : group_opt
+                       | group_opt_list group_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_GUARD_RAILS(self, p):
+    def p_guard_rails(self, p):
         """
-        guard_rails     : GUARD_RAILS
+        guard_rails : GUARD_RAILS
         """
         p[0] = ASTNodes.Guard_Rails(Boolean=True)
 
-    def p_HEADER(self, p):
+    def p_header(self, p):
         """
-        header     : BEGIN HEADER string_literal END HEADER
-                   | BEGIN HEADER string_literal header_opt_list END HEADER
+        header : BEGIN HEADER string_literal END HEADER
+               | BEGIN HEADER string_literal header_opt_list END HEADER
         """
         node = self._create_ast_node(ASTNodes.Header(Comment=p[3]))
 
@@ -1244,35 +1244,32 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Header)
         self._remove_ast_node(ASTNodes.Header_Opt)
 
-    def p_HEADER_opt(self, p):
+    def p_header_opt(self, p):
         """
-        header_opt    : project_no
-                      | version
+        header_opt : project_no
+                   | version
         """
         node = self._get_or_create_ast_node(ASTNodes.Header_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Project_No, ASTNodes.Version], param=p[1])
 
         p[0] = node
 
-    def p_HEADER_opt_list(self, p):
+    def p_header_opt_list(self, p):
         """
-        header_opt_list    : header_opt
-                           | header_opt_list header_opt
+        header_opt_list : header_opt
+                        | header_opt_list header_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_IDENTIFICATION(self, p):
+    def p_identification(self, p):
         """
-        identification     : IDENTIFICATION constant datatype
+        identification : IDENTIFICATION constant datatype_enum
         """
         p[0] = ASTNodes.Identification(Position=p[2], Datatype=p[3])
 
-    def p_IF_DATA(self, p):
+    def p_if_data(self, p):
         """
-        if_data             : if_data_begin if_data_opt_list if_data_end
+        if_data : if_data_begin if_data_opt_list if_data_end
         """
         data_params = [x for x in p[2] if not isinstance(x, ASTNodes.If_Data_Block)]
         if_data_block = [x for x in p[2] if isinstance(x, ASTNodes.If_Data_Block)]
@@ -1280,42 +1277,42 @@ class RulesSections:
             Name=p[1], OptionalParams=ASTNodes.If_Data_Opt(DataParams=data_params, If_Data_Block=if_data_block)
         )
 
-    def p_IF_DATA_mandatory_only(self, p):
+    def p_if_data_mandatory_only(self, p):
         """
-        if_data             : if_data_begin if_data_end
+        if_data : if_data_begin if_data_end
         """
         p[0] = ASTNodes.If_Data(Name=p[1])
 
-    def p_IF_DATA_begin(self, p):
+    def p_if_data_begin(self, p):
         """
-        if_data_begin   : BEGIN IF_DATA ident
+        if_data_begin : BEGIN IF_DATA ident
         """
         p[0] = p[3]
 
-    def p_IF_DATA_end(self, p):
+    def p_if_data_end(self, p):
         """
-        if_data_end     : END IF_DATA
-                        | END
+        if_data_end : END IF_DATA
+                    | END
         """
 
-    def p_IF_DATA_opt_param(self, p):
+    def p_if_data_opt_param(self, p):
         """
-        if_data_opt     : constant
-                        | string_literal
-                        | ident
+        if_data_opt : constant
+                    | string_literal
+                    | ident
         """
         p[0] = p[1]
 
-    def p_IF_DATA_opt_block(self, p):
+    def p_if_data_opt_block(self, p):
         """
-        if_data_opt     : if_data_block
+        if_data_opt : if_data_block
         """
         p[0] = p[1]
 
-    def p_IF_DATA_opt_list(self, p):
+    def p_if_data_opt_list(self, p):
         """
-        if_data_opt_list    : if_data_opt
-                            | if_data_opt_list if_data_opt
+        if_data_opt_list : if_data_opt
+                         | if_data_opt_list if_data_opt
         """
         if len(p) > 2:
             p[1].append(p[2])
@@ -1323,83 +1320,91 @@ class RulesSections:
         else:
             p[0] = [p[1]]
 
-    def p_IF_DATA_block(self, p):
+    def p_if_data_block(self, p):
         """
-        if_data_block       : if_data_block_begin if_data_opt_list if_data_block_end
+        if_data_block : if_data_block_begin if_data_opt_list if_data_block_end
         """
         if_data_block = [x for x in p[2] if isinstance(x, ASTNodes.If_Data_Block)]
         data_params = [x for x in p[2] if not isinstance(x, ASTNodes.If_Data_Block)]
         p[0] = ASTNodes.If_Data_Block(Name=p[1], DataParams=data_params, If_Data_Block=if_data_block)
 
-    def p_IF_DATA_block_begin(self, p):
+    def p_if_data_block_begin(self, p):
         """
         if_data_block_begin : BEGIN ident
         """
         p[0] = p[2]
 
-    def p_IF_DATA_block_end(self, p):
+    def p_if_data_block_end(self, p):
         """
-        if_data_block_end   : END ident
+        if_data_block_end : END ident
         """
         p[0] = p[2]
 
-    def p_IN_MEASUREMENT(self, p):
+    def p_in_measurement(self, p):
         """
-        in_measurement     : BEGIN IN_MEASUREMENT ident_list END IN_MEASUREMENT
+        in_measurement : BEGIN IN_MEASUREMENT ident_list END IN_MEASUREMENT
         """
         p[0] = ASTNodes.In_Measurement(p[3])
 
-    def p_LAYOUT(self, p):
+    def p_layout(self, p):
         """
-        layout     : LAYOUT indexmode_enum
+        layout : LAYOUT indexmode_enum
         """
         # Description: This keyword describes the layout of a
         # multi-dimensional measurement array.
         # It can be used at MEASUREMENT.
         p[0] = ASTNodes.Layout(p[2])
 
-    def p_LEFT_SHIFT(self, p):
+    def p_left_shift(self, p):
         """
-        left_shift     : LEFT_SHIFT constant
+        left_shift : LEFT_SHIFT constant
         """
         # Description: The LEFT_SHIFT keyword is only used within the
         # BIT_OPERATION keyword. See description of BIT_OPERATION.
         p[0] = ASTNodes.Left_Shift(p[2])
 
-    def p_LOC_MEASUREMENT(self, p):
+    def p_loc_measurement(self, p):
         """
-        loc_measurement     : BEGIN LOC_MEASUREMENT ident_list END LOC_MEASUREMENT
+        loc_measurement : BEGIN LOC_MEASUREMENT ident_list END LOC_MEASUREMENT
         """
         p[0] = ASTNodes.Loc_Measurement(p[3])
 
-    def p_MAP_LIST(self, p):
+    def p_map_list(self, p):
         """
-        map_list     : BEGIN MAP_LIST ident_list END MAP_LIST
+        map_list : BEGIN MAP_LIST ident_list END MAP_LIST
         """
         p[0] = ASTNodes.Map_List(p[3])
 
-    def p_MATRIX_DIM(self, p):
+    def p_matrix_dim(self, p):
         """
-        matrix_dim     : MATRIX_DIM constant constant constant
+        matrix_dim : MATRIX_DIM constant constant constant
         """
         p[0] = ASTNodes.Matrix_Dim(xDim=p[2], yDim=p[3], zDim=p[4])
 
-    def p_MAX_GRAD(self, p):
+    def p_max_grad(self, p):
         """
-        max_grad     : MAX_GRAD constant
+        max_grad : MAX_GRAD constant
         """
         p[0] = ASTNodes.Max_Grad(p[2])
 
-    def p_MAX_REFRESH(self, p):
+    def p_max_refresh(self, p):
         """
-        max_refresh     : MAX_REFRESH constant constant
+        max_refresh : MAX_REFRESH constant constant
         """
         p[0] = ASTNodes.Max_Refresh(ScalingUnit=p[2], Rate=p[3])
 
-    def p_MEASUREMENT(self, p):
+    def p_measurement(self, p):
         """
-        measurement     : BEGIN MEASUREMENT ident string_literal datatype ident constant constant constant constant END MEASUREMENT
-                        | BEGIN MEASUREMENT ident string_literal datatype ident constant constant constant constant measurement_opt_list END MEASUREMENT
+        measurement : BEGIN MEASUREMENT \
+                          ident string_literal datatype_enum ident \
+                          constant constant constant constant \
+                      END MEASUREMENT
+
+                    | BEGIN MEASUREMENT \
+                          ident string_literal datatype_enum ident \
+                            constant constant constant constant \
+                            measurement_opt_list \
+                      END MEASUREMENT
         """
         node = self._create_ast_node(
             ASTNodes.Measurement(
@@ -1422,21 +1427,21 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Measurement)
         self._remove_ast_node(ASTNodes.Measurement_Opt)
 
-    def p_MEASUREMENT_opt_params(self, p):
+    def p_measurement_opt_params(self, p):
         """
-        measurement_opt    : array_size
-                           | bit_mask
-                           | byte_order
-                           | discrete
-                           | display_identifier
-                           | ecu_address
-                           | ecu_address_extension
-                           | error_mask
-                           | format
-                           | layout
-                           | phys_unit
-                           | read_write
-                           | ref_memory_segment
+        measurement_opt : array_size
+                        | bit_mask
+                        | byte_order
+                        | discrete
+                        | display_identifier
+                        | ecu_address
+                        | ecu_address_extension
+                        | error_mask
+                        | format
+                        | layout
+                        | phys_unit
+                        | read_write
+                        | ref_memory_segment
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Measurement_Opt)
@@ -1462,14 +1467,14 @@ class RulesSections:
 
         p[0] = node
 
-    def p_MEASUREMENT_opt_objects(self, p):
+    def p_measurement_opt_objects(self, p):
         """
-        measurement_opt    : bit_operation
-                           | function_list
-                           | matrix_dim
-                           | max_refresh
-                           | symbol_link
-                           | virtual
+        measurement_opt : bit_operation
+                        | function_list
+                        | matrix_dim
+                        | max_refresh
+                        | symbol_link
+                        | virtual
         """
         node = self._get_or_create_ast_node(ASTNodes.Measurement_Opt)
         self._add_ast_node_object(
@@ -1486,44 +1491,46 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_MEASUREMENT_opt_objects_list(self, p):
+    def p_measurement_opt_objects_list(self, p):
         """
-        measurement_opt    : annotation
-                           | if_data
+        measurement_opt : annotation
+                        | if_data
         """
         node = self._get_or_create_ast_node(ASTNodes.Measurement_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1])
         p[0] = node
 
-    def p_MEASUREMENT_opt_list(self, p):
+    def p_measurement_opt_list(self, p):
         """
-        measurement_opt_list    : measurement_opt
-                        | measurement_opt_list measurement_opt
+        measurement_opt_list : measurement_opt
+                             | measurement_opt_list measurement_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_MEMORY_LAYOUT(self, p):
+    def p_memory_layout(self, p):
         """
-        memory_layout     : BEGIN MEMORY_LAYOUT prgtype_enum constant constant constant_list END MEMORY_LAYOUT
-                          | BEGIN MEMORY_LAYOUT prgtype_enum constant constant constant_list memory_layout_opt_list END MEMORY_LAYOUT
+        memory_layout : BEGIN MEMORY_LAYOUT \
+                            prgtype_enum constant constant constant_list \
+                        END MEMORY_LAYOUT
+
+                      | BEGIN MEMORY_LAYOUT \
+                            prgtype_enum constant constant constant_list memory_layout_opt_list \
+                        END MEMORY_LAYOUT
         """
         p[0] = ASTNodes.Memory_Layout(PrgType=p[3], Address=p[4], Size=p[5], Offset=p[6])
         if len(p) == 10:
             p[0].If_Data = p[7]
 
-    def p_MEMORY_LAYOUT_opt(self, p):
+    def p_memory_layout_opt(self, p):
         """
-        memory_layout_opt   : if_data
+        memory_layout_opt : if_data
         """
         p[0] = p[1]
 
-    def p_MEMORY_LAYOUT_opt_list(self, p):
+    def p_memory_layout_opt_list(self, p):
         """
-        memory_layout_opt_list      : memory_layout_opt
-                                    | memory_layout_opt_list memory_layout_opt
+        memory_layout_opt_list : memory_layout_opt
+                               | memory_layout_opt_list memory_layout_opt
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -1531,10 +1538,17 @@ class RulesSections:
             p[1].append(p[2])
             p[0] = p[1]
 
-    def p_MEMORY_SEGMENT(self, p):
+    def p_memory_segment(self, p):
         """
-        memory_segment     : BEGIN MEMORY_SEGMENT ident string_literal prgtype_enum memorytype_enum attribute_enum constant constant constant_list END MEMORY_SEGMENT
-                           | BEGIN MEMORY_SEGMENT ident string_literal prgtype_enum memorytype_enum attribute_enum constant constant constant_list memory_segment_opt_list END MEMORY_SEGMENT
+        memory_segment     : BEGIN MEMORY_SEGMENT \
+                                 ident string_literal prgtype_enum memorytype_enum attribute_enum \
+                                 constant constant constant_list \
+                             END MEMORY_SEGMENT
+
+                           | BEGIN MEMORY_SEGMENT \
+                                 ident string_literal prgtype_enum memorytype_enum attribute_enum \
+                                    constant constant constant_list memory_segment_opt_list \
+                             END MEMORY_SEGMENT
         """
         p[0] = ASTNodes.Memory_Segment(
             Name=p[3], LongIdentifier=p[4], PrgType=p[5], MemoryType=p[6], Attribute=p[7], Address=p[8], Size=p[9], Offset=p[10]
@@ -1543,16 +1557,16 @@ class RulesSections:
         if len(p) == 14:
             p[0].If_Data = p[11]
 
-    def p_MEMORY_SEGMENT_opt(self, p):
+    def p_memory_segment_opt(self, p):
         """
-        memory_segment_opt   : if_data
+        memory_segment_opt : if_data
         """
         p[0] = p[1]
 
-    def p_MEMORY_SEGMENT_opt_list(self, p):
+    def p_memory_segment_opt_list(self, p):
         """
-        memory_segment_opt_list      : memory_segment_opt
-                                     | memory_segment_opt_list memory_segment_opt
+        memory_segment_opt_list : memory_segment_opt
+                                | memory_segment_opt_list memory_segment_opt
         """
         if len(p) == 2:
             p[0] = [p[1]]
@@ -1560,10 +1574,10 @@ class RulesSections:
             p[1].append(p[2])
             p[0] = p[1]
 
-    def p_MOD_COMMON(self, p):
+    def p_mod_common(self, p):
         """
-        mod_common     : BEGIN MOD_COMMON string_literal END MOD_COMMON
-                       | BEGIN MOD_COMMON string_literal mod_common_opt_list END MOD_COMMON
+        mod_common : BEGIN MOD_COMMON string_literal END MOD_COMMON
+                   | BEGIN MOD_COMMON string_literal mod_common_opt_list END MOD_COMMON
         """
         node = self._create_ast_node(ASTNodes.Mod_Common(Comment=p[3]))
 
@@ -1575,17 +1589,17 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Mod_Common)
         self._remove_ast_node(ASTNodes.Mod_Common_Opt)
 
-    def p_MOD_COMMON_opt(self, p):
+    def p_mod_common_opt(self, p):
         """
-        mod_common_opt     : alignment_byte
-                           | alignment_float32_ieee
-                           | alignment_float64_ieee
-                           | alignment_int64
-                           | alignment_long
-                           | alignment_word
-                           | byte_order
-                           | data_size
-                           | deposit
+        mod_common_opt : alignment_byte
+                       | alignment_float32_ieee
+                       | alignment_float64_ieee
+                       | alignment_int64
+                       | alignment_long
+                       | alignment_word
+                       | byte_order
+                       | data_size
+                       | deposit
         """
         node = self._get_or_create_ast_node(ASTNodes.Mod_Common_Opt)
         self._add_ast_node_param(
@@ -1606,20 +1620,17 @@ class RulesSections:
 
         p[0] = node
 
-    def p_MOD_COMMON_opt_list(self, p):
+    def p_mod_common_opt_list(self, p):
         """
-        mod_common_opt_list    : mod_common_opt
-                               | mod_common_opt_list mod_common_opt
+        mod_common_opt_list : mod_common_opt
+                            | mod_common_opt_list mod_common_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_MOD_PAR(self, p):
+    def p_mod_par(self, p):
         """
-        mod_par     : BEGIN MOD_PAR string_literal END MOD_PAR
-                    | BEGIN MOD_PAR string_literal mod_par_opt_list END MOD_PAR
+        mod_par : BEGIN MOD_PAR string_literal END MOD_PAR
+                | BEGIN MOD_PAR string_literal mod_par_opt_list END MOD_PAR
         """
         node = self._create_ast_node(ASTNodes.Mod_Par(Comment=p[3]))
 
@@ -1631,19 +1642,19 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Mod_Par)
         self._remove_ast_node(ASTNodes.Mod_Par_Opt)
 
-    def p_MOD_PAR_opt_params(self, p):
+    def p_mod_par_opt_params(self, p):
         """
-        mod_par_opt    : cpu_type
-                       | customer
-                       | customer_no
-                       | ecu
-                       | ecu_calibration_offset
-                       | epk
-                       | no_of_interfaces
-                       | phone_no
-                       | supplier
-                       | user
-                       | version
+        mod_par_opt : cpu_type
+                    | customer
+                    | customer_no
+                    | ecu
+                    | ecu_calibration_offset
+                    | epk
+                    | no_of_interfaces
+                    | phone_no
+                    | supplier
+                    | user
+                    | version
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Mod_Par_Opt)
@@ -1666,13 +1677,13 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_MOD_PAR_opt_objects_list(self, p):
+    def p_mod_par_opt_objects_list(self, p):
         """
-        mod_par_opt    : addr_epk
-                       | calibration_method
-                       | memory_layout
-                       | memory_segment
-                       | system_constant
+        mod_par_opt : addr_epk
+                    | calibration_method
+                    | memory_layout
+                    | memory_segment
+                    | system_constant
         """
         node = self._get_or_create_ast_node(ASTNodes.Mod_Par_Opt)
         self._add_ast_node_object_list(
@@ -1688,20 +1699,17 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_MOD_PAR_opt_list(self, p):
+    def p_mod_par_opt_list(self, p):
         """
-        mod_par_opt_list    : mod_par_opt
-                            | mod_par_opt_list mod_par_opt
+        mod_par_opt_list : mod_par_opt
+                         | mod_par_opt_list mod_par_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_MODULE(self, p):
+    def p_module(self, p):
         """
-        module     : BEGIN MODULE ident string_literal END MODULE
-                   | BEGIN MODULE ident string_literal module_opt_list END MODULE
+        module : BEGIN MODULE ident string_literal END MODULE
+               | BEGIN MODULE ident string_literal module_opt_list END MODULE
         """
         if len(p) == 5:
             node = self._create_ast_node(ASTNodes.Module(Name=None, LongIdentifier=None))
@@ -1716,11 +1724,11 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Module)
         self._remove_ast_node(ASTNodes.Module_Opt)
 
-    def p_MODULE_opt_objects(self, p):
+    def p_module_opt_objects(self, p):
         """
-        module_opt    : mod_common
-                      | mod_par
-                      | variant_coding
+        module_opt : mod_common
+                   | mod_par
+                   | variant_coding
         """
         node = self._get_or_create_ast_node(ASTNodes.Module_Opt)
         self._add_ast_node_object(
@@ -1734,22 +1742,22 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_MODULE_opt_objects_list(self, p):
+    def p_module_opt_objects_list(self, p):
         """
-        module_opt    : axis_pts
-                      | characteristic
-                      | compu_method
-                      | compu_tab
-                      | compu_vtab
-                      | compu_vtab_range
-                      | frame
-                      | function
-                      | group
-                      | if_data
-                      | measurement
-                      | record_layout
-                      | unit
-                      | user_rights
+        module_opt : axis_pts
+                   | characteristic
+                   | compu_method
+                   | compu_tab
+                   | compu_vtab
+                   | compu_vtab_range
+                   | frame
+                   | function
+                   | group
+                   | if_data
+                   | measurement
+                   | record_layout
+                   | unit
+                   | user_rights
         """
         node = self._get_or_create_ast_node(ASTNodes.Module_Opt)
         self._add_ast_node_object_list(
@@ -1774,122 +1782,119 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_MODULE_opt_list(self, p):
+    def p_module_opt_list(self, p):
         """
-        module_opt_list    : module_opt
+        module_opt_list : module_opt
                         | module_opt_list module_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_MONOTONY(self, p):
+    def p_monotony(self, p):
         """
-        monotony     : MONOTONY monotony_enum
+        monotony : MONOTONY monotony_enum
         """
         p[0] = ASTNodes.Monotony(p[2])
 
-    def p_NO_AXIS_PTS_X(self, p):
+    def p_no_axis_pts_x(self, p):
         """
-        no_axis_pts_x     : NO_AXIS_PTS_X constant datatype
+        no_axis_pts_x : NO_AXIS_PTS_X constant datatype_enum
         """
         p[0] = ASTNodes.No_Axis_Pts_X(Position=p[2], Datatype=p[3])
 
-    def p_NO_AXIS_PTS_Y(self, p):
+    def p_no_axis_pts_y(self, p):
         """
-        no_axis_pts_y     : NO_AXIS_PTS_Y constant datatype
+        no_axis_pts_y : NO_AXIS_PTS_Y constant datatype_enum
         """
         p[0] = ASTNodes.No_Axis_Pts_Y(Position=p[2], Datatype=p[3])
 
-    def p_NO_AXIS_PTS_Z(self, p):
+    def p_no_axis_pts_z(self, p):
         """
-        no_axis_pts_z     : NO_AXIS_PTS_Z constant datatype
+        no_axis_pts_z : NO_AXIS_PTS_Z constant datatype_enum
         """
         p[0] = ASTNodes.No_Axis_Pts_Z(Position=p[2], Datatype=p[3])
 
-    def p_NO_AXIS_PTS_Z4(self, p):
+    def p_no_axis_pts_z4(self, p):
         """
-        no_axis_pts_z4     : NO_AXIS_PTS_Z4 constant datatype
+        no_axis_pts_z4 : NO_AXIS_PTS_Z4 constant datatype_enum
         """
         p[0] = ASTNodes.No_Axis_Pts_Z4(Position=p[2], Datatype=p[3])
 
-    def p_NO_AXIS_PTS_Z5(self, p):
+    def p_no_axis_pts_z5(self, p):
         """
-        no_axis_pts_z5     : NO_AXIS_PTS_Z5 constant datatype
+        no_axis_pts_z5 : NO_AXIS_PTS_Z5 constant datatype_enum
         """
         p[0] = ASTNodes.No_Axis_Pts_Z5(Position=p[2], Datatype=p[3])
 
-    def p_NO_OF_INTERFACES(self, p):
+    def p_no_of_interfaces(self, p):
         """
-        no_of_interfaces     : NO_OF_INTERFACES constant
+        no_of_interfaces : NO_OF_INTERFACES constant
         """
         p[0] = ASTNodes.No_Of_Interfaces(p[2])
 
-    def p_NO_RESCALE_X(self, p):
+    def p_no_rescale_x(self, p):
         """
-        no_rescale_x     : NO_RESCALE_X constant datatype
+        no_rescale_x : NO_RESCALE_X constant datatype_enum
         """
         p[0] = ASTNodes.No_Rescale_X(Position=p[2], Datatype=p[3])
 
-    def p_NUMBER(self, p):
+    def p_number(self, p):
         """
-        number     : NUMBER constant
+        number : NUMBER constant
         """
         p[0] = ASTNodes.Number(p[2])
 
-    def p_OFFSET_X(self, p):
+    def p_offset_x(self, p):
         """
-        offset_x     : OFFSET_X constant datatype
+        offset_x : OFFSET_X constant datatype_enum
         """
         p[0] = ASTNodes.Offset_X(Position=p[2], Datatype=p[3])
 
-    def p_OFFSET_Y(self, p):
+    def p_offset_y(self, p):
         """
-        offset_y     : OFFSET_Y constant datatype
+        offset_y : OFFSET_Y constant datatype_enum
         """
         p[0] = ASTNodes.Offset_Y(Position=p[2], Datatype=p[3])
 
-    def p_OFFSET_Z(self, p):
+    def p_offset_z(self, p):
         """
-        offset_z     : OFFSET_Z constant datatype
+        offset_z : OFFSET_Z constant datatype_enum
         """
         p[0] = ASTNodes.Offset_Z(Position=p[2], Datatype=p[3])
 
-    def p_OFFSET_Z4(self, p):
+    def p_offset_z4(self, p):
         """
-        offset_z4     : OFFSET_Z4 constant datatype
+        offset_z4 : OFFSET_Z4 constant datatype_enum
         """
         p[0] = ASTNodes.Offset_Z4(Position=p[2], Datatype=p[3])
 
-    def p_OFFSET_Z5(self, p):
+    def p_offset_z5(self, p):
         """
-        offset_z5     : OFFSET_Z5 constant datatype
+        offset_z5 : OFFSET_Z5 constant datatype_enum
         """
         p[0] = ASTNodes.Offset_Z5(Position=p[2], Datatype=p[3])
 
-    def p_OUT_MEASUREMENT(self, p):
+    def p_out_measurement(self, p):
         """
-        out_measurement     : BEGIN OUT_MEASUREMENT ident_list END OUT_MEASUREMENT
+        out_measurement : BEGIN OUT_MEASUREMENT ident_list END OUT_MEASUREMENT
         """
         p[0] = ASTNodes.Out_Measurement(p[3])
 
-    def p_PHONE_NO(self, p):
+    def p_phone_no(self, p):
         """
-        phone_no     : PHONE_NO string_literal
+        phone_no : PHONE_NO string_literal
         """
         p[0] = ASTNodes.Phone_No(p[2])
 
-    def p_PHYS_UNIT(self, p):
+    def p_phys_unit(self, p):
         """
-        phys_unit     : PHYS_UNIT string_literal
+        phys_unit : PHYS_UNIT string_literal
         """
         p[0] = ASTNodes.Phys_Unit(p[2])
 
-    def p_PROJECT(self, p):
+    def p_project(self, p):
         """
-        project     : BEGIN PROJECT ident string_literal END PROJECT
-                    | BEGIN PROJECT ident string_literal project_opt_list END PROJECT
+        project : BEGIN PROJECT ident string_literal END PROJECT
+                | BEGIN PROJECT ident string_literal project_opt_list END PROJECT
         """
         node = self._create_ast_node(ASTNodes.Project(Name=p[3], LongIdentifier=p[4]))
 
@@ -1901,58 +1906,55 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Project)
         self._remove_ast_node(ASTNodes.Project_Opt)
 
-    def p_PROJECT_opt_objects(self, p):
+    def p_project_opt_objects(self, p):
         """
-        project_opt    : header
+        project_opt : header
         """
         node = self._get_or_create_ast_node(ASTNodes.Project_Opt)
         self._add_ast_node_object(node_class=node, ast_node_names=[ASTNodes.Header], param=p[1])
         p[0] = node
 
-    def p_PROJECT_opt_objects_list(self, p):
+    def p_project_opt_objects_list(self, p):
         """
-        project_opt    : module
+        project_opt : module
         """
         node = self._get_or_create_ast_node(ASTNodes.Project_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Module], param=p[1])
         p[0] = node
 
-    def p_PROJECT_opt_list(self, p):
+    def p_project_opt_list(self, p):
         """
-        project_opt_list    : project_opt
-                        | project_opt_list project_opt
+        project_opt_list : project_opt
+                         | project_opt_list project_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_PROJECT_NO(self, p):
+    def p_project_no(self, p):
         """
-        project_no     : PROJECT_NO ident
+        project_no : PROJECT_NO ident
         """
         p[0] = ASTNodes.Project_No(p[2])
 
-    def p_READ_ONLY(self, p):
+    def p_read_only(self, p):
         """
-        read_only     : READ_ONLY
+        read_only : READ_ONLY
         """
         # This keyword is used to indicate that an adjustable
         # object cannot be changed (but can only be read).
         p[0] = ASTNodes.Read_Only(Boolean=True)
 
-    def p_READ_WRITE(self, p):
+    def p_read_write(self, p):
         """
-        read_write     : READ_WRITE
+        read_write : READ_WRITE
         """
         # Description: This keyword is used to mark a measurement
         # object to be writeable.
         p[0] = ASTNodes.Read_Write(Boolean=True)
 
-    def p_RECORD_LAYOUT(self, p):
+    def p_record_layout(self, p):
         """
-        record_layout     : BEGIN RECORD_LAYOUT ident END RECORD_LAYOUT
-                          | BEGIN RECORD_LAYOUT ident record_layout_opt_list END RECORD_LAYOUT
+        record_layout : BEGIN RECORD_LAYOUT ident END RECORD_LAYOUT
+                      | BEGIN RECORD_LAYOUT ident record_layout_opt_list END RECORD_LAYOUT
         """
         self._create_ast_node(ASTNodes.Record_Layout(Name=p[3]))
 
@@ -1966,20 +1968,20 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Record_Layout)
         self._remove_ast_node(ASTNodes.Record_Layout_Opt)
 
-    def p_RECORD_LAYOUT_opt_params(self, p):
+    def p_record_layout_opt_params(self, p):
         """
-        record_layout_opt    : alignment_byte
-                             | alignment_float32_ieee
-                             | alignment_float64_ieee
-                             | alignment_int64
-                             | alignment_long
-                             | alignment_word
-                             | fix_no_axis_pts_x
-                             | fix_no_axis_pts_y
-                             | fix_no_axis_pts_z
-                             | fix_no_axis_pts_z4
-                             | fix_no_axis_pts_z5
-                             | static_record_layout
+        record_layout_opt : alignment_byte
+                          | alignment_float32_ieee
+                          | alignment_float64_ieee
+                          | alignment_int64
+                          | alignment_long
+                          | alignment_word
+                          | fix_no_axis_pts_x
+                          | fix_no_axis_pts_y
+                          | fix_no_axis_pts_z
+                          | fix_no_axis_pts_z4
+                          | fix_no_axis_pts_z5
+                          | static_record_layout
         """
         node = self._get_or_create_ast_node(ASTNodes.Record_Layout_Opt)
         self._add_ast_node_param(
@@ -2003,48 +2005,48 @@ class RulesSections:
 
         p[0] = node
 
-    def p_RECORD_LAYOUT_opt_objects(self, p):
+    def p_record_layout_opt_objects(self, p):
         """
-        record_layout_opt    : axis_pts_x
-                             | axis_pts_y
-                             | axis_pts_z
-                             | axis_pts_z4
-                             | axis_pts_z5
-                             | axis_rescale_x
-                             | dist_op_x
-                             | dist_op_y
-                             | dist_op_z
-                             | dist_op_z4
-                             | dist_op_z5
-                             | fnc_values
-                             | identification
-                             | no_axis_pts_x
-                             | no_axis_pts_y
-                             | no_axis_pts_z
-                             | no_axis_pts_z4
-                             | no_axis_pts_z5
-                             | no_rescale_x
-                             | offset_x
-                             | offset_y
-                             | offset_z
-                             | offset_z4
-                             | offset_z5
-                             | rip_addr_x
-                             | rip_addr_w
-                             | rip_addr_y
-                             | rip_addr_z
-                             | rip_addr_z4
-                             | rip_addr_z5
-                             | src_addr_x
-                             | src_addr_y
-                             | src_addr_z
-                             | src_addr_z4
-                             | src_addr_z5
-                             | shift_op_x
-                             | shift_op_y
-                             | shift_op_z
-                             | shift_op_z4
-                             | shift_op_z5
+        record_layout_opt : axis_pts_x
+                          | axis_pts_y
+                          | axis_pts_z
+                          | axis_pts_z4
+                          | axis_pts_z5
+                          | axis_rescale_x
+                          | dist_op_x
+                          | dist_op_y
+                          | dist_op_z
+                          | dist_op_z4
+                          | dist_op_z5
+                          | fnc_values
+                          | identification
+                          | no_axis_pts_x
+                          | no_axis_pts_y
+                          | no_axis_pts_z
+                          | no_axis_pts_z4
+                          | no_axis_pts_z5
+                          | no_rescale_x
+                          | offset_x
+                          | offset_y
+                          | offset_z
+                          | offset_z4
+                          | offset_z5
+                          | rip_addr_x
+                          | rip_addr_w
+                          | rip_addr_y
+                          | rip_addr_z
+                          | rip_addr_z4
+                          | rip_addr_z5
+                          | src_addr_x
+                          | src_addr_y
+                          | src_addr_z
+                          | src_addr_z4
+                          | src_addr_z5
+                          | shift_op_x
+                          | shift_op_y
+                          | shift_op_z
+                          | shift_op_z4
+                          | shift_op_z5
         """
         node = self._get_or_create_ast_node(ASTNodes.Record_Layout_Opt)
         self._add_ast_node_object(
@@ -2095,147 +2097,144 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_RECORD_LAYOUT_opt_objects_list(self, p):
+    def p_record_layout_opt_objects_list(self, p):
         """
-        record_layout_opt    : reserved
+        record_layout_opt : reserved
         """
         node = self._get_or_create_ast_node(ASTNodes.Record_Layout_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Reserved], param=p[1])
         p[0] = node
 
-    def p_RECORD_LAYOUT_opt_list(self, p):
+    def p_record_layout_opt_list(self, p):
         """
-        record_layout_opt_list    : record_layout_opt
-                        | record_layout_opt_list record_layout_opt
+        record_layout_opt_list : record_layout_opt
+                               | record_layout_opt_list record_layout_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_REF_CHARACTERISTIC(self, p):
+    def p_ref_characteristic(self, p):
         """
-        ref_characteristic     : BEGIN REF_CHARACTERISTIC ident_list END REF_CHARACTERISTIC
+        ref_characteristic : BEGIN REF_CHARACTERISTIC ident_list END REF_CHARACTERISTIC
         """
         p[0] = ASTNodes.Ref_Characteristic(Identifier=p[3])
 
-    def p_REF_GROUP(self, p):
+    def p_ref_group(self, p):
         """
-        ref_group     : BEGIN REF_GROUP ident_list END REF_GROUP
+        ref_group : BEGIN REF_GROUP ident_list END REF_GROUP
         """
         p[0] = ASTNodes.Ref_Group(Identifier=p[3])
 
-    def p_REF_MEASUREMENT(self, p):
+    def p_ref_measurement(self, p):
         """
-        ref_measurement     : BEGIN REF_MEASUREMENT ident_list END REF_MEASUREMENT
+        ref_measurement : BEGIN REF_MEASUREMENT ident_list END REF_MEASUREMENT
         """
         p[0] = ASTNodes.Ref_Measurement(Identifier=p[3])
 
-    def p_REF_MEMORY_SEGMENT(self, p):
+    def p_ref_memory_segment(self, p):
         """
-        ref_memory_segment     : REF_MEMORY_SEGMENT ident
+        ref_memory_segment : REF_MEMORY_SEGMENT ident
         """
         p[0] = ASTNodes.Ref_Memory_Segment(p[2])
 
-    def p_REF_UNIT(self, p):
+    def p_ref_unit(self, p):
         """
-        ref_unit     : REF_UNIT ident
+        ref_unit : REF_UNIT ident
         """
         p[0] = ASTNodes.Ref_Unit(p[2])
 
-    def p_RESERVED(self, p):
+    def p_reserved(self, p):
         """
-        reserved     : RESERVED constant datasize
+        reserved : RESERVED constant datasize_enum
         """
         p[0] = ASTNodes.Reserved(Position=p[2], DataSize=p[3])
 
-    def p_RIGHT_SHIFT(self, p):
+    def p_right_shift(self, p):
         """
-        right_shift     : RIGHT_SHIFT constant
+        right_shift : RIGHT_SHIFT constant
         """
         p[0] = ASTNodes.Right_Shift(p[2])
 
-    def p_RIP_ADDR_X(self, p):
+    def p_rip_addr_x(self, p):
         """
-        rip_addr_x     : RIP_ADDR_X constant datatype
+        rip_addr_x : RIP_ADDR_X constant datatype_enum
         """
         p[0] = ASTNodes.Rip_Addr_X(Position=p[2], Datatype=p[3])
 
-    def p_RIP_ADDR_W(self, p):
+    def p_rip_addr_w(self, p):
         """
-        rip_addr_w     : RIP_ADDR_W constant datatype
+        rip_addr_w : RIP_ADDR_W constant datatype_enum
         """
         p[0] = ASTNodes.Rip_Addr_W(Position=p[2], Datatype=p[3])
 
-    def p_RIP_ADDR_Y(self, p):
+    def p_rip_addr_y(self, p):
         """
-        rip_addr_y     : RIP_ADDR_Y constant datatype
+        rip_addr_y : RIP_ADDR_Y constant datatype_enum
         """
         p[0] = ASTNodes.Rip_Addr_Y(Position=p[2], Datatype=p[3])
 
-    def p_RIP_ADDR_Z(self, p):
+    def p_rip_addr_z(self, p):
         """
-        rip_addr_z     : RIP_ADDR_Z constant datatype
+        rip_addr_z : RIP_ADDR_Z constant datatype_enum
         """
         p[0] = ASTNodes.Rip_Addr_Z(Position=p[2], Datatype=p[3])
 
-    def p_RIP_ADDR_Z4(self, p):
+    def p_rip_addr_z4(self, p):
         """
-        rip_addr_z4     : RIP_ADDR_Z4 constant datatype
+        rip_addr_z4 : RIP_ADDR_Z4 constant datatype_enum
         """
         p[0] = ASTNodes.Rip_Addr_Z4(Position=p[2], Datatype=p[3])
 
-    def p_RIP_ADDR_Z5(self, p):
+    def p_rip_addr_z5(self, p):
         """
-        rip_addr_z5     : RIP_ADDR_Z5 constant datatype
+        rip_addr_z5 : RIP_ADDR_Z5 constant datatype_enum
         """
         p[0] = ASTNodes.Rip_Addr_Z5(Position=p[2], Datatype=p[3])
 
-    def p_ROOT(self, p):
+    def p_root(self, p):
         """
-        root     : ROOT
+        root : ROOT
         """
         p[0] = ASTNodes.Root(Boolean=True)
 
-    def p_SHIFT_OP_X(self, p):
+    def p_shift_op_x(self, p):
         """
-        shift_op_x     : SHIFT_OP_X constant datatype
+        shift_op_x : SHIFT_OP_X constant datatype_enum
         """
         p[0] = ASTNodes.Shift_Op_X(Position=p[2], Datatype=p[3])
 
-    def p_SHIFT_OP_Y(self, p):
+    def p_shift_op_y(self, p):
         """
-        shift_op_y     : SHIFT_OP_Y constant datatype
+        shift_op_y : SHIFT_OP_Y constant datatype_enum
         """
         p[0] = ASTNodes.Shift_Op_Y(Position=p[2], Datatype=p[3])
 
-    def p_SHIFT_OP_Z(self, p):
+    def p_shift_op_z(self, p):
         """
-        shift_op_z     : SHIFT_OP_Z constant datatype
+        shift_op_z : SHIFT_OP_Z constant datatype_enum
         """
         p[0] = ASTNodes.Shift_Op_Z(Position=p[2], Datatype=p[3])
 
-    def p_SHIFT_OP_Z4(self, p):
+    def p_shift_op_z4(self, p):
         """
-        shift_op_z4     : SHIFT_OP_Z4 constant datatype
+        shift_op_z4 : SHIFT_OP_Z4 constant datatype_enum
         """
         p[0] = ASTNodes.Shift_Op_Z4(Position=p[2], Datatype=p[3])
 
-    def p_SHIFT_OP_Z5(self, p):
+    def p_shift_op_z5(self, p):
         """
-        shift_op_z5     : SHIFT_OP_Z5 constant datatype
+        shift_op_z5 : SHIFT_OP_Z5 constant datatype_enum
         """
         p[0] = ASTNodes.Shift_Op_Z5(Position=p[2], Datatype=p[3])
 
-    def p_SIGN_EXTEND(self, p):
+    def p_sign_extend(self, p):
         """
-        sign_extend     : SIGN_EXTEND
+        sign_extend : SIGN_EXTEND
         """
         p[0] = ASTNodes.Sign_Extend(Boolean=True)
 
-    def p_SI_EXPONENTS(self, p):
+    def p_si_exponents(self, p):
         """
-        si_exponents     : SI_EXPONENTS constant constant constant constant constant constant constant
+        si_exponents : SI_EXPONENTS constant constant constant constant constant constant constant
         """
         p[0] = ASTNodes.Si_Exponents(
             Length=p[2],
@@ -2247,89 +2246,89 @@ class RulesSections:
             LuminousIntensity=p[8],
         )
 
-    def p_SRC_ADDR_X(self, p):
+    def p_src_addr_x(self, p):
         """
-        src_addr_x     : SRC_ADDR_X constant datatype
+        src_addr_x : SRC_ADDR_X constant datatype_enum
         """
         p[0] = ASTNodes.Src_Addr_X(Position=p[2], Datatype=p[3])
 
-    def p_SRC_ADDR_Y(self, p):
+    def p_src_addr_y(self, p):
         """
-        src_addr_y     : SRC_ADDR_Y constant datatype
+        src_addr_y : SRC_ADDR_Y constant datatype_enum
         """
         p[0] = ASTNodes.Src_Addr_Y(Position=p[2], Datatype=p[3])
 
-    def p_SRC_ADDR_Z(self, p):
+    def p_src_addr_z(self, p):
         """
-        src_addr_z     : SRC_ADDR_Z constant datatype
+        src_addr_z : SRC_ADDR_Z constant datatype_enum
         """
         p[0] = ASTNodes.Src_Addr_Z(Position=p[2], Datatype=p[3])
 
-    def p_SRC_ADDR_Z4(self, p):
+    def p_src_addr_z4(self, p):
         """
-        src_addr_z4     : SRC_ADDR_Z4 constant datatype
+        src_addr_z4 : SRC_ADDR_Z4 constant datatype_enum
         """
         p[0] = ASTNodes.Src_Addr_Z4(Position=p[2], Datatype=p[3])
 
-    def p_SRC_ADDR_Z5(self, p):
+    def p_src_addr_z5(self, p):
         """
-        src_addr_z5     : SRC_ADDR_Z5 constant datatype
+        src_addr_z5 : SRC_ADDR_Z5 constant datatype_enum
         """
         p[0] = ASTNodes.Src_Addr_Z5(Position=p[2], Datatype=p[3])
 
-    def p_STATIC_RECORD_LAYOUT(self, p):
+    def p_static_record_layout(self, p):
         """
-        static_record_layout     : STATIC_RECORD_LAYOUT
+        static_record_layout : STATIC_RECORD_LAYOUT
         """
         p[0] = ASTNodes.Static_Record_Layout(Boolean=True)
 
-    def p_STATUS_STRING_REF(self, p):
+    def p_status_string_ref(self, p):
         """
-        status_string_ref     : STATUS_STRING_REF ident
+        status_string_ref : STATUS_STRING_REF ident
         """
         # ConversionTable
         p[0] = ASTNodes.Status_String_Ref(p[2])
 
-    def p_STEP_SIZE(self, p):
+    def p_step_size(self, p):
         """
-        step_size     : STEP_SIZE constant
+        step_size : STEP_SIZE constant
         """
         p[0] = ASTNodes.Step_Size(p[2])
 
-    def p_SUB_FUNCTION(self, p):
+    def p_sub_function(self, p):
         """
-        sub_function     : BEGIN SUB_FUNCTION ident_list END SUB_FUNCTION
+        sub_function : BEGIN SUB_FUNCTION ident_list END SUB_FUNCTION
         """
         p[0] = ASTNodes.Sub_Function(Identifier=p[3])
 
-    def p_SUB_GROUP(self, p):
+    def p_sub_group(self, p):
         """
-        sub_group     : BEGIN SUB_GROUP ident_list END SUB_GROUP
+        sub_group : BEGIN SUB_GROUP ident_list END SUB_GROUP
         """
         p[0] = ASTNodes.Sub_Group(p[3])
 
-    def p_SUPPLIER(self, p):
+    def p_supplier(self, p):
         """
-        supplier     : SUPPLIER string_literal
+        supplier : SUPPLIER string_literal
         """
         p[0] = ASTNodes.Supplier(p[2])
 
-    def p_SYMBOL_LINK(self, p):
+    def p_symbol_link(self, p):
         """
-        symbol_link     : SYMBOL_LINK string_literal constant
+        symbol_link : SYMBOL_LINK string_literal constant
         """
         p[0] = ASTNodes.Symbol_Link(SymbolName=p[2], Offset=p[3])
 
-    def p_SYSTEM_CONSTANT(self, p):
+    def p_system_constant(self, p):
         """
-        system_constant     : SYSTEM_CONSTANT string_literal string_literal
+        system_constant : SYSTEM_CONSTANT string_literal string_literal
         """
         p[0] = ASTNodes.System_Constant(Name=p[2], Value=p[3])
 
-    def p_UNIT(self, p):
+    def p_unit(self, p):
         """
-        unit     : BEGIN UNIT ident string_literal string_literal unit_type_enum END UNIT
-                 | BEGIN UNIT ident string_literal string_literal unit_type_enum unit_opt_list END UNIT
+        unit : BEGIN UNIT ident string_literal string_literal unit_type_enum END UNIT
+             | BEGIN UNIT ident string_literal string_literal unit_type_enum unit_opt_list END UNIT
         """
         node = self._create_ast_node(ASTNodes.Unit(Name=p[3], LongIdentifier=p[4], Display=p[5], Type=p[6]))
 
@@ -2341,50 +2340,47 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Unit)
         self._remove_ast_node(ASTNodes.Unit_Opt)
 
-    def p_UNIT_opt_params(self, p):
+    def p_unit_opt_params(self, p):
         """
-        unit_opt    : ref_unit
+        unit_opt : ref_unit
         """
         node = self._get_or_create_ast_node(ASTNodes.Unit_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Ref_Unit], param=p[1])
 
         p[0] = node
 
-    def p_UNIT_opt_objects(self, p):
+    def p_unit_opt_objects(self, p):
         """
-        unit_opt    : si_exponents
-                    | unit_conversion
+        unit_opt : si_exponents
+                 | unit_conversion
         """
         node = self._get_or_create_ast_node(ASTNodes.Unit_Opt)
         self._add_ast_node_object(node_class=node, ast_node_names=[ASTNodes.Si_Exponents, ASTNodes.Unit_Conversion], param=p[1])
         p[0] = node
 
-    def p_UNIT_opt_list(self, p):
+    def p_unit_opt_list(self, p):
         """
-        unit_opt_list    : unit_opt
-                        | unit_opt_list unit_opt
+        unit_opt_list : unit_opt
+                      | unit_opt_list unit_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_UNIT_CONVERSION(self, p):
+    def p_unit_conversion(self, p):
         """
-        unit_conversion     : UNIT_CONVERSION constant constant
+        unit_conversion : UNIT_CONVERSION constant constant
         """
         p[0] = ASTNodes.Unit_Conversion(Gradient=p[2], Offset=p[3])
 
-    def p_USER(self, p):
+    def p_user(self, p):
         """
-        user     : USER string_literal
+        user : USER string_literal
         """
         p[0] = ASTNodes.User(p[2])
 
-    def p_USER_RIGHTS(self, p):
+    def p_user_rights(self, p):
         """
-        user_rights     : BEGIN USER_RIGHTS ident END USER_RIGHTS
-                        | BEGIN USER_RIGHTS ident user_rights_opt_list END USER_RIGHTS
+        user_rights : BEGIN USER_RIGHTS ident END USER_RIGHTS
+                    | BEGIN USER_RIGHTS ident user_rights_opt_list END USER_RIGHTS
         """
         node = self._create_ast_node(ASTNodes.User_Rights(UserLevelId=p[3]))
 
@@ -2396,54 +2392,51 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.User_Rights)
         self._remove_ast_node(ASTNodes.User_Rights_Opt)
 
-    def p_USER_RIGHTS_opt_params(self, p):
+    def p_user_rights_opt_params(self, p):
         """
-        user_rights_opt    : read_only
+        user_rights_opt : read_only
         """
         node = self._get_or_create_ast_node(ASTNodes.User_Rights_Opt)
         self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.Read_Only], param=p[1])
         p[0] = node
 
-    def p_USER_RIGHTS_opt_objects_list(self, p):
+    def p_user_rights_opt_objects_list(self, p):
         """
-        user_rights_opt    : ref_group
+        user_rights_opt : ref_group
         """
         node = self._get_or_create_ast_node(ASTNodes.User_Rights_Opt)
         self._add_ast_node_object_list(node_class=node, ast_node_names=[ASTNodes.Ref_Group], param=p[1])
         p[0] = node
 
-    def p_USER_RIGHTS_opt_list(self, p):
+    def p_user_rights_opt_list(self, p):
         """
-        user_rights_opt_list    : user_rights_opt
-                        | user_rights_opt_list user_rights_opt
+        user_rights_opt_list : user_rights_opt
+                             | user_rights_opt_list user_rights_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_VAR_ADDRESS(self, p):
+    def p_var_address(self, p):
         """
-        var_address     : BEGIN VAR_ADDRESS constant_list END VAR_ADDRESS
+        var_address : BEGIN VAR_ADDRESS constant_list END VAR_ADDRESS
         """
         if len(p) > 2:
             p[0] = ASTNodes.Var_Address(p[3])
 
-    def p_VAR_CHARACTERISTIC(self, p):
+    def p_var_characteristic(self, p):
         """
-        var_characteristic     : BEGIN VAR_CHARACTERISTIC ident ident_list END VAR_CHARACTERISTIC
-                               | BEGIN VAR_CHARACTERISTIC ident ident_list var_address END VAR_CHARACTERISTIC
-                               | BEGIN VAR_CHARACTERISTIC ident ident_list meta_block_empty END VAR_CHARACTERISTIC
+        var_characteristic : BEGIN VAR_CHARACTERISTIC ident ident_list END VAR_CHARACTERISTIC
+                           | BEGIN VAR_CHARACTERISTIC ident ident_list var_address END VAR_CHARACTERISTIC
+                           | BEGIN VAR_CHARACTERISTIC ident ident_list meta_block_empty END VAR_CHARACTERISTIC
         """
         if len(p) == 7:
             p[0] = ASTNodes.Var_Characteristic(Name=p[3], CriterionName=p[4])
         else:
             p[0] = ASTNodes.Var_Characteristic(Name=p[3], CriterionName=p[4], Var_Address=p[5])
 
-    def p_VAR_CRITERION(self, p):
+    def p_var_criterion(self, p):
         """
-        var_criterion     : BEGIN VAR_CRITERION ident string_literal ident_list END VAR_CRITERION
-                          | BEGIN VAR_CRITERION ident string_literal ident_list var_criterion_opt_list END VAR_CRITERION
+        var_criterion : BEGIN VAR_CRITERION ident string_literal ident_list END VAR_CRITERION
+                      | BEGIN VAR_CRITERION ident string_literal ident_list var_criterion_opt_list END VAR_CRITERION
         """
         node = self._create_ast_node(ASTNodes.Var_Criterion(Name=p[3], LongIdentifier=p[4], Value=p[5]))
 
@@ -2455,10 +2448,10 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Var_Criterion)
         self._remove_ast_node(ASTNodes.Var_Criterion_Opt)
 
-    def p_VAR_CRITERION_opt(self, p):
+    def p_var_criterion_opt(self, p):
         """
-        var_criterion_opt    : var_measurement
-                             | var_selection_characteristic
+        var_criterion_opt : var_measurement
+                          | var_selection_characteristic
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Var_Criterion_Opt)
@@ -2468,49 +2461,46 @@ class RulesSections:
 
         p[0] = node
 
-    def p_VAR_CRITERION_opt_list(self, p):
+    def p_var_criterion_opt_list(self, p):
         """
-        var_criterion_opt_list    : var_criterion_opt
-                        | var_criterion_opt_list var_criterion_opt
+        var_criterion_opt_list : var_criterion_opt
+                               | var_criterion_opt_list var_criterion_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_VAR_FORBIDDEN_COMB(self, p):
+    def p_var_forbidden_comb(self, p):
         """
-        var_forbidden_comb     : BEGIN VAR_FORBIDDEN_COMB ident_ident_list END VAR_FORBIDDEN_COMB
+        var_forbidden_comb : BEGIN VAR_FORBIDDEN_COMB ident_ident_list END VAR_FORBIDDEN_COMB
         """
         p[0] = ASTNodes.Var_Forbidden_Comb(p[3])
 
-    def p_VAR_MEASUREMENT(self, p):
+    def p_var_measurement(self, p):
         """
-        var_measurement     : VAR_MEASUREMENT ident
+        var_measurement : VAR_MEASUREMENT ident
         """
         p[0] = ASTNodes.Var_Measurement(p[2])
 
-    def p_VAR_NAMING(self, p):
+    def p_var_naming(self, p):
         """
-        var_naming     : VAR_NAMING tag_enum
+        var_naming : VAR_NAMING tag_enum
         """
         p[0] = ASTNodes.Var_Naming(p[2])
 
-    def p_VAR_SELECTION_CHARACTERISTIC(self, p):
+    def p_var_selection_characteristic(self, p):
         """
-        var_selection_characteristic     : VAR_SELECTION_CHARACTERISTIC ident
+        var_selection_characteristic : VAR_SELECTION_CHARACTERISTIC ident
         """
         p[0] = ASTNodes.Var_Selection_Characteristic(p[2])
 
-    def p_VAR_SEPARATOR(self, p):
+    def p_var_separator(self, p):
         """
-        var_seperator     : VAR_SEPARATOR string_literal
+        var_seperator : VAR_SEPARATOR string_literal
         """
         p[0] = ASTNodes.Var_Separator(p[2])
 
-    def p_VARIANT_CODING(self, p):
+    def p_variant_coding(self, p):
         """
-        variant_coding     : BEGIN VARIANT_CODING variant_coding_opt_list END VARIANT_CODING
+        variant_coding : BEGIN VARIANT_CODING variant_coding_opt_list END VARIANT_CODING
         """
         node = self._create_ast_node(ASTNodes.Variant_Coding())
 
@@ -2522,10 +2512,10 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Variant_Coding)
         self._remove_ast_node(ASTNodes.Variant_Coding_Opt)
 
-    def p_VARIANT_CODING_opt_params(self, p):
+    def p_variant_coding_opt_params(self, p):
         """
-        variant_coding_opt    : var_naming
-                              | var_seperator
+        variant_coding_opt : var_naming
+                           | var_seperator
 
         """
         node = self._get_or_create_ast_node(ASTNodes.Variant_Coding_Opt)
@@ -2533,11 +2523,11 @@ class RulesSections:
 
         p[0] = node
 
-    def p_VARIANT_CODING_opt_objects_list(self, p):
+    def p_variant_coding_opt_objects_list(self, p):
         """
-        variant_coding_opt    : var_characteristic
-                              | var_criterion
-                              | var_forbidden_comb
+        variant_coding_opt : var_characteristic
+                           | var_criterion
+                           | var_forbidden_comb
         """
         node = self._get_or_create_ast_node(ASTNodes.Variant_Coding_Opt)
         self._add_ast_node_object_list(
@@ -2547,30 +2537,27 @@ class RulesSections:
         )
         p[0] = node
 
-    def p_VARIANT_CODING_opt_list(self, p):
+    def p_variant_coding_opt_list(self, p):
         """
-        variant_coding_opt_list    : variant_coding_opt
-                        | variant_coding_opt_list variant_coding_opt
+        variant_coding_opt_list : variant_coding_opt
+                                | variant_coding_opt_list variant_coding_opt
         """
-        if len(p) == 2:
-            p[0] = p[1]
-        else:
-            p[0] = p[2]
+        p[0] = p[1] if len(p) == 2 else p[2]
 
-    def p_VERSION(self, p):
+    def p_version(self, p):
         """
-        version     : VERSION string_literal
+        version : VERSION string_literal
         """
         p[0] = ASTNodes.Version(p[2])
 
-    def p_VIRTUAL(self, p):
+    def p_virtual(self, p):
         """
-        virtual     : BEGIN VIRTUAL ident_list END VIRTUAL
+        virtual : BEGIN VIRTUAL ident_list END VIRTUAL
         """
         p[0] = ASTNodes.Virtual(MeasuringChannel=p[3])
 
-    def p_VIRTUAL_CHARACTERISTIC(self, p):
+    def p_virtual_characteristic(self, p):
         """
-        virtual_characteristic     : BEGIN VIRTUAL_CHARACTERISTIC string_literal ident_list END VIRTUAL_CHARACTERISTIC
+        virtual_characteristic : BEGIN VIRTUAL_CHARACTERISTIC string_literal ident_list END VIRTUAL_CHARACTERISTIC
         """
         p[0] = ASTNodes.Virtual_Characteristic(Formula=p[3], Characteristic=p[4])

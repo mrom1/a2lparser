@@ -26,6 +26,22 @@ class RulesEnum:
     Rules for parsing enum datatypes.
     """
 
+    def p_addrtype_enum(self, p):
+        """
+        addrtype_enum : PBYTE
+                      | PWORD
+                      | PLONG
+                      | DIRECT
+        """
+        p[0] = p[1]
+
+    def p_attribute_enum(self, p):
+        """
+        attribute_enum : INTERN
+                       | EXTERN
+        """
+        p[0] = p[1]
+
     def p_axis_descr_enum(self, p):
         """
         axis_descr_enum : CURVE_AXIS
@@ -33,6 +49,15 @@ class RulesEnum:
                         | FIX_AXIS
                         | RES_AXIS
                         | STD_AXIS
+        """
+        p[0] = p[1]
+
+    def p_byte_order_enum(self, p):
+        """
+        byte_order_enum : MSB_FIRST
+                        | MSB_LAST
+                        | LITTLE_ENDIAN
+                        | BIG_ENDIAN
         """
         p[0] = p[1]
 
@@ -70,6 +95,29 @@ class RulesEnum:
         """
         p[0] = p[1]
 
+    def p_datasize_enum(self, p):
+        """
+        datasize_enum : BYTE
+                      | WORD
+                      | LONG
+        """
+        p[0] = p[1]
+
+    def p_datatype_enum(self, p):
+        """
+        datatype_enum : SBYTE
+                      | UBYTE
+                      | UWORD
+                      | SWORD
+                      | ULONG
+                      | SLONG
+                      | A_UINT64
+                      | A_INT64
+                      | FLOAT32_IEEE
+                      | FLOAT64_IEEE
+        """
+        p[0] = p[1]
+
     def p_mode_enum(self, p):
         """
         mode_enum : ABSOLUTE
@@ -84,6 +132,13 @@ class RulesEnum:
                        | ALTERNATE_WITH_Y
                        | COLUMN_DIR
                        | ROW_DIR
+        """
+        p[0] = p[1]
+
+    def p_indexorder_enum(self, p):
+        """
+        indexorder_enum : INDEX_INCR
+                        | INDEX_DECR
         """
         p[0] = p[1]
 
