@@ -19,57 +19,46 @@
 #######################################################################################
 
 
-import pytest
-from a2lparser.a2l.a2l_lex import A2LLex
-from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
+from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-@pytest.mark.parametrize("keyword_section", LexerKeywords.keywords_section)
-def test_lex_keywords_sections(keyword_section):
+def test_rules_compu_vtab():
     """
-    Test the correct interpretation of the tags in a A2L file defining a section.
-    A section is defined by being encloused with a "BEGIN" and an "END" tag.
-
-    Example:
-        /begin MEASUREMENT
-        /end MEASUREMENT
+    Tests parsing a valid "COMPU_VTAB" block.
     """
-    lexer = A2LLex()
-    lexer.input(keyword_section)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_section
-
-
-@pytest.mark.parametrize("keyword_type", LexerKeywords.keywords_type)
-def test_lex_keywords_types(keyword_type):
+    compu_vtab_block = """
+    /begin COMPU_VTAB CM_BuiltInDTypeId "LONG" TAB_VERB 9
+          0 "SS_DOUBLE"
+          1 "SS_SINGLE"
+          2 "SS_INT8"
+          3 "SS_UINT8"
+          4 "SS_INT16"
+          5 "SS_UINT16"
+          6 "SS_INT32"
+          7 "SS_UINT32"
+          8 "SS_BOOLEAN"
+          DEFAULT_VALUE "DEFAULT_VALUE"
+    /end COMPU_VTAB
     """
-    Test the correct interpretation of keyword tags defining types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_type)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_type
+    parser = A2LYacc()
+    ast = parser.generate_ast(compu_vtab_block)
+    assert ast
 
-
-@pytest.mark.parametrize("keyword_enum", LexerKeywords.keywords_enum)
-def test_lex_keywords_enums(keyword_enum):
-    """
-    Test the correct interpretation of enum types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_enum)
-    token = lexer.token()
-    assert token
-
-
-@pytest.mark.parametrize("keyword_datatype", LexerKeywords.keywords_datatypes)
-def test_lex_keywords_datatypes(keyword_datatype):
-    """
-    Test the correct interpretation of data types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_datatype)
-    token = lexer.token()
-    assert token
+    compu_vtab = ast["COMPU_VTAB"]
+    assert compu_vtab
+    assert compu_vtab["Name"] == "CM_BuiltInDTypeId"
+    assert compu_vtab["LongIdentifier"] == '"LONG"'
+    assert compu_vtab["ConversionType"] == "TAB_VERB"
+    assert compu_vtab["NumberValuePairs"] == "9"
+    assert compu_vtab["InVal_OutVal"] == [
+        ["0", '"SS_DOUBLE"'],
+        ["1", '"SS_SINGLE"'],
+        ["2", '"SS_INT8"'],
+        ["3", '"SS_UINT8"'],
+        ["4", '"SS_INT16"'],
+        ["5", '"SS_UINT16"'],
+        ["6", '"SS_INT32"'],
+        ["7", '"SS_UINT32"'],
+        ["8", '"SS_BOOLEAN"'],
+    ]
+    assert compu_vtab["DEFAULT_VALUE"] == '"DEFAULT_VALUE"'

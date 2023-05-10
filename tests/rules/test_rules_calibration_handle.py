@@ -19,57 +19,38 @@
 #######################################################################################
 
 
-import pytest
-from a2lparser.a2l.a2l_lex import A2LLex
-from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
+from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-@pytest.mark.parametrize("keyword_section", LexerKeywords.keywords_section)
-def test_lex_keywords_sections(keyword_section):
+def test_rules_calibration_handle():
     """
-    Test the correct interpretation of the tags in a A2L file defining a section.
-    A section is defined by being encloused with a "BEGIN" and an "END" tag.
-
-    Example:
-        /begin MEASUREMENT
-        /end MEASUREMENT
+    Tests parsing a valid "CALIBRATION_HANDLE" block.
     """
-    lexer = A2LLex()
-    lexer.input(keyword_section)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_section
-
-
-@pytest.mark.parametrize("keyword_type", LexerKeywords.keywords_type)
-def test_lex_keywords_types(keyword_type):
+    calibration_handle_block = """
+    /begin CALIBRATION_HANDLE
+            0x10000 /* start address of pointer table */
+            0x200 /* length of pointer table */
+            0x4 /* size of one pointer table entry */
+            0x30000 /* start address of flash section */
+            0x20000 /* length of flash section */
+            CALIBRATION_HANDLE_TEXT "12345"
+    /end CALIBRATION_HANDLE
+    /begin CALIBRATION_HANDLE
+            0x40000 /* start address of pointer table */
+            0x800 /* length of pointer table */
+            0x2 /* size of one pointer table entry */
+            0xFF000 /* start address of flash section */
+            0xCC000 /* length of flash section */
+            CALIBRATION_HANDLE_TEXT "description"
+    /end CALIBRATION_HANDLE
     """
-    Test the correct interpretation of keyword tags defining types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_type)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_type
+    parser = A2LYacc()
+    ast = parser.generate_ast(calibration_handle_block)
+    assert ast
 
-
-@pytest.mark.parametrize("keyword_enum", LexerKeywords.keywords_enum)
-def test_lex_keywords_enums(keyword_enum):
-    """
-    Test the correct interpretation of enum types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_enum)
-    token = lexer.token()
-    assert token
-
-
-@pytest.mark.parametrize("keyword_datatype", LexerKeywords.keywords_datatypes)
-def test_lex_keywords_datatypes(keyword_datatype):
-    """
-    Test the correct interpretation of data types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_datatype)
-    token = lexer.token()
-    assert token
+    calibration_handle = ast["CALIBRATION_HANDLE"]
+    assert len(calibration_handle) == 2
+    assert calibration_handle[0]["Handle"] == ["0x10000", "0x200", "0x4", "0x30000", "0x20000"]
+    assert calibration_handle[0]["CALIBRATION_HANDLE_TEXT"]["CALIBRATION_HANDLE_TEXT"] == '"12345"'
+    assert calibration_handle[1]["Handle"] == ["0x40000", "0x800", "0x2", "0xFF000", "0xCC000"]
+    assert calibration_handle[1]["CALIBRATION_HANDLE_TEXT"]["CALIBRATION_HANDLE_TEXT"] == '"description"'

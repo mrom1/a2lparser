@@ -43,8 +43,8 @@ class A2LLex:
         "ID",
         "BEGIN",
         "END",
-        "KEYWORD_SECTION",
-        "KEYWORD_TYPE",
+        # "KEYWORD_SECTION",
+        # "KEYWORD_TYPE",
     ]
     tokens_datatypes = [
         "STRING_LITERAL",
@@ -53,7 +53,14 @@ class A2LLex:
         "FLOAT_CONST",
         "HEX_FLOAT_CONST",
     ]
-    tokens = tokens_meta + tokens_datatypes + LexerKeywords.keywords_section + LexerKeywords.keywords_type
+    tokens = (
+        tokens_meta
+        + tokens_datatypes
+        + LexerKeywords.keywords_enum
+        + LexerKeywords.keywords_section
+        + LexerKeywords.keywords_type
+        + LexerKeywords.keywords_datatypes
+    )
     t_STRING_LITERAL = LexerRegex.string_literal
     t_ignore = " \t\r"
 
@@ -118,7 +125,7 @@ class A2LLex:
         """
         self.lexer.input(text)
 
-    def _error_handling(self, msg, token) -> None:  # pylint: disable=W0613
+    def _error_handling(self, msg, token) -> None:
         """
         This function is called when an error occurs.
         Error handling is to report the error and skip the token.
@@ -158,7 +165,11 @@ class A2LLex:
         if self.progressbar:
             self.progressbar()  # pylint: disable=E1102
 
-    @TOKEN(r"\b(" + r"|".join(LexerKeywords.keywords_type) + r")\b")
+    @TOKEN(
+        r"\b("
+        + r"|".join(LexerKeywords.keywords_type + LexerKeywords.keywords_enum + LexerKeywords.keywords_datatypes)
+        + r")\b"
+    )
     def t_KEYWORD_TYPE(self, t):
         """
         Sets the type of the token to the specific keyword found.
@@ -218,5 +229,5 @@ class A2LLex:
     @TOKEN(LexerRegex.comment_multiline)
     def t_COMMENT_MULTILINE(self, t):
         """
-        Any multi line comments like /* comment */ will be ignored.
+        Any multi line comments like "/* comment */" will be ignored.
         """

@@ -32,7 +32,7 @@ from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 import a2lparser.gen.a2l_ast as ASTNodes
 
 
-class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
+class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
     """
     A2LYacc class which represents the an instance of the YACC module from ply.yacc.
 
@@ -62,11 +62,11 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
             - generated_files_dir: the directory to write the generated files to
         """
         super().__init__()
-        self.experimental_error_resolve = False
         self.a2l_lex = A2LLex(
             debug=debug, optimize=optimize, generated_files_dir=generated_files_dir, lex_table_file=lex_table_file
         )
         self.tokens = self.a2l_lex.tokens
+        self.experimental_error_resolve = False
 
         self.a2l_yacc = yacc(
             module=self,
@@ -80,7 +80,11 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
         self.debug = debug
         self.a2l_sections_list = []
 
-    def generate_ast(self, content: str, content_title="", ) -> AbstractSyntaxTree:
+    def generate_ast(
+        self,
+        content: str,
+        content_title="",
+    ) -> AbstractSyntaxTree:
         """
         Generates an AbstractSyntaxTree from an input string.
         """
@@ -118,23 +122,12 @@ class A2LYacc(RulesMeta, RulesEnum, RulesSections, RulesDatatypes):
     #     # # Return an empty list to continue parsing the remaining sections
     #     # return []
 
-    # def p_error(self, p):
-    #     """
-    #     error : ERROR
-    #     """
-    #     if p:
-    #         pass
-# 
-    # def p_error_list(self, p):
-    #     """
-    #     error_list : error
-    #                | error_list error
-    #     """
-    #     if len(p) == 2:
-    #         p[0] = [p[1]]
-    #     else:
-    #         p[1].extend(p[2])
-    #         p[0] = p[1]
+    def p_error(self, p):
+        """
+        Error handler function.
+        """
+        if p:
+            return p
 
     def p_empty(self, p):
         """

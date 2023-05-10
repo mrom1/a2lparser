@@ -20,30 +20,36 @@
 # pylint: disable=C0103
 
 
+# @TODO: refactor "addrtype_enum" etc to "addrtype" in rules
 class RulesDatatypes:
     """
     Rules for parsing datatypes.
     """
 
-    def p_constant(self, p):
+    def p_addrtype_enum(self, p):
         """
-        constant    : INT_CONST_DEC
-                    | INT_CONST_HEX
-                    | FLOAT_CONST
-                    | HEX_FLOAT_CONST
+        addrtype_enum : PBYTE
+                      | PWORD
+                      | PLONG
+                      | DIRECT
         """
         p[0] = p[1]
 
-    def p_constant_list(self, p):
+    def p_attribute_enum(self, p):
         """
-        constant_list    : constant
-                         | constant_list constant
+        attribute_enum : INTERN
+                       | EXTERN
         """
-        if len(p) == 2:
-            p[0] = [p[1]]
-        else:
-            p[1].append(p[2])
-            p[0] = p[1]
+        p[0] = p[1]
+
+    def p_byte_order_enum(self, p):
+        """
+        byte_order_enum : MSB_FIRST
+                        | MSB_LAST
+                        | LITTLE_ENDIAN
+                        | BIG_ENDIAN
+        """
+        p[0] = p[1]
 
     def p_datatype(self, p):
         """
@@ -67,6 +73,33 @@ class RulesDatatypes:
                     | LONG
         """
         p[0] = p[1]
+
+    def p_indexorder_enum(self, p):
+        """
+        indexorder_enum : INDEX_INCR
+                        | INDEX_DECR
+        """
+        p[0] = p[1]
+
+    def p_constant(self, p):
+        """
+        constant    : INT_CONST_DEC
+                    | INT_CONST_HEX
+                    | FLOAT_CONST
+                    | HEX_FLOAT_CONST
+        """
+        p[0] = p[1]
+
+    def p_constant_list(self, p):
+        """
+        constant_list    : constant
+                         | constant_list constant
+        """
+        if len(p) == 2:
+            p[0] = [p[1]]
+        else:
+            p[1].append(p[2])
+            p[0] = p[1]
 
     def p_ident(self, p):
         """

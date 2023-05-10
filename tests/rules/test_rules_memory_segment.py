@@ -19,57 +19,48 @@
 #######################################################################################
 
 
-import pytest
-from a2lparser.a2l.a2l_lex import A2LLex
-from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
+from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-@pytest.mark.parametrize("keyword_section", LexerKeywords.keywords_section)
-def test_lex_keywords_sections(keyword_section):
+def test_rules_memory_segment():
     """
-    Test the correct interpretation of the tags in a A2L file defining a section.
-    A section is defined by being encloused with a "BEGIN" and an "END" tag.
-
-    Example:
-        /begin MEASUREMENT
-        /end MEASUREMENT
+    Tests parsing a valid "MEMORY_SEGMENT" block.
     """
-    lexer = A2LLex()
-    lexer.input(keyword_section)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_section
-
-
-@pytest.mark.parametrize("keyword_type", LexerKeywords.keywords_type)
-def test_lex_keywords_types(keyword_type):
+    memory_segment_block = """
+    /begin MEMORY_SEGMENT
+        Data2
+        "Data external Flash"
+        DATA
+        FLASH
+        EXTERN
+        0x7000
+        0x2000
+        -1 -1 -1 -1 -1
+        /begin IF_DATA XCP
+            LINK_MAP ref_name 0x003432
+        /end IF_DATA
+        /begin IF_DATA CANAPE
+            STATIC ref_name 0xFF
+        /end IF_DATA
+    /end MEMORY_SEGMENT
     """
-    Test the correct interpretation of keyword tags defining types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_type)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_type
+    parser = A2LYacc()
+    ast = parser.generate_ast(memory_segment_block)
+    assert ast
 
-
-@pytest.mark.parametrize("keyword_enum", LexerKeywords.keywords_enum)
-def test_lex_keywords_enums(keyword_enum):
-    """
-    Test the correct interpretation of enum types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_enum)
-    token = lexer.token()
-    assert token
-
-
-@pytest.mark.parametrize("keyword_datatype", LexerKeywords.keywords_datatypes)
-def test_lex_keywords_datatypes(keyword_datatype):
-    """
-    Test the correct interpretation of data types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_datatype)
-    token = lexer.token()
-    assert token
+    memory_segment = ast["MEMORY_SEGMENT"]
+    assert memory_segment
+    assert memory_segment["Name"] == "Data2"
+    assert memory_segment["LongIdentifier"] == '"Data external Flash"'
+    assert memory_segment["PrgType"] == "DATA"
+    assert memory_segment["MemoryType"] == "FLASH"
+    assert memory_segment["Attribute"] == "EXTERN"
+    assert memory_segment["Address"] == "0x7000"
+    assert memory_segment["Size"] == "0x2000"
+    assert memory_segment["Offset"] == ["-1", "-1", "-1", "-1", "-1"]
+    assert len(memory_segment["IF_DATA"]) == 2
+    assert memory_segment["IF_DATA"][0]["Name"] == "XCP"
+    assert len(memory_segment["IF_DATA"][0]["DataParams"]) == 3
+    assert memory_segment["IF_DATA"][1]["Name"] == "CANAPE"
+    assert len(memory_segment["IF_DATA"][1]["DataParams"]) == 3
+    assert len(memory_segment["Offset"]) == 5

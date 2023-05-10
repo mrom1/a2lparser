@@ -20,26 +20,11 @@
 # pylint: disable=C0103
 
 
+# @TODO: change rule for "datatype" and "datasize" to "datatype_enum" and "datasize_enum"
 class RulesEnum:
     """
     Rules for parsing enum datatypes.
     """
-
-    def p_addrtype_enum(self, p):
-        """
-        addrtype_enum : PBYTE
-                      | PWORD
-                      | PLONG
-                      | DIRECT
-        """
-        p[0] = p[1]
-
-    def p_attribute_enum(self, p):
-        """
-        attribute_enum : INTERN
-                       | EXTERN
-        """
-        p[0] = p[1]
 
     def p_axis_descr_enum(self, p):
         """
@@ -48,15 +33,6 @@ class RulesEnum:
                         | FIX_AXIS
                         | RES_AXIS
                         | STD_AXIS
-        """
-        p[0] = p[1]
-
-    def p_byte_order_enum(self, p):
-        """
-        byte_order_enum : MSB_FIRST
-                        | MSB_LAST
-                        | LITTLE_ENDIAN
-                        | BIG_ENDIAN
         """
         p[0] = p[1]
 
@@ -98,13 +74,6 @@ class RulesEnum:
         """
         mode_enum : ABSOLUTE
                   | DIFFERENCE
-        """
-        p[0] = p[1]
-
-    def p_indexorder_enum(self, p):
-        """
-        indexorder_enum : INDEX_INCR
-                        | INDEX_DECR
         """
         p[0] = p[1]
 

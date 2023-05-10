@@ -18,8 +18,9 @@
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
 
-from re import Pattern
+import re
 from typing import Union, Any
+from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
 import a2lparser.gen.a2l_ast as ASTNodes
 
 
@@ -173,7 +174,7 @@ class AbstractSyntaxTree:
         return AbstractSyntaxTree(self._ast, self._find_value(search_value, self._dict, case_sensitive, exact_match))
 
     def _find_value(
-        self, search_expression: Union[str, Pattern], dictionary: dict, case_sensitive: bool, exact_match: bool
+        self, search_expression: Union[str, re.Pattern], dictionary: dict, case_sensitive: bool, exact_match: bool
     ) -> dict:
         """
         Searches recursively for a search expression under the values of the given dictionary.
@@ -220,7 +221,7 @@ class AbstractSyntaxTree:
     def _is_value_match(
         self,
         value: Any,
-        search_expression: Union[str, Pattern],
+        search_expression: Union[str, re.Pattern],
         case_sensitive: bool,
         exact_match: bool,
         recursive_search: bool,
@@ -248,7 +249,7 @@ class AbstractSyntaxTree:
         return False
 
     def _is_value_match_expression(
-        self, value_string: str, search_expression: Union[str, Pattern], case_sensitive: bool, exact_match: bool
+        self, value_string: str, search_expression: Union[str, re.Pattern], case_sensitive: bool, exact_match: bool
     ):
         """
         Checks if the given string matches the given search expression
@@ -259,8 +260,24 @@ class AbstractSyntaxTree:
                 value_string = value_string.lower()
             if exact_match and value_string == search_expression or not exact_match and search_expression in value_string:
                 return True
-        elif isinstance(search_expression, Pattern):
+        elif isinstance(search_expression, re.Pattern):
             return search_expression.search(value_string) is not None
+        return False
+
+    def _is_node_name_keyword(
+        self,
+        node_name: str,
+        keywords: list = LexerKeywords.keywords_type
+        + LexerKeywords.keywords_enum
+        + LexerKeywords.keywords_section
+        + LexerKeywords.keywords_datatypes,
+    ) -> bool:
+        """
+        Returns true if the given node name is a A2L keyword.
+        """
+        for keyword in keywords:
+            if node_name.upper() == keyword:
+                return True
         return False
 
     def _create_dict_from_ast(self, abstract_syntax_tree) -> None:
@@ -282,7 +299,9 @@ class AbstractSyntaxTree:
             attr_names = getattr(node, "attr_names", ())
             for attr_name in attr_names:
                 attr_value = getattr(node, attr_name)
-                node_dict[attr_name.upper()] = attr_value
+                if self._is_node_name_keyword(attr_name):
+                    attr_name = attr_name.upper()
+                node_dict[attr_name] = attr_value
             self._add_children(node, node_dict)
 
     def _add_children(self, node, parent_dict):
@@ -302,25 +321,42 @@ class AbstractSyntaxTree:
             child_name = child[0]
             child_obj = child[1]
 
+            # @TODO: Sometimes multiple lists of the same keyword are passed.
+            #        If this is the case, the child_name will have an index in its name.
+            #        For example: "ANNOTATION[0]" instead of "ANNOTATION"
+            #
+            #        What we want to do here is to check if a string like "ANNOTATION[0]"
+            #        is passed, and if so we remove the index from the string, and
+            #        build an "ANNOTATION" dictionary entry with the list of all
+            #        child annotations as a value.
+            if re.match(r".+\[\d+\]$", child_name):
+                child_name = re.sub(r"\[\d+\]$", "", child_name)
+
+            if self._is_node_name_keyword(child_name):
+                child_name = child_name.upper()
+
             if child_name == "OptionalParams":
                 child_dict = parent_dict
             elif child_name in parent_dict:
-                if isinstance(parent_dict[child_name.upper()], dict):
-                    parent_dict[child_name.upper()] = [parent_dict[child_name.upper()]]
-                parent_dict[child_name.upper()].append({})
-                child_dict = parent_dict[child_name.upper()][-1]
+                if isinstance(parent_dict[child_name], dict):
+                    parent_dict[child_name] = [parent_dict[child_name]]
+                parent_dict[child_name].append({})
+                child_dict = parent_dict[child_name][-1]
             else:
                 child_dict = {}
-                parent_dict[child_name.upper()] = child_dict
+                parent_dict[child_name] = child_dict
 
             if isinstance(child_obj, (str, int, float, bool)):
-                parent_dict[child_name.upper()] = child_obj
-                child_dict = parent_dict[child_name.upper()]
+                parent_dict[child_name] = child_obj
+                child_dict = parent_dict[child_name]
             else:
                 attr_names = getattr(child_obj, "attr_names", ())
                 for attr_name in attr_names:
                     attr_value = getattr(child_obj, attr_name)
-                    child_dict[attr_name.upper()] = attr_value
+                    if attr_value is not None:
+                        if self._is_node_name_keyword(attr_name):
+                            attr_name = attr_name.upper()
+                        child_dict[attr_name] = attr_value
 
             self._add_children(child_obj, child_dict)
 

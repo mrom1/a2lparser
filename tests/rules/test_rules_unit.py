@@ -19,57 +19,42 @@
 #######################################################################################
 
 
-import pytest
-from a2lparser.a2l.a2l_lex import A2LLex
-from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
+from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-@pytest.mark.parametrize("keyword_section", LexerKeywords.keywords_section)
-def test_lex_keywords_sections(keyword_section):
+def test_rules_unit():
     """
-    Test the correct interpretation of the tags in a A2L file defining a section.
-    A section is defined by being encloused with a "BEGIN" and an "END" tag.
-
-    Example:
-        /begin MEASUREMENT
-        /end MEASUREMENT
+    Tests parsing a valid "UNIT" block.
     """
-    lexer = A2LLex()
-    lexer.input(keyword_section)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_section
-
-
-@pytest.mark.parametrize("keyword_type", LexerKeywords.keywords_type)
-def test_lex_keywords_types(keyword_type):
+    unit_block = """
+    /begin UNIT kms_per_hour
+        "derived unit for velocity: kilometres per hour"
+        "[km/h]"
+        DERIVED
+        REF_UNIT metres_per_second
+        UNIT_CONVERSION 3.6 0.0 /* y [km/h] = (60*60/1000) * x [m/s] + 0.0 */
+        SI_EXPONENTS 1 2 -2 4 3 -4 -5 /*[N] = [m]*[kg]*[s]-2 */
+    /end UNIT
     """
-    Test the correct interpretation of keyword tags defining types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_type)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_type
+    parser = A2LYacc()
+    ast = parser.generate_ast(unit_block)
+    assert ast
 
+    unit = ast["UNIT"]
+    assert unit
+    assert unit["Name"] == "kms_per_hour"
+    assert unit["LongIdentifier"] == '"derived unit for velocity: kilometres per hour"'
+    assert unit["Display"] == '"[km/h]"'
+    assert unit["Type"] == "DERIVED"
+    assert unit["REF_UNIT"] == "metres_per_second"
 
-@pytest.mark.parametrize("keyword_enum", LexerKeywords.keywords_enum)
-def test_lex_keywords_enums(keyword_enum):
-    """
-    Test the correct interpretation of enum types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_enum)
-    token = lexer.token()
-    assert token
+    assert unit["SI_EXPONENTS"]["Length"] == "1"
+    assert unit["SI_EXPONENTS"]["Mass"] == "2"
+    assert unit["SI_EXPONENTS"]["Time"] == "-2"
+    assert unit["SI_EXPONENTS"]["ElectricCurrent"] == "4"
+    assert unit["SI_EXPONENTS"]["Temperature"] == "3"
+    assert unit["SI_EXPONENTS"]["AmountOfSubstance"] == "-4"
+    assert unit["SI_EXPONENTS"]["LuminousIntensity"] == "-5"
 
-
-@pytest.mark.parametrize("keyword_datatype", LexerKeywords.keywords_datatypes)
-def test_lex_keywords_datatypes(keyword_datatype):
-    """
-    Test the correct interpretation of data types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_datatype)
-    token = lexer.token()
-    assert token
+    assert unit["UNIT_CONVERSION"]["Gradient"] == "3.6"
+    assert unit["UNIT_CONVERSION"]["Offset"] == "0.0"

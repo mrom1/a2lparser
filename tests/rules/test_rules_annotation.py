@@ -19,57 +19,44 @@
 #######################################################################################
 
 
-import pytest
-from a2lparser.a2l.a2l_lex import A2LLex
-from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
+from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-@pytest.mark.parametrize("keyword_section", LexerKeywords.keywords_section)
-def test_lex_keywords_sections(keyword_section):
+def test_rules_annotation():
     """
-    Test the correct interpretation of the tags in a A2L file defining a section.
-    A section is defined by being encloused with a "BEGIN" and an "END" tag.
-
-    Example:
-        /begin MEASUREMENT
-        /end MEASUREMENT
+    Tests parsing a valid "ANNOTATION" block.
     """
-    lexer = A2LLex()
-    lexer.input(keyword_section)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_section
-
-
-@pytest.mark.parametrize("keyword_type", LexerKeywords.keywords_type)
-def test_lex_keywords_types(keyword_type):
+    annotation_block = """
+    /begin ANNOTATION
+        ANNOTATION_LABEL "valid_section_1"
+        /begin ANNOTATION_TEXT
+            "string_literal_1"
+            "STRING_LITERAL_2"
+            "STRING LITERAL 3"
+        /end ANNOTATION_TEXT
+        ANNOTATION_ORIGIN "first block origin"
+    /end ANNOTATION
+    /begin ANNOTATION
+        ANNOTATION_ORIGIN "SECOND_ORIGIN"
+        /begin ANNOTATION_TEXT
+            "SOME_CONSTANT = 0xC48800FF"
+        /end ANNOTATION_TEXT
+        ANNOTATION_LABEL "valid_section_2"
+    /end ANNOTATION
     """
-    Test the correct interpretation of keyword tags defining types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_type)
-    token = lexer.token()
-    assert token
-    assert token.type == keyword_type
+    parser = A2LYacc()
+    ast = parser.generate_ast(annotation_block)
+    assert ast
 
+    annotation = ast["ANNOTATION"]
+    assert len(annotation) == 2
 
-@pytest.mark.parametrize("keyword_enum", LexerKeywords.keywords_enum)
-def test_lex_keywords_enums(keyword_enum):
-    """
-    Test the correct interpretation of enum types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_enum)
-    token = lexer.token()
-    assert token
+    annotation_1 = annotation[0]
+    assert annotation_1["ANNOTATION_LABEL"] == '"valid_section_1"'
+    assert annotation_1["ANNOTATION_ORIGIN"] == '"first block origin"'
+    assert annotation_1["ANNOTATION_TEXT"] == ['"string_literal_1"', '"STRING_LITERAL_2"', '"STRING LITERAL 3"']
 
-
-@pytest.mark.parametrize("keyword_datatype", LexerKeywords.keywords_datatypes)
-def test_lex_keywords_datatypes(keyword_datatype):
-    """
-    Test the correct interpretation of data types in an A2L file.
-    """
-    lexer = A2LLex()
-    lexer.input(keyword_datatype)
-    token = lexer.token()
-    assert token
+    annotation_2 = annotation[1]
+    assert annotation_2["ANNOTATION_LABEL"] == '"valid_section_2"'
+    assert annotation_2["ANNOTATION_ORIGIN"] == '"SECOND_ORIGIN"'
+    assert annotation_2["ANNOTATION_TEXT"] == ['"SOME_CONSTANT = 0xC48800FF"']
