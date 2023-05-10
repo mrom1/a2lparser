@@ -16,20 +16,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checkout the repository under $GITHUB_WORKSPACE and install python
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.11
 
       # Set up virtual environment
-      - name: Install virtualenv
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install virtualenv
       - name: Create virtual environment
         run: |
-          virtualenv .venv
+          python -m pip install --upgrade pip
+          python -m venv .venv
+      - name: Activate virtual environment
+        run: |
           source .venv/bin/activate
 
       # Install a2lparser dependencies
@@ -41,17 +40,16 @@ jobs:
       # Run Testcases and generate report
       - name: Testcases
         run: | 
-          coverage run -m a2lparser.a2lparser --unittests
-          coverage run -m pytest -v --timeout=30 --ignore=a2lparser/unittests
+          coverage run --omit=test_a2l_ast.py -m pytest -v --timeout=30
           coverage report -m
           coverage xml
 
       # Upload code coverage report
-      - name: Upload coverage to Codecov
+      - name: Upload coverage report to Codecov
         uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
           env_vars: OS,PYTHON
           name: codecov-umbrella
-          fail_ci_if_error: false
           verbose: true

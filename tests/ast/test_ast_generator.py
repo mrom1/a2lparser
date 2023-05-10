@@ -26,7 +26,7 @@ from a2lparser import A2L_PACKAGE_DIR
 from a2lparser.a2l.ast.ast_generator import ASTGenerator
 
 
-def test_unit_ast_generator():
+def test_ast_generator():
     """
     Attempts to create the python file containing the AST node classes.
     """

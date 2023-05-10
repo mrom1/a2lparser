@@ -19,9 +19,8 @@
 #######################################################################################
 
 
+import os
 import glob
-# from pathlib import Path
-# from typing import Union
 from loguru import logger
 from a2lparser.a2l.a2l_yacc import A2LYacc
 from a2lparser.a2l.parsing_exception import ParsingException
@@ -51,11 +50,11 @@ class Parser:
         """
         self.parser = A2LYacc(debug=debug, optimize=optimize)
 
-    def parse_content(self, content: str, content_title: str = "") -> AbstractSyntaxTree:
+    def parse_content(self, content: str) -> AbstractSyntaxTree:
         """
         Parses the given content string and returns an AbstractSyntaxTree object.
         """
-        return self.parser.generate_ast(content, content_title=content_title)
+        return self.parser.generate_ast(content)
 
     def parse_files(self, files: str) -> dict:
         """
@@ -65,25 +64,9 @@ class Parser:
         ast_objects = {}
         for a2l_file in glob.glob(files):
             with open(a2l_file, "r", encoding="utf-8") as file:
-                logger.info("Parsing file: {}", a2l_file)
-                ast_objects[a2l_file] = self.parse_content(content=file.read(), content_title="a2l_file")
+                filename = os.path.basename(a2l_file)
+                logger.info("Parsing file: {}", filename)
+                ast_objects[filename] = self.parse_content(content=file.read())
         if not ast_objects:
             raise ParsingException(f"None of the given files could be parsed: files = '{files}'")
         return ast_objects
-
-    # def _find_matching_files(self, files: Union[str, list, Path]) -> list[Path]:
-    #     """
-    #     Returns a list of pathlib.Path objects A2L files from the given files value.
-    #     """
-    #     result = []
-    #     if not isinstance(files, (str, list, Path)):
-    #         raise ParsingException(f"{files}: type '{type(files)}' is not of 'str' or 'list' or 'pathlib.Path'.")
-    #     if isinstance(files, ):
-    #         return file
-    #     return file
-    #
-    # def _file_exists(self, files: Union[str, Path]):
-    #     if isinstance(files, (str, Path):
-    #         found = glob.glob(files)
-    #
-    #

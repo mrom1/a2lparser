@@ -82,14 +82,13 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
 
     def generate_ast(
         self,
-        content: str,
-        content_title="",
+        content: str
     ) -> AbstractSyntaxTree:
         """
         Generates an AbstractSyntaxTree from an input string.
         """
         content_lines = content.count("\n")
-        with alive_bar(content_lines, title=content_title) as progressbar:
+        with alive_bar(content_lines) as progressbar:
             self.a2l_lex.progressbar = progressbar
             ast = self.a2l_yacc.parse(input=content, lexer=self.a2l_lex, debug=self.debug)
 

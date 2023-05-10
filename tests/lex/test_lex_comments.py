@@ -22,7 +22,7 @@
 from a2lparser.a2l.a2l_lex import A2LLex
 
 
-def test_a2l_lexer_singleline_comment():
+def test_lex_singleline_comment():
     """
     Testing the A2L Lexer for detection of single line comments.
     """
@@ -43,7 +43,7 @@ def test_a2l_lexer_singleline_comment():
     assert tokens[0].value == "3.23e-9"
 
 
-def test_a2l_lexer_multiline_comment():
+def test_lex_multiline_comment():
     """
     Testing the A2L Lexer for detection of multi line comments.
     """

@@ -37,7 +37,7 @@ setup(
     license=a2lparser.__license__,
     license_files=("LICENSE",),
     url=a2lparser.__url__,
-    package_data={"a2lparser": ["*.cfg", "*.config"]},
+    package_data={"a2lparser": ["*.cfg", "*.config", "logs/a2lparser_history"]},
     classifiers=[
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

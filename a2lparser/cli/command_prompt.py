@@ -19,9 +19,11 @@
 #######################################################################################
 
 
+from pathlib import Path
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+from a2lparser import A2L_PACKAGE_DIR
 from a2lparser import A2L_PARSER_HEADLINE
 
 
@@ -41,7 +43,8 @@ class CommandPrompt:
         """
         Prompts the user for input..
         """
-        session = PromptSession(history=FileHistory(".a2lparser_history"), auto_suggest=AutoSuggestFromHistory())
+        history_file: Path = A2L_PACKAGE_DIR / "logs" / "a2lparser_history"
+        session = PromptSession(history=FileHistory(str(history_file)), auto_suggest=AutoSuggestFromHistory())
 
         print(A2L_PARSER_HEADLINE)
         print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")

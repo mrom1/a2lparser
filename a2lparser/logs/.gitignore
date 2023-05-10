@@ -1,0 +1,5 @@
+# This directory will contain the history of the commands used with the CLI.
+# Ignore everything in this directory
+*
+# Except this file
+!.gitignore
