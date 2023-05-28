@@ -62,8 +62,7 @@ def test_error_handling_pre_section():
         ANNOTATION_ORIGIN "annotation test origin"
     /end ANNOTATION
     """
-    print("Test\nTest\nTest\nTest\n")
-    parser = A2LYacc(debug=True)
+    parser = A2LYacc()
     ast = parser.generate_ast(erroneous_input)
     assert ast
 
@@ -83,7 +82,7 @@ def test_error_handling_post_type():
     "some error invoking string out of place"
     ASAP2_VERSION 2 34
     """
-    parser = A2LYacc(debug=True)
+    parser = A2LYacc()
     ast = parser.generate_ast(erroneous_input)
     assert ast
 
@@ -124,7 +123,7 @@ def test_error_handling_post_section():
         ANNOTATION_ORIGIN "second annotation test origin"
     /end ANNOTATION
     """
-    parser = A2LYacc(debug=True)
+    parser = A2LYacc()
     ast = parser.generate_ast(erroneous_input)
     assert ast
 
@@ -144,39 +143,3 @@ def test_error_handling_post_section():
     assert annotation_2["ANNOTATION_LABEL"] == '"second annotation test label"'
     assert annotation_2["ANNOTATION_TEXT"] == ['"second annotation text example"']
     assert annotation_2["ANNOTATION_ORIGIN"] == '"second annotation test origin"'
-
-
-# def test_error_handling_post_section():
-#     """
-#     Tests --- @TODO
-#     Error handling for
-#     /begin annotation /end annotation
-#     [keyword] error
-#     /begin annotation /end annotation
-#     """
-#     error_postfix_input = """
-#     xxxxxxxxxxxxxxxxxxxxx
-#     """
-#     parser = A2LYacc()
-#     ast = parser.generate_ast(error_postfix_input)
-#     assert ast
-
-
-# def test_error_handling_nested_section():
-#     """
-#     Tests --- @TODO
-#
-#     Error handling for
-#     /begin annotation /end annotation
-#     /begin annotation
-#         [keyword] error
-#     /end annotation
-#     /begin annotation /end annotation
-#     """
-#     error_nested_input = """
-#     xxxxxxxxxxxxxxxxxxxxx
-#     """
-#     parser = A2LYacc()
-#     ast = parser.generate_ast(error_nested_input)
-#     assert ast
-#
