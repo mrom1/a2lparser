@@ -26,16 +26,16 @@ def test_rules_a2ml_version():
     """
     Tests parsing a valid "A2ML_VERSION" type.
     """
-    a2ml_version = """
+    a2ml_version_input = """
     A2ML_VERSION
                     1
                     61 /* Version 1.6.1 */
     """
     parser = A2LYacc()
-    ast = parser.generate_ast(a2ml_version)
+    ast = parser.generate_ast(a2ml_version_input)
     assert ast
 
-    ast_a2ml_version = ast["A2ML_VERSION"]
-    assert ast_a2ml_version
-    assert ast_a2ml_version["VersionNo"] == "1"
-    assert ast_a2ml_version["UpgradeNo"] == "61"
+    a2ml_version = ast["A2ML_VERSION"]
+    assert a2ml_version
+    assert a2ml_version["VersionNo"] == "1"
+    assert a2ml_version["UpgradeNo"] == "61"

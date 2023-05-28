@@ -17,3 +17,25 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
+
+
+from a2lparser.a2l.a2l_yacc import A2LYacc
+
+
+def test_rules_asap2_version():
+    """
+    Tests parsing a valid "ASAP2_VERSION" type.
+    """
+    asap2_version_input = """
+    ASAP2_VERSION
+                    4
+                    91 /* Version 4.9.1 */
+    """
+    parser = A2LYacc()
+    ast = parser.generate_ast(asap2_version_input)
+    assert ast
+
+    asap2_version = ast["ASAP2_VERSION"]
+    assert asap2_version
+    assert asap2_version["VersionNo"] == "4"
+    assert asap2_version["UpgradeNo"] == "91"

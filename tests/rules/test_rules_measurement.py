@@ -77,35 +77,35 @@ def test_rules_measurement():
 
     measurement = ast["MEASUREMENT"]
     assert measurement
-    assert measurement['Name'] == 'xxx4b4b52c91215c8.xc33258c9abefff4284.x87f0.x871bxxx'
-    assert measurement['LongIdentifier'] == '"ex1"'
-    assert measurement['Datatype'] == 'SWORD'
-    assert measurement['Conversion'] == 'NO_FORMULA'
-    assert measurement['Resolution'] == '0'
-    assert measurement['Accuracy'] == '0'
-    assert measurement['LowerLimit'] == '-32768'
-    assert measurement['UpperLimit'] == '32767'
-    assert measurement['BIT_MASK'] == '0xFFFF'
-    assert measurement['BYTE_ORDER'] == 'MSB_FIRST'
-    assert measurement['DISCRETE'] == True
-    assert measurement['ECU_ADDRESS'] == '0x2DDDD'
-    assert measurement['ECU_ADDRESS_EXTENSION'] == '0x0'
-    assert measurement['ERROR_MASK'] == '0x00000001'
+    assert measurement["Name"] == "xxx4b4b52c91215c8.xc33258c9abefff4284.x87f0.x871bxxx"
+    assert measurement["LongIdentifier"] == '"ex1"'
+    assert measurement["Datatype"] == "SWORD"
+    assert measurement["Conversion"] == "NO_FORMULA"
+    assert measurement["Resolution"] == "0"
+    assert measurement["Accuracy"] == "0"
+    assert measurement["LowerLimit"] == "-32768"
+    assert measurement["UpperLimit"] == "32767"
+    assert measurement["BIT_MASK"] == "0xFFFF"
+    assert measurement["BYTE_ORDER"] == "MSB_FIRST"
+    assert measurement["DISCRETE"] is True
+    assert measurement["ECU_ADDRESS"] == "0x2DDDD"
+    assert measurement["ECU_ADDRESS_EXTENSION"] == "0x0"
+    assert measurement["ERROR_MASK"] == "0x00000001"
 
-    assert len(measurement['IF_DATA']) == 2
+    assert len(measurement["IF_DATA"]) == 2
 
-    assert measurement['IF_DATA'][0]['Name'] == 'CANAPE_EXT'
-    assert len(measurement['IF_DATA'][0]['DataParams']) == 14
+    assert measurement["IF_DATA"][0]["Name"] == "CANAPE_EXT"
+    assert len(measurement["IF_DATA"][0]["DataParams"]) == 14
 
-    assert measurement['IF_DATA'][1]['Name'] == 'CANAPE'
-    assert len(measurement['IF_DATA'][1]['DataParams']) == 4
+    assert measurement["IF_DATA"][1]["Name"] == "CANAPE"
+    assert len(measurement["IF_DATA"][1]["DataParams"]) == 4
 
-    assert len(measurement['ANNOTATION']) == 2
+    assert len(measurement["ANNOTATION"]) == 2
 
-    assert measurement['ANNOTATION'][0]['ANNOTATION_LABEL'] == '"ANNOTATION_LABEL_BLOCK_1"'
-    assert measurement['ANNOTATION'][0]['ANNOTATION_ORIGIN'] == '"ANNOTATION_ORIGIN_BLOCK_1"'
-    assert len(measurement['ANNOTATION'][0]['ANNOTATION_TEXT']) == 1
+    assert measurement["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_1"'
+    assert measurement["ANNOTATION"][0]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_1"'
+    assert len(measurement["ANNOTATION"][0]["ANNOTATION_TEXT"]) == 1
 
-    assert measurement['ANNOTATION'][1]['ANNOTATION_LABEL'] == '"ANNOTATION_LABEL_BLOCK_2"'
-    assert measurement['ANNOTATION'][1]['ANNOTATION_ORIGIN'] == '"ANNOTATION_ORIGIN_BLOCK_2"'
-    assert len(measurement['ANNOTATION'][1]['ANNOTATION_TEXT']) == 1
+    assert measurement["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_2"'
+    assert measurement["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_2"'
+    assert len(measurement["ANNOTATION"][1]["ANNOTATION_TEXT"]) == 1

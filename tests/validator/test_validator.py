@@ -23,7 +23,7 @@ import pytest
 from a2lparser.a2l.a2l_validator import A2LValidator
 
 
-def test_a2l_validator_with_valid_file():
+def test_validator_with_valid_file():
     """
     Test that a valid A2L file passes syntax validation without errors.
     """
@@ -37,7 +37,7 @@ def test_a2l_validator_with_valid_file():
     assert A2LValidator.validate_syntax(a2l_string) is None
 
 
-def test_a2l_validator_with_missing_end_statement():
+def test_validator_with_missing_end_statement():
     """
     Tests detection of a missing end statement.
     """
@@ -54,7 +54,7 @@ def test_a2l_validator_with_missing_end_statement():
     assert ex.value.errors[1] == "Found /begin mod_par tag without matching /end tag at line 2, column 5."
 
 
-def test_a2l_validator_with_missing_begin_statement():
+def test_validator_with_missing_begin_statement():
     """
     Tests detection of a missing begin statement.
     """
@@ -69,7 +69,7 @@ def test_a2l_validator_with_missing_begin_statement():
     assert ex
 
 
-def test_a2l_validator_with_nested_structure_error():
+def test_validator_with_nested_structure_error():
     """
     Tests detection of an invalid open / close structure.
     """

@@ -186,6 +186,3 @@ def test_rules_mod_par_valid():
     assert mod_par["SYSTEM_CONSTANT"][2]["VALUE"] == '"0.3"'
     assert mod_par["SYSTEM_CONSTANT"][3]["Name"] == '"Zn"'
     assert mod_par["SYSTEM_CONSTANT"][3]["VALUE"] == '"0.07"'
-
-
-    

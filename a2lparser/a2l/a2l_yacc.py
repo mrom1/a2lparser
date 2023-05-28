@@ -80,10 +80,7 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
         self.debug = debug
         self.a2l_sections_list = []
 
-    def generate_ast(
-        self,
-        content: str
-    ) -> AbstractSyntaxTree:
+    def generate_ast(self, content: str) -> AbstractSyntaxTree:
         """
         Generates an AbstractSyntaxTree from an input string.
         """
@@ -126,7 +123,9 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
         Error handler function.
         """
         if p:
-            return p
+            token = self.a2l_yacc.token()
+            self.a2l_yacc.errok()
+            return token
 
     def p_empty(self, p):
         """

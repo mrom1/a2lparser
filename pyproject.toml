@@ -1,3 +1,5 @@
+[build-system]
+requires = ["setuptools", "wheel", "pytest-runner"]
 [tool.black]
 line-length = 128
 include = '\.pyi?$'
@@ -15,9 +17,9 @@ exclude = '''
   | dist
 )/
 '''
-[tool.pytest.ini_options]
-norecursedirs = "a2lparser/unittests"
+# Uncomment to always show output from tests in pytest
+# [tool.pytest.ini_options]
+# addopts = "-s"
 [tool.pylint.messages_control]
 max-line-length = 128
 disable="C0114, R0903, W0718, W0401, C0302"
-# [tool.pylint.'disable']
