@@ -3,3 +3,4 @@ lxml
 loguru
 alive-progress
 prompt-toolkit
+xmltodict

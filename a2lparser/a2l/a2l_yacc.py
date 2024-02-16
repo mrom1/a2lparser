@@ -99,7 +99,7 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
     # General Parsing rules and starting point.      #
     #                                                #
     # These rules define the structure of the parser #
-    # and the basic grammer. For more specific rules #
+    # and the basic grammar. For more specific rules #
     # look into a2lparser.a2l.rules                  #
     ##################################################
     def p_error(self, p):

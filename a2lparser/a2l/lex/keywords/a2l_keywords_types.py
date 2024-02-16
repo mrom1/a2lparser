@@ -75,7 +75,7 @@ class A2LKeywordsTypes:
         "COMPARISON_QUANTITY",
         # Cpu
         "CPU_TYPE",
-        # Curve charactersitic
+        # Curve characteristic
         "CURVE_AXIS_REF",
         # Customer keywords
         "CUSTOMER",
@@ -198,7 +198,7 @@ class A2LKeywordsTypes:
         "SRC_ADDR_Z",
         "SRC_ADDR_4",
         "SRC_ADDR_5",
-        # STATICS
+        # STATIC
         "STATIC_ADDRESS_OFFSETS",
         "STATIC_RECORD_LAYOUT",
         # STATUS_STRING_REF

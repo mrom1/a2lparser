@@ -86,7 +86,7 @@ def main() -> None:
         if args.filename is None:
             print()
             print(A2L_PARSER_HEADLINE)
-            print("\nPlease specifiy a A2L file.")
+            print("\nPlease specify a A2L file.")
             print("For more information use the -h or --help flag.")
             sys.exit(1)
 
@@ -108,7 +108,7 @@ def parse_arguments(args: list) -> argparse.Namespace:
     Parse the command line arguments.
     """
     parser = argparse.ArgumentParser(prog="a2lparser")
-    parser.add_argument("filename", nargs="?", help="relativ path to the full filename")
+    parser.add_argument("filename", nargs="?", help="relative path to the full filename")
     parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
     parser.add_argument("-o", "--optimize", action="store_true", default=False, help="enables optimize mode")
     parser.add_argument("-x", "--xml", action="store_true", help="XML output file")

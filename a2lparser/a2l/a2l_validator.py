@@ -36,7 +36,7 @@ class A2LValidator:
 
     class A2LValidationError(Exception):
         """
-        This exception occures if a syntax error is encountered in validating a A2L string.
+        This exception occurs if a syntax error is encountered in validating a A2L string.
         """
 
         def __init__(self, errors):

@@ -46,7 +46,7 @@ class AbstractSyntaxTree:
         AbstractSyntaxTree Constructor.
 
         Args:
-            - abstract_syntax_tree: A genereated abstract syntax tree from YACC.
+            - abstract_syntax_tree: A generated abstract syntax tree from YACC.
             - dictionary: If a dictionary is passed the AST will be populated from the dictionary.
         """
         if dictionary is None:
@@ -316,7 +316,7 @@ class AbstractSyntaxTree:
 
     def _add_children(self, node, parent_dict):
         """
-        Will recursivly add the children of the given node to the given parent dictionary.
+        Will recursively add the children of the given node to the given parent dictionary.
         """
         if not hasattr(node, "children"):
             return

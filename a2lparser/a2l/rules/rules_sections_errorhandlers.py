@@ -23,8 +23,8 @@ class RulesSectionsErrorhandlers:
     """
     Grammar for parsing encountered A2L Section error tokens.
 
-    Current error handling strategy is to throw out all sections that encounter errors,
-    and resynchronize the parser at the next section.
+    Current error handling strategy is to throw out all sections
+    which encounter errors, and resynchronize the parser at the next section.
     """
 
     error_tokens = []

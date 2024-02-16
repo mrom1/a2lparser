@@ -93,7 +93,7 @@ class A2LLex:
 
     def token(self) -> LexToken:
         """
-        Retruns the current token which the lexer processes.
+        Returns the current token which the lexer processes.
         """
         token = self.lexer.token()
         if token:

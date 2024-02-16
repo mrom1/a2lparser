@@ -45,14 +45,14 @@ _FILE_COMMENT = r"""
 # pylint: disable-all
 # flake8: noqa
 # ---------------------------------------------------------------------- #
-# *** IMPORTENT ***                                                      #
+# *** IMPORTANT ***                                                      #
 # This code was generated from the config file:                          #
 #   $cfg_filename  #
 #                                                                        #
 # If you wish to edit this code use the generator in the subfolder gen   #
 # and adjust the config file, not the code itself!                       #
 # Don't edit this file manually!                                         #
-# *** IMPORTENT ***                                                      #
+# *** IMPORTANT ***                                                      #
 #                                                                        #
 #                                                                        #
 # Abstract Syntax Tree (AST) Node Classes.                               #
