@@ -22,48 +22,39 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_error_handling_nested_section():
+def test_rules_ar_component_minimal():
     """
-    This tests aims to check that an error can occure in a nested section.
-    Expected behavior is for the error handling to allow all valid parts.
+    Testing A2L AR_COMPONENT section.
     """
-    erroneous_input = """
-    /begin MEASUREMENT
-        N /* name */
-        "Engine speed" /* long identifier */
-        UWORD /* datatype */
-        R_SPEED_3 /* conversion */
-        2 /* resolution */
-        2.5 /* accuracy */
-        120.0 /* lower limit */
-        8400.0 /* upper limit */
-        /begin ANNOTATION
-            ANNOTATION_LABEL "first valid label"
-            /begin ANNOTATION_TEXT
-                "first valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "first valid annotation origin"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "label inside erroneous section"
-            /begin ANNOTATION_TEXT
-                0xee00ee00 /* ERROR PROVOKING TOKEN */
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "origin inside erroneous section"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "second valid label"
-            /begin ANNOTATION_TEXT
-                "second valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "second valid annotation origin"
-        /end ANNOTATION
-        /begin FUNCTION_LIST
-            ID_ADJUSTX  /* Valid function name */
-            ID_ADJUSTY  /* Valid function name */
-        /end FUNCTION_LIST
-    /end MEASUREMENT
+    ar_component_minimal = """
+    /begin AR_COMPONENT
+        "ApplicationSwComponentType"
+    /end AR_COMPONENT
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(erroneous_input)
+    ast = A2LYacc().generate_ast(ar_component_minimal)
     assert ast
+
+    ar_component = ast["AR_COMPONENT"]
+    assert ar_component
+    assert ar_component["ComponentType"] == '"ApplicationSwComponentType"'
+
+
+def test_rules_ar_component_full():
+    """
+    Testing A2L AR_COMPONENT section.
+    """
+    ar_component_full = """
+    /begin AR_COMPONENT
+        "ApplicationSwComponentType"
+        AR_PROTOTYPE_OF "HANDLE"
+    /end AR_COMPONENT
+    """
+    ast = A2LYacc().generate_ast(ar_component_full)
+    assert ast
+
+    ar_component = ast["AR_COMPONENT"]
+    assert ar_component
+    assert ar_component["ComponentType"] == '"ApplicationSwComponentType"'
+
+    ar_prototype_of = ar_component["AR_PROTOTYPE_OF"]
+    assert ar_prototype_of.Name == '"HANDLE"'

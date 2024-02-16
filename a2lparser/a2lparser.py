@@ -19,11 +19,14 @@
 #######################################################################################
 
 
+import os
 import sys
 import argparse
 from loguru import logger
 from a2lparser import __version__
 from a2lparser import A2L_PARSER_HEADLINE
+from a2lparser import A2L_CONFIGS_DIR
+from a2lparser import A2L_DEFAULT_CONFIG_NAME
 from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.parser import Parser
 from a2lparser.cli.command_prompt import CommandPrompt
@@ -65,13 +68,21 @@ def main() -> None:
         # Generates the AST node classes for the A2L objects using the ASTGenerator
         if args.gen_ast:
             print("Generating python file containing the AST nodes...")
+            if args.gen_ast == A2L_DEFAULT_CONFIG_NAME:
+                config_file = A2L_CONFIGS_DIR / A2L_DEFAULT_CONFIG_NAME
+            elif os.path.isfile(args.gen_ast):
+                config_file = args.gen_ast
+            else:
+                print(f"Given config file {args.gen_ast} not found.  Aborting AST generation.")
+                sys.exit(1)
+            print("Generating AST nodes from config at: ", config_file.as_posix())
             generated_file = A2L_GENERATED_FILES_DIR / "a2l_ast.py"
-            generator = ASTGenerator(args.gen_ast, generated_file.as_posix())
+            generator = ASTGenerator(config_file.as_posix(), generated_file.as_posix())
             generator.generate()
             print(f"Generated {generated_file.as_posix()}")
             sys.exit(0)
 
-        # Either trigger a run through A2L unit tests or provide a file to work with
+        # Provide a file or a collection of A2L-files to parse.
         if args.filename is None:
             print()
             print(A2L_PARSER_HEADLINE)
@@ -85,8 +96,8 @@ def main() -> None:
 
         if args.xml:
             raise NotImplementedError("A2L to XML converter not implemented yet.")
-        else:
-            CommandPrompt.prompt(ast)
+
+        CommandPrompt.prompt(ast)
 
     except ParsingException as ex:
         logger.error(ex)
@@ -99,9 +110,10 @@ def parse_arguments(args: list) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="a2lparser")
     parser.add_argument("filename", nargs="?", help="relativ path to the full filename")
     parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
-    parser.add_argument("-o", "--optimize", action="store_true", default=True, help="enables optimize mode")
+    parser.add_argument("-o", "--optimize", action="store_true", default=False, help="enables optimize mode")
     parser.add_argument("-x", "--xml", action="store_true", help="XML output file")
-    parser.add_argument("--gen-ast", nargs="?", help="generates python file containing AST node classes")
+    parser.add_argument("--gen-ast", nargs="?", const=A2L_DEFAULT_CONFIG_NAME,
+                        help="generates python file containing AST node classes")
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
     return parser.parse_args(args)
 

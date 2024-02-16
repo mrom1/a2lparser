@@ -70,10 +70,6 @@ def test_rules_function():
             ENG_SPEED_CORR_CURVE
             ENG_SPEED_CORR_CURVE_STD
         /end REF_CHARACTERISTIC
-        /begin SUB_FUNCTION
-            SubFunctionParam1
-            SubFunctionParam2
-        /end SUB_FUNCTION
     /end FUNCTION
     """
     parser = A2LYacc()
@@ -96,11 +92,10 @@ def test_rules_function():
     assert function["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_2"'
     assert function["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_2"'
     assert function["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_BLOCK_2"']
-    assert function["SUB_FUNCTION"][0]["Identifier"] == [
+    assert function["SUB_FUNCTION"]["Identifier"] == [
         "CalcDynDecelState",
         "CalcStopDynDecel",
         "Sssm313_AEB_disabled",
         "Sssm314_AEB_enabled",
         "Sssm37_Subsystem",
     ]
-    assert function["SUB_FUNCTION"][1]["Identifier"] == ["SubFunctionParam1", "SubFunctionParam2"]

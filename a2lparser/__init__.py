@@ -33,6 +33,8 @@ __license__ = "GPLv3"
 __url__ = "https://github.com/mrom1/a2lparser"
 A2L_PACKAGE_DIR = Path(__file__).parent
 A2L_GENERATED_FILES_DIR = A2L_PACKAGE_DIR / "gen"
+A2L_CONFIGS_DIR = A2L_PACKAGE_DIR / "configs"
+A2L_DEFAULT_CONFIG_NAME = "ASAP2_MCD_v171.cfg"
 A2L_PARSER_HEADLINE = """
  ████╗ ██████╗██╗      ██████╗ ████╗ █████╗ ██████╗██████╗█████╗
 ██╔═██╗╚═══██║██║      ██╔═██║██╔═██╗██╔═██╗██╔═══╝██╔═══╝██╔═██╗
@@ -57,7 +59,7 @@ except ImportError:
     from a2lparser.a2l.ast.ast_generator import ASTGenerator
 
     # Generate the AST nodes from the standard config in configs/A2L_ASAM.cfg
-    asam_config = Path(__file__).parent / "configs" / "A2L_ASAM.cfg"
+    asam_config = A2L_CONFIGS_DIR / A2L_DEFAULT_CONFIG_NAME
     ast_nodes_file = A2L_GENERATED_FILES_DIR / "a2l_ast.py"
     # Generate the AST node containers
     print("Generating python file containing the AST nodes...")

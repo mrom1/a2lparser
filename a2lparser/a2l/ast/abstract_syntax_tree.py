@@ -226,6 +226,19 @@ class AbstractSyntaxTree:
         exact_match: bool,
         recursive_search: bool,
     ) -> bool:
+        """Checks if the given value matches the search expression.
+
+        Args:
+            value: The value to be checked.
+            search_expression: The expression to search for.
+            case_sensitive: Whether the search should be case-sensitive.
+            exact_match: Whether the search should be an exact match.
+            recursive_search: Whether to perform a recursive search.
+
+        Returns:
+            bool: True if the value matches the search expression, False otherwise.
+        """
+
         if isinstance(value, dict):
             values = list(value.values())
         elif isinstance(value, (list, tuple)):
@@ -275,10 +288,7 @@ class AbstractSyntaxTree:
         """
         Returns true if the given node name is a A2L keyword.
         """
-        for keyword in keywords:
-            if node_name.upper() == keyword:
-                return True
-        return False
+        return any(node_name.upper() == keyword for keyword in keywords)
 
     def _create_dict_from_ast(self, abstract_syntax_tree) -> None:
         """
@@ -321,14 +331,6 @@ class AbstractSyntaxTree:
             child_name = child[0]
             child_obj = child[1]
 
-            # @TODO: Sometimes multiple lists of the same keyword are passed.
-            #        If this is the case, the child_name will have an index in its name.
-            #        For example: "ANNOTATION[0]" instead of "ANNOTATION"
-            #
-            #        What we want to do here is to check if a string like "ANNOTATION[0]"
-            #        is passed, and if so we remove the index from the string, and
-            #        build an "ANNOTATION" dictionary entry with the list of all
-            #        child annotations as a value.
             if re.match(r".+\[\d+\]$", child_name):
                 child_name = re.sub(r"\[\d+\]$", "", child_name)
 

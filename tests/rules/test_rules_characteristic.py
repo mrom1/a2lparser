@@ -37,6 +37,7 @@ def test_rules_characteristic():
         R_VOLTAGE /* conversion */
         0.0 /* lower limit */
         5000.0 /* upper limit */
+        MODEL_LINK "system/sub-system/object.name"
         BIT_MASK 0x40
         BYTE_ORDER MSB_LAST
         CALIBRATION_ACCESS OFFLINE_CALIBRATION
@@ -146,9 +147,10 @@ def test_rules_characteristic():
     assert characteristic["Address"] == "0x7140"
     assert characteristic["Deposit_Ref"] == "DAMOS_KF"
     assert characteristic["MaxDiff"] == "100.0"
-    assert characteristic["Conversion"] == "R_VOLTAGE"
+    assert characteristic["CONVERSION"] == "R_VOLTAGE"
     assert characteristic["LowerLimit"] == "0.0"
     assert characteristic["UpperLimit"] == "5000.0"
+    assert characteristic["MODEL_LINK"] == '"system/sub-system/object.name"'
     assert characteristic["BIT_MASK"] == "0x40"
     assert characteristic["BYTE_ORDER"] == "MSB_LAST"
     assert characteristic["CALIBRATION_ACCESS"] == "OFFLINE_CALIBRATION"
@@ -169,9 +171,7 @@ def test_rules_characteristic():
     assert characteristic["EXTENDED_LIMITS"]["UpperLimit"] == "4000.0"
     assert characteristic["FUNCTION_LIST"]["Name"] == ["ID_ADJUSTM", "FL_ADJUSTM", "SPEED_LIM"]
     assert characteristic["MAP_LIST"]["Name"] == ["one", "two", "three"]
-    assert characteristic["MATRIX_DIM"]["xDim"] == "2"
-    assert characteristic["MATRIX_DIM"]["yDim"] == "4"
-    assert characteristic["MATRIX_DIM"]["zDim"] == "3"
+    assert characteristic["MATRIX_DIM"]["Dim"] == ['2', '4', '3']
     assert characteristic["MAX_REFRESH"]["ScalingUnit"] == "3"
     assert characteristic["MAX_REFRESH"]["Rate"] == "15"
     assert characteristic["SYMBOL_LINK"]["SymbolName"] == '"_VehicleSpeed"'
@@ -187,7 +187,7 @@ def test_rules_characteristic():
     assert len(characteristic["AXIS_DESCR"]) == 2
     assert characteristic["AXIS_DESCR"][0]["Attribute"] == "STD_AXIS"
     assert characteristic["AXIS_DESCR"][0]["InputQuantity"] == "N"
-    assert characteristic["AXIS_DESCR"][0]["Conversion"] == "CONV_N"
+    assert characteristic["AXIS_DESCR"][0]["CONVERSION"] == "CONV_N"
     assert characteristic["AXIS_DESCR"][0]["MaxAxisPoints"] == "14"
     assert characteristic["AXIS_DESCR"][0]["LowerLimit"] == "0.0"
     assert characteristic["AXIS_DESCR"][0]["UpperLimit"] == "5800.0"
@@ -219,7 +219,7 @@ def test_rules_characteristic():
     assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"AXIS_DESCR_TEXT_BLOCK_2"']
     assert characteristic["AXIS_DESCR"][1]["Attribute"] == "STD_AXIS"
     assert characteristic["AXIS_DESCR"][1]["InputQuantity"] == "AMOUNT"
-    assert characteristic["AXIS_DESCR"][1]["Conversion"] == "CON_ME"
+    assert characteristic["AXIS_DESCR"][1]["CONVERSION"] == "CON_ME"
     assert characteristic["AXIS_DESCR"][1]["MaxAxisPoints"] == "17"
     assert characteristic["AXIS_DESCR"][1]["LowerLimit"] == "0.0"
     assert characteristic["AXIS_DESCR"][1]["UpperLimit"] == "43.0"

@@ -30,15 +30,32 @@ class RulesMeta:
         meta_block_empty : BEGIN meta_block_keyword END meta_block_keyword
         """
 
+    def p_meta_block_post_error(self, p):
+        """
+        meta_block_error : meta_block error
+        """
+        if p[1]:
+            p[0] = p[1]
+
+    def p_meta_block_pre_error(self, p):
+        """
+        meta_block_error : error meta_block
+        """
+        if p[2]:
+            p[0] = p[2]
+
     def p_meta_block(self, p):
         """
         meta_block : project
+                   | a2ml_block
                    | a2ml_version
-                   | asap2_version
                    | annotation
+                   | ar_component
+                   | asap2_version
                    | axis_descr
                    | axis_pts
                    | bit_operation
+                   | blob
                    | calibration_handle
                    | calibration_method
                    | characteristic
@@ -57,6 +74,7 @@ class RulesMeta:
                    | header
                    | if_data
                    | in_measurement
+                   | instance
                    | loc_measurement
                    | map_list
                    | measurement
@@ -66,12 +84,20 @@ class RulesMeta:
                    | mod_par
                    | module
                    | out_measurement
+                   | overwrite
                    | record_layout
                    | ref_characteristic
                    | ref_group
                    | ref_measurement
                    | sub_function
                    | sub_group
+                   | structure_component
+                   | transformer
+                   | typedef_axis
+                   | typedef_blob
+                   | typedef_characteristic
+                   | typedef_measurement
+                   | typedef_structure
                    | unit
                    | user_rights
                    | var_address
@@ -86,11 +112,14 @@ class RulesMeta:
 
     def p_meta_block_keywords(self, p):
         """
-        meta_block_keyword : ANNOTATION
+        meta_block_keyword : A2ML
+                           | ANNOTATION
                            | ANNOTATION_TEXT
+                           | AR_COMPONENT
                            | AXIS_DESCR
                            | AXIS_PTS
                            | BIT_OPERATION
+                           | BLOB
                            | CALIBRATION_HANDLE
                            | CALIBRATION_METHOD
                            | CHARACTERISTIC
@@ -110,6 +139,7 @@ class RulesMeta:
                            | GROUP
                            | HEADER
                            | IN_MEASUREMENT
+                           | INSTANCE
                            | LOC_MEASUREMENT
                            | MAP_LIST
                            | MEASUREMENT
@@ -119,6 +149,7 @@ class RulesMeta:
                            | MOD_PAR
                            | MODULE
                            | OUT_MEASUREMENT
+                           | OVERWRITE
                            | PROJECT
                            | RECORD_LAYOUT
                            | REF_CHARACTERISTIC
@@ -126,6 +157,13 @@ class RulesMeta:
                            | REF_MEASUREMENT
                            | SUB_FUNCTION
                            | SUB_GROUP
+                           | STRUCTURE_COMPONENT
+                           | TRANSFORMER
+                           | TYPEDEF_AXIS
+                           | TYPEDEF_BLOB
+                           | TYPEDEF_CHARACTERISTIC
+                           | TYPEDEF_MEASUREMENT
+                           | TYPEDEF_STRUCTURE
                            | UNIT
                            | UNIT_CONVERSION
                            | USER

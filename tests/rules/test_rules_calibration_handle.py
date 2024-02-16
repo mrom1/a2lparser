@@ -51,6 +51,6 @@ def test_rules_calibration_handle():
     calibration_handle = ast["CALIBRATION_HANDLE"]
     assert len(calibration_handle) == 2
     assert calibration_handle[0]["Handle"] == ["0x10000", "0x200", "0x4", "0x30000", "0x20000"]
-    assert calibration_handle[0]["CALIBRATION_HANDLE_TEXT"]["CALIBRATION_HANDLE_TEXT"] == '"12345"'
+    assert calibration_handle[0]["CALIBRATION_HANDLE_TEXT"].Text == '"12345"'
     assert calibration_handle[1]["Handle"] == ["0x40000", "0x800", "0x2", "0xFF000", "0xCC000"]
-    assert calibration_handle[1]["CALIBRATION_HANDLE_TEXT"]["CALIBRATION_HANDLE_TEXT"] == '"description"'
+    assert calibration_handle[1]["CALIBRATION_HANDLE_TEXT"].Text == '"description"'

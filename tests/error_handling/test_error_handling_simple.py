@@ -24,11 +24,12 @@ from a2lparser.a2l.a2l_yacc import A2LYacc
 
 def test_error_handling_pre_type():
     """
-    Tests --- @TODO
+    Tests an error invoking out of place string literal.
+    Expected behaviour is to verify that the correct parts are parsed.
 
-    Error handling for
-    [keyword] error
-    /begin annotation /end annotation
+    Structure:
+        [keyword] error
+        [valid keyword]
     """
     erroneous_input = """
     "some error invoking string out of place"
@@ -46,11 +47,12 @@ def test_error_handling_pre_type():
 
 def test_error_handling_pre_section():
     """
-    Tests --- @TODO
+    Tests an error invoking out of place string literal.
+    Expected behaviour is to verify that the correct parts are parsed.
 
-    Error handling for
-    [keyword] error
-    /begin annotation /end annotation
+    Structure:
+        [keyword] error
+        [correct section]
     """
     erroneous_input = """
     "some error invoking string out of place"
@@ -73,9 +75,15 @@ def test_error_handling_pre_section():
     assert annotation["ANNOTATION_ORIGIN"] == '"annotation test origin"'
 
 
-def test_error_handling_post_type():
+def test_error_handling_post_type():  # sourcery skip: extract-duplicate-method
     """
-    @TODO
+    Tests an error invoking out of place string literal.
+    Expected behaviour is to verify that the correct parts are parsed.
+
+    Structure:
+        [correct keyword]
+        [keyword] error
+        [correct keyword]
     """
     erroneous_input = """
     A2ML_VERSION 1 31 /* Version 1.3.1 */
@@ -99,11 +107,14 @@ def test_error_handling_post_type():
 
 def test_error_handling_post_section():
     """
-    Tests --- @TODO
+    Tests an error invoking out of place string literal.
+    Expected behaviour is to verify that the correct parts are parsed.
 
-    Error handling for
-    [keyword] error
-    /begin annotation /end annotation
+    Structure:
+        [valid keyword]
+        [valid section]
+        [keyword] error
+        [valid section]
     """
     erroneous_input = """
     A2ML_VERSION 1 61 /* Version 1.6.1 */

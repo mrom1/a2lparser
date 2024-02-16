@@ -125,6 +125,72 @@ def test_rules_module():
 
         /begin MOD_PAR "_default_ModParComment"
         /end MOD_PAR
+
+        /begin GROUP Group_Type_Scalar "Contains all scalar measurements and parameters"
+          /begin REF_CHARACTERISTIC
+            ASAM.C.SCALAR.FLOAT32_IEEE.IDENTICAL
+            ASAM.C.SCALAR.FLOAT64_IEEE.IDENTICAL
+            ASAM.C.SCALAR.SBYTE.IDENTICAL
+            ASAM.C.SCALAR.SLONG.IDENTICAL
+            ASAM.C.SCALAR.SWORD.FORM_X_PLUS_4
+            ASAM.C.SCALAR.SWORD.IDENTICAL
+            ASAM.C.SCALAR.SWORD.LINEAR_MUL_2
+            ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_10
+            ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_81_9175
+            ASAM.C.SCALAR.SWORD.TAB_INTP_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.TAB_INTP_NO_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.TAB_NOINTP_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.TAB_NOINTP_NO_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.TAB_VERB_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.TAB_VERB_NO_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.VTAB_RANGE_DEFAULT_VALUE
+            ASAM.C.SCALAR.SWORD.VTAB_RANGE_NO_DEFAULT_VALUE
+            ASAM.C.SCALAR.UBYTE.IDENTICAL
+            ASAM.C.SCALAR.ULONG.IDENTICAL
+            ASAM.C.SCALAR.UWORD.IDENTICAL
+            ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001
+            ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010
+            ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0
+          /end REF_CHARACTERISTIC
+          /begin REF_MEASUREMENT
+            ASAM.M.SCALAR.FLOAT32.IDENTICAL
+            ASAM.M.SCALAR.FLOAT64.IDENTICAL
+            ASAM.M.SCALAR.SBYTE.IDENTICAL
+            ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2
+            ASAM.M.SCALAR.SLONG.IDENTICAL
+            ASAM.M.SCALAR.SWORD.IDENTICAL
+            ASAM.M.SCALAR.UBYTE.FORM_X_PLUS_4
+            ASAM.M.SCALAR.UBYTE.IDENTICAL
+            ASAM.M.SCALAR.UBYTE.TAB_INTP_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.TAB_INTP_NO_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.TAB_NOINTP_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.TAB_NOINTP_NO_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.TAB_VERB_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.TAB_VERB_NO_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.VTAB_RANGE_DEFAULT_VALUE
+            ASAM.M.SCALAR.UBYTE.VTAB_RANGE_NO_DEFAULT_VALUE
+            ASAM.M.SCALAR.ULONG.IDENTICAL
+            ASAM.M.SCALAR.UWORD.IDENTICAL
+            ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0008
+            ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0
+            ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL
+          /end REF_MEASUREMENT
+        /end GROUP
+
+        /begin GROUP Group_Type_Array "Contains all array measurements and parameters"
+          /begin REF_CHARACTERISTIC
+            ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.COLUMN_DIR
+            ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.ROW_DIR
+            ASAM.C.ARRAY.SWORD.MATRIX_DIM_6.ROW_DIR
+          /end REF_CHARACTERISTIC
+          /begin REF_MEASUREMENT
+            ASAM.M.MATRIX_DIM_16_1.UBYTE.IDENTICAL
+            ASAM.M.MATRIX_DIM_16.UBYTE.IDENTICAL
+            ASAM.M.MATRIX_DIM_8_2.UBYTE.IDENTICAL
+            ASAM.M.MATRIX_DIM_8_4_2.UBYTE.IDENTICAL
+          /end REF_MEASUREMENT
+        /end GROUP
+
     /end MODULE
     """
     parser = A2LYacc()
@@ -147,7 +213,7 @@ def test_rules_module():
     assert module["AXIS_PTS"][0]["InputQuantity"] == "N"
     assert module["AXIS_PTS"][0]["Deposit_Ref"] == "DAMOS_SST"
     assert module["AXIS_PTS"][0]["MaxDiff"] == "100.0"
-    assert module["AXIS_PTS"][0]["Conversion"] == "R_SPEED"
+    assert module["AXIS_PTS"][0]["CONVERSION"] == "R_SPEED"
     assert module["AXIS_PTS"][0]["MaxAxisPoints"] == "21"
     assert module["AXIS_PTS"][0]["LowerLimit"] == "0.0"
     assert module["AXIS_PTS"][0]["UpperLimit"] == "5800.0"
@@ -158,7 +224,7 @@ def test_rules_module():
     assert module["AXIS_PTS"][1]["InputQuantity"] == "N"
     assert module["AXIS_PTS"][1]["Deposit_Ref"] == "DAMOS_SST"
     assert module["AXIS_PTS"][1]["MaxDiff"] == "100.0"
-    assert module["AXIS_PTS"][1]["Conversion"] == "R_SPEED"
+    assert module["AXIS_PTS"][1]["CONVERSION"] == "R_SPEED"
     assert module["AXIS_PTS"][1]["MaxAxisPoints"] == "21"
     assert module["AXIS_PTS"][1]["LowerLimit"] == "0.0"
     assert module["AXIS_PTS"][1]["UpperLimit"] == "5800.0"
@@ -171,7 +237,7 @@ def test_rules_module():
     assert module["CHARACTERISTIC"][0]["Address"] == "0x7140"
     assert module["CHARACTERISTIC"][0]["Deposit_Ref"] == "DAMOS_KF"
     assert module["CHARACTERISTIC"][0]["MaxDiff"] == "100.0"
-    assert module["CHARACTERISTIC"][0]["Conversion"] == "R_VOLTAGE"
+    assert module["CHARACTERISTIC"][0]["CONVERSION"] == "R_VOLTAGE"
     assert module["CHARACTERISTIC"][0]["LowerLimit"] == "0.0"
     assert module["CHARACTERISTIC"][0]["UpperLimit"] == "5000.0"
     assert module["CHARACTERISTIC"][1]["Name"] == "PUMKF"
@@ -180,7 +246,7 @@ def test_rules_module():
     assert module["CHARACTERISTIC"][1]["Address"] == "0xFFFF"
     assert module["CHARACTERISTIC"][1]["Deposit_Ref"] == "DAMOS_KF"
     assert module["CHARACTERISTIC"][1]["MaxDiff"] == "124.0"
-    assert module["CHARACTERISTIC"][1]["Conversion"] == "R_VOLTAGE"
+    assert module["CHARACTERISTIC"][1]["CONVERSION"] == "R_VOLTAGE"
     assert module["CHARACTERISTIC"][1]["LowerLimit"] == "0.0"
     assert module["CHARACTERISTIC"][1]["UpperLimit"] == "1000.0"
 
@@ -285,7 +351,7 @@ def test_rules_module():
     assert module["FUNCTION"][1]["LongIdentifier"] == '"IDENT_BYTE"'
 
     # GROUP asserts
-    assert len(module["GROUP"]) == 2
+    assert len(module["GROUP"]) == 4
     assert module["GROUP"][0]["GroupName"] == "CUSTSWC"
     assert module["GROUP"][0]["GroupLongIdentifier"] == '"Subsys"'
     assert module["GROUP"][1]["GroupName"] == "CUSTBSW"
@@ -303,7 +369,7 @@ def test_rules_module():
     assert module["MEASUREMENT"][0]["Name"] == "measurement_1"
     assert module["MEASUREMENT"][0]["LongIdentifier"] == '"ID"'
     assert module["MEASUREMENT"][0]["Datatype"] == "SWORD"
-    assert module["MEASUREMENT"][0]["Conversion"] == "DC_PCT_100"
+    assert module["MEASUREMENT"][0]["CONVERSION"] == "DC_PCT_100"
     assert module["MEASUREMENT"][0]["Resolution"] == "1"
     assert module["MEASUREMENT"][0]["Accuracy"] == "100."
     assert module["MEASUREMENT"][0]["LowerLimit"] == "-327.68"
@@ -311,7 +377,7 @@ def test_rules_module():
     assert module["MEASUREMENT"][1]["Name"] == "measurement_2"
     assert module["MEASUREMENT"][1]["LongIdentifier"] == '"ID"'
     assert module["MEASUREMENT"][1]["Datatype"] == "UBYTE"
-    assert module["MEASUREMENT"][1]["Conversion"] == "DC_PCT_100"
+    assert module["MEASUREMENT"][1]["CONVERSION"] == "DC_PCT_100"
     assert module["MEASUREMENT"][1]["Resolution"] == "1"
     assert module["MEASUREMENT"][1]["Accuracy"] == "100."
     assert module["MEASUREMENT"][1]["LowerLimit"] == "-327.68"

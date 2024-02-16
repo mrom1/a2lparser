@@ -20,7 +20,6 @@
 # pylint: disable=C0103
 
 
-# @TODO: change rule for "datatype" and "datasize" to "datatype_enum" and "datasize_enum"
 class RulesEnum:
     """
     Rules for parsing enum datatypes.
@@ -31,6 +30,7 @@ class RulesEnum:
         addrtype_enum : PBYTE
                       | PWORD
                       | PLONG
+                      | PLONGLONG
                       | DIRECT
         """
         p[0] = p[1]
@@ -58,6 +58,8 @@ class RulesEnum:
                         | MSB_LAST
                         | LITTLE_ENDIAN
                         | BIG_ENDIAN
+                        | MSB_FIRST_MSW_LAST
+                        | MSB_LAST_MSW_FIRST
         """
         p[0] = p[1]
 
@@ -105,18 +107,27 @@ class RulesEnum:
 
     def p_datatype_enum(self, p):
         """
-        datatype_enum : SBYTE
-                      | UBYTE
+        datatype_enum : UBYTE
+                      | SBYTE
                       | UWORD
                       | SWORD
                       | ULONG
                       | SLONG
                       | A_UINT64
                       | A_INT64
+                      | FLOAT16_IEEE
                       | FLOAT32_IEEE
                       | FLOAT64_IEEE
         """
         p[0] = p[1]
+
+    def p_encoding_enum(self, p):
+        """
+        encoding_enum : UTF8
+                      | UTF16
+                      | UTF32
+        """
+        p[0] = p[2]
 
     def p_mode_enum(self, p):
         """
@@ -150,6 +161,7 @@ class RulesEnum:
                         | RAM
                         | ROM
                         | REGISTER
+                        | NOT_IN_ECU
         """
         p[0] = p[1]
 
@@ -162,6 +174,13 @@ class RulesEnum:
                       | MONOTONOUS
                       | STRICT_MON
                       | NOT_MON
+        """
+        p[0] = p[1]
+
+    def p_transformer_trigger_enum(self, p):
+        """
+        transformer_trigger_enum : ON_CHANGE
+                                 | ON_USER_REQUEST
         """
         p[0] = p[1]
 

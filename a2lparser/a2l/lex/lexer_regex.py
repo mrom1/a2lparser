@@ -35,6 +35,11 @@ class LexerRegex:
     #########################################
     identifier = r"[a-zA-Z_][0-9a-zA-Z_\-.\[\]]*"
 
+    ########################################
+    # RegEx for parsing A2ML content lines #
+    ########################################
+    a2ml_content = r"/\s*begin\s+A2ML\s+([\s\S]*?)\s+/end\s+A2ML"
+
     #############################
     # RegEx for parsing numbers #
     #############################

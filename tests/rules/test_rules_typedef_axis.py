@@ -22,48 +22,34 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_error_handling_nested_section():
+def test_rules_typedef_axis_minimal():
     """
-    This tests aims to check that an error can occure in a nested section.
-    Expected behavior is for the error handling to allow all valid parts.
+    Test A2L TYPEDEF_AXIS section.
     """
-    erroneous_input = """
-    /begin MEASUREMENT
-        N /* name */
-        "Engine speed" /* long identifier */
-        UWORD /* datatype */
-        R_SPEED_3 /* conversion */
-        2 /* resolution */
-        2.5 /* accuracy */
-        120.0 /* lower limit */
-        8400.0 /* upper limit */
-        /begin ANNOTATION
-            ANNOTATION_LABEL "first valid label"
-            /begin ANNOTATION_TEXT
-                "first valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "first valid annotation origin"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "label inside erroneous section"
-            /begin ANNOTATION_TEXT
-                0xee00ee00 /* ERROR PROVOKING TOKEN */
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "origin inside erroneous section"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "second valid label"
-            /begin ANNOTATION_TEXT
-                "second valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "second valid annotation origin"
-        /end ANNOTATION
-        /begin FUNCTION_LIST
-            ID_ADJUSTX  /* Valid function name */
-            ID_ADJUSTY  /* Valid function name */
-        /end FUNCTION_LIST
-    /end MEASUREMENT
+    typedef_axis_minimal = """
+    /begin TYPEDEF_AXIS
+        T_AXIS_N // type name
+        "axis points" // description
+        N // input quantity
+        REC_DMMAX // reference to record layout
+        33.0 // maxdiff
+        CONV_DMMAX // reference to conversion method
+        100 // maximum number of axis points
+        0.0 // lower limit
+        2460.0 // upper limit
+    /end TYPEDEF_AXIS
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(erroneous_input)
+    ast = A2LYacc().generate_ast(typedef_axis_minimal)
     assert ast
+
+    typedef_axis = ast["TYPEDEF_AXIS"]
+    assert typedef_axis
+    assert typedef_axis["Name"] == "T_AXIS_N"
+    assert typedef_axis["LongIdentifier"] == '"axis points"'
+    assert typedef_axis["InputQuantity"] == "N"
+    assert typedef_axis["RecordLayout"] == "REC_DMMAX"
+    assert typedef_axis["MaxDiff"] == "33.0"
+    assert typedef_axis["CONVERSION"] == "CONV_DMMAX"
+    assert typedef_axis["MaxAxisPoints"] == "100"
+    assert typedef_axis["LowerLimit"] == "0.0"
+    assert typedef_axis["UpperLimit"] == "2460.0"

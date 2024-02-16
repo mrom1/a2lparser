@@ -27,12 +27,13 @@ from a2lparser.a2l.rules.rules_meta import RulesMeta
 from a2lparser.a2l.rules.rules_enum import RulesEnum
 from a2lparser.a2l.rules.rules_sections import RulesSections
 from a2lparser.a2l.rules.rules_datatypes import RulesDatatypes
+from a2lparser.a2l.rules.rules_sections_errorhandlers import RulesSectionsErrorhandlers
 from a2lparser.a2l.parsing_exception import ParsingException
 from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 import a2lparser.gen.a2l_ast as ASTNodes
 
 
-class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
+class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSectionsErrorhandlers):
     """
     A2LYacc class which represents the an instance of the YACC module from ply.yacc.
 
@@ -101,47 +102,27 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
     # and the basic grammer. For more specific rules #
     # look into a2lparser.a2l.rules                  #
     ##################################################
-    # pylint: disable=C0103
-    # def p_error(self, p):  # pylint: disable=W0613
-    #     """
-    #     Error handler function.
-    #     """
-    #     # We just do nothing for now and wait for the next valid section
-    #     if self.experimental_error_resolve:
-    #         raise NotImplementedError("Experimental error resolving is not implemented yet.")
-    #     # while True:
-    #     #     if p.type == "END":
-    #     #         break
-    #     #     tok = self.a2l_lex.token()  # Get the next token
-    #     #     if not tok or tok.type == "END":
-    #     #         break  # Stop skipping when we reach the end of the section
-    #     # # Return an empty list to continue parsing the remaining sections
-    #     # return []
-
     def p_error(self, p):
         """
         Error handler function.
         """
-        if p:
-            token = self.a2l_yacc.token()
-            self.a2l_yacc.errok()
-            return token
-
-    def p_empty(self, p):
-        """
-        empty :
-        """
-        p[0] = None
+        if not p:
+            # End of file reached. This section could be used for validation.
+            return
 
     def p_abstract_syntax_tree_final(self, p):
         """
         abstract_syntax_tree_final : a2l_final
-                                   | empty
         """
         if p[1] is None:
             p[0] = ASTNodes.Abstract_Syntax_Tree(None)
         else:
             p[0] = ASTNodes.Abstract_Syntax_Tree(p[1])
+            # Update progressbar
+            progressed_newlines = self.a2l_lex.progressbar.current
+            diff = self.a2l_lex.lexer.lineno - progressed_newlines - 1
+            if diff > 0:
+                self.a2l_lex.progressbar(diff, skipped=True)  # pylint: disable=E1102
 
     def p_a2l_final(self, p):
         """
@@ -171,6 +152,7 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections):
         """
         a2l_section : meta_block
                     | meta_block_empty
+                    | meta_block_error
         """
         if p[1]:
             p[0] = p[1]

@@ -22,48 +22,29 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_error_handling_nested_section():
+def test_rules_transformer_minimal():
     """
-    This tests aims to check that an error can occure in a nested section.
-    Expected behavior is for the error handling to allow all valid parts.
+    Test A2L TRANSFORMER section.
     """
-    erroneous_input = """
-    /begin MEASUREMENT
-        N /* name */
-        "Engine speed" /* long identifier */
-        UWORD /* datatype */
-        R_SPEED_3 /* conversion */
-        2 /* resolution */
-        2.5 /* accuracy */
-        120.0 /* lower limit */
-        8400.0 /* upper limit */
-        /begin ANNOTATION
-            ANNOTATION_LABEL "first valid label"
-            /begin ANNOTATION_TEXT
-                "first valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "first valid annotation origin"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "label inside erroneous section"
-            /begin ANNOTATION_TEXT
-                0xee00ee00 /* ERROR PROVOKING TOKEN */
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "origin inside erroneous section"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "second valid label"
-            /begin ANNOTATION_TEXT
-                "second valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "second valid annotation origin"
-        /end ANNOTATION
-        /begin FUNCTION_LIST
-            ID_ADJUSTX  /* Valid function name */
-            ID_ADJUSTY  /* Valid function name */
-        /end FUNCTION_LIST
-    /end MEASUREMENT
+    transformer_minimal = """
+    /begin TRANSFORMER TRANSFORMER_TOOL
+        "1.4.3.33" /* Version info */
+        "transformer_tool_x32.dll" /* DLL */
+        "" /* no 64bit DLL */
+        33000 /* timeout in [ms] */
+        ON_USER_REQUEST
+        TRANSFORMER_TOOL_REVERSE
+    /end TRANSFORMER
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(erroneous_input)
+    ast = A2LYacc().generate_ast(transformer_minimal)
     assert ast
+
+    transformer = ast["TRANSFORMER"]
+    assert transformer
+    assert transformer["Name"] == "TRANSFORMER_TOOL"
+    assert transformer["VERSION"] == '"1.4.3.33"'
+    assert transformer["Executable32"] == '"transformer_tool_x32.dll"'
+    assert transformer["Executable64"] == '""'
+    assert transformer["Timeout"] == "33000"
+    assert transformer["Trigger"] == "ON_USER_REQUEST"
+    assert transformer["InverseTransformer"] == "TRANSFORMER_TOOL_REVERSE"

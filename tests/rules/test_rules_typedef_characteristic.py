@@ -22,48 +22,33 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_error_handling_nested_section():
+def test_rules_typedef_characteristic():
     """
-    This tests aims to check that an error can occure in a nested section.
-    Expected behavior is for the error handling to allow all valid parts.
+    Test A2L TYPEDEF_CHARACTERISTIC section.
     """
-    erroneous_input = """
-    /begin MEASUREMENT
-        N /* name */
-        "Engine speed" /* long identifier */
-        UWORD /* datatype */
-        R_SPEED_3 /* conversion */
-        2 /* resolution */
-        2.5 /* accuracy */
-        120.0 /* lower limit */
-        8400.0 /* upper limit */
-        /begin ANNOTATION
-            ANNOTATION_LABEL "first valid label"
-            /begin ANNOTATION_TEXT
-                "first valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "first valid annotation origin"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "label inside erroneous section"
-            /begin ANNOTATION_TEXT
-                0xee00ee00 /* ERROR PROVOKING TOKEN */
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "origin inside erroneous section"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "second valid label"
-            /begin ANNOTATION_TEXT
-                "second valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "second valid annotation origin"
-        /end ANNOTATION
-        /begin FUNCTION_LIST
-            ID_ADJUSTX  /* Valid function name */
-            ID_ADJUSTY  /* Valid function name */
-        /end FUNCTION_LIST
-    /end MEASUREMENT
+    typedef_characteristic_minimal = """
+    /begin TYPEDEF_CHARACTERISTIC
+        T_TIME_MS // type name
+        "time in ms" // description
+        VALUE // object type
+        RL_VALUE_ULONG // record layout
+        100.0 // maxdiff
+        NO_COMPU_METHOD // no conversion
+        10 // lower limit
+        65535 // upper limit
+        PHYS_UNIT "ms" // physical unit
+    /end TYPEDEF_CHARACTERISTIC
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(erroneous_input)
+    ast = A2LYacc().generate_ast(typedef_characteristic_minimal)
     assert ast
+
+    typedef_characteristic = ast["TYPEDEF_CHARACTERISTIC"]
+    assert typedef_characteristic
+    assert typedef_characteristic["Name"] == "T_TIME_MS"
+    assert typedef_characteristic["LongIdentifier"] == '"time in ms"'
+    assert typedef_characteristic["Type"] == "VALUE"
+    assert typedef_characteristic["RecordLayout"] == "RL_VALUE_ULONG"
+    assert typedef_characteristic["MaxDiff"] == "100.0"
+    assert typedef_characteristic["CONVERSION"] == "NO_COMPU_METHOD"
+    assert typedef_characteristic["LowerLimit"] == "10"
+    assert typedef_characteristic["UpperLimit"] == "65535"

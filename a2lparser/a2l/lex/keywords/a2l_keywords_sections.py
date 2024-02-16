@@ -40,9 +40,13 @@ class A2LKeywordsSections:
         # Annotation
         "ANNOTATION",
         "ANNOTATION_TEXT",
+        # AR_Component
+        "AR_COMPONENT",
         # Axis description and points
         "AXIS_DESCR",
         "AXIS_PTS",
+        # BLOB
+        "BLOB",
         # Calibartion
         "CALIBRATION_HANDLE",
         "CALIBRATION_METHOD",
@@ -70,9 +74,9 @@ class A2LKeywordsSections:
         "HEADER",
         # Interface data
         "IF_DATA",
-        # Measurement
         "IN_MEASUREMENT",
         "LOC_MEASUREMENT",
+        "INSTANCE",
         "MEASUREMENT",
         # MAP_LIST
         "MAP_LIST",
@@ -88,18 +92,26 @@ class A2LKeywordsSections:
         "MODULE",
         # OUT_MEASUREMENT
         "OUT_MEASUREMENT",
+        # OVERWRITE
+        "OVERWRITE",
         # PROJECT
         "PROJECT",
         # RECORD_LAYOUT
         "RECORD_LAYOUT",
-        # REF_CHARACTERISTIC
+        # REFS
         "REF_CHARACTERISTIC",
         "REF_GROUP",
         "REF_MEASUREMENT",
-        # SUB_FUNCTION
+        "STRUCTURE_COMPONENT",
         "SUB_FUNCTION",
-        # SUB_GROUP
         "SUB_GROUP",
+        "TRANSFORMER",
+        # TYPE DEFS
+        "TYPEDEF_AXIS",
+        "TYPEDEF_BLOB",
+        "TYPEDEF_CHARACTERISTIC",
+        "TYPEDEF_MEASUREMENT",
+        "TYPEDEF_STRUCTURE",
         # UNIT
         "UNIT",
         # USER_RIGHTS

@@ -22,48 +22,61 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_error_handling_nested_section():
+def test_error_handling_measurement_subsection_error():
     """
-    This tests aims to check that an error can occure in a nested section.
-    Expected behavior is for the error handling to allow all valid parts.
+    Tests if an erroneous measurement subsection is handled correctly.
     """
     erroneous_input = """
-    /begin MEASUREMENT
-        N /* name */
+    /begin MEASUREMENT N /* name */
         "Engine speed" /* long identifier */
         UWORD /* datatype */
         R_SPEED_3 /* conversion */
-        2 /* resolution */
-        2.5 /* accuracy */
+        1 /* resolution */
+        0 /* accuracy */
         120.0 /* lower limit */
         8400.0 /* upper limit */
+        PHYS_UNIT "mph"
+        BIT_MASK 0x0FFF
+        BYTE_ORDER MSB_FIRST
+        REF_MEMORY_SEGMENT Data2
+        /begin IF_DATA ISO SND
+            0x10
+            0x00
+            0x05
+            0x08
+            RCV
+            4
+            long
+        /end IF_DATA
         /begin ANNOTATION
-            ANNOTATION_LABEL "first valid label"
+            ANNOTATION_LABEL "annotation test label"
             /begin ANNOTATION_TEXT
-                "first valid annotation text"
+                "annotation text example"
             /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "first valid annotation origin"
+            ANNOTATION_LABEL 0x00EE00FF
         /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "label inside erroneous section"
-            /begin ANNOTATION_TEXT
-                0xee00ee00 /* ERROR PROVOKING TOKEN */
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "origin inside erroneous section"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "second valid label"
-            /begin ANNOTATION_TEXT
-                "second valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "second valid annotation origin"
-        /end ANNOTATION
-        /begin FUNCTION_LIST
-            ID_ADJUSTX  /* Valid function name */
-            ID_ADJUSTY  /* Valid function name */
+        /begin FUNCTION_LIST ID_ADJUSTM
+            FL_ADJUSTM
         /end FUNCTION_LIST
     /end MEASUREMENT
     """
     parser = A2LYacc()
     ast = parser.generate_ast(erroneous_input)
     assert ast
+
+    measurement = ast["MEASUREMENT"]
+    assert measurement
+    assert measurement["Name"] == "N"
+    assert measurement["LongIdentifier"] == '"Engine speed"'
+    assert measurement["Datatype"] == "UWORD"
+    assert measurement["CONVERSION"] == "R_SPEED_3"
+    assert measurement["Resolution"] == "1"
+    assert measurement["Accuracy"] == "0"
+    assert measurement["LowerLimit"] == "120.0"
+    assert measurement["UpperLimit"] == "8400.0"
+    assert measurement["BIT_MASK"] == "0x0FFF"
+    assert measurement["BYTE_ORDER"] == "MSB_FIRST"
+    assert measurement["REF_MEMORY_SEGMENT"] == "Data2"
+    assert measurement["PHYS_UNIT"] == '"mph"'
+    assert measurement["FUNCTION_LIST"] == {'Name': ['ID_ADJUSTM', 'FL_ADJUSTM']}
+    assert measurement["IF_DATA"] == {'Name': 'ISO', 'DataParams': ['SND', '0x10', '0x00', '0x05', '0x08', 'RCV', '4', 'long']}

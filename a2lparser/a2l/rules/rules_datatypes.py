@@ -20,7 +20,6 @@
 # pylint: disable=C0103
 
 
-# @TODO: refactor "addrtype_enum" etc to "addrtype" in rules
 class RulesDatatypes:
     """
     Rules for parsing datatypes.

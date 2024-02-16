@@ -22,7 +22,8 @@
 import os
 import tempfile
 import importlib.util
-from a2lparser import A2L_PACKAGE_DIR
+from a2lparser import A2L_CONFIGS_DIR
+from a2lparser import A2L_DEFAULT_CONFIG_NAME
 from a2lparser.a2l.ast.ast_generator import ASTGenerator
 
 
@@ -31,7 +32,7 @@ def test_ast_generator():
     Attempts to create the python file containing the AST node classes.
     """
     with tempfile.TemporaryDirectory() as tempdir:
-        config_file = A2L_PACKAGE_DIR / "configs" / "A2L_ASAM.cfg"
+        config_file = A2L_CONFIGS_DIR / A2L_DEFAULT_CONFIG_NAME
         ast_python_file = os.path.join(tempdir, "test_a2l_ast.py")
         ast_generator = ASTGenerator(cfg_filename=str(config_file), out_filename=ast_python_file)
         ast_generator.generate(use_clean_names=True)

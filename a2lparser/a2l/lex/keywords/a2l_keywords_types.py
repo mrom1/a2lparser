@@ -38,6 +38,7 @@ class A2LKeywordsTypes:
         "ADDR_EPK",
         # Alignment Tokens
         "ALIGNMENT_BYTE",
+        "ALIGNMENT_FLOAT16_IEEE",
         "ALIGNMENT_FLOAT32_IEEE",
         "ALIGNMENT_FLOAT64_IEEE",
         "ALIGNMENT_INT64",
@@ -47,14 +48,15 @@ class A2LKeywordsTypes:
         "ANNOTATION_LABEL",
         "ANNOTATION_ORIGIN",
         "ARRAY_SIZE",
+        "AR_PROTOTYPE_OF",
         "ASAP2_VERSION",
         # Axis points
         "AXIS_PTS_REF",
         "AXIS_PTS_X",
         "AXIS_PTS_Y",
         "AXIS_PTS_Z",
-        "AXIS_PTS_Z4",
-        "AXIS_PTS_Z5",
+        "AXIS_PTS_4",
+        "AXIS_PTS_5",
         "AXIS_RESCALE_X",
         # Bit operations
         "BIT_MASK",
@@ -63,12 +65,14 @@ class A2LKeywordsTypes:
         # Calibration keywords
         "CALIBRATION_ACCESS",
         "CALIBRATION_HANDLE_TEXT",
+        "CONSISTENT_EXCHANGE",
+        "CONVERSION",
         # Coefficients keywords
         "COEFFS",
         "COEFFS_LINEAR",
-        "COMPARISON_QUANTITY",
         # Computation
         "COMPU_TAB_REF",
+        "COMPARISON_QUANTITY",
         # Cpu
         "CPU_TYPE",
         # Curve charactersitic
@@ -92,8 +96,8 @@ class A2LKeywordsTypes:
         "DIST_OP_X",
         "DIST_OP_Y",
         "DIST_OP_Z",
-        "DIST_OP_Z4",
-        "DIST_OP_Z5",
+        "DIST_OP_4",
+        "DIST_OP_5",
         # ECU keywords
         "ECU",
         "ECU_ADDRESS",
@@ -111,8 +115,8 @@ class A2LKeywordsTypes:
         "FIX_NO_AXIS_PTS_X",
         "FIX_NO_AXIS_PTS_Y",
         "FIX_NO_AXIS_PTS_Z",
-        "FIX_NO_AXIS_PTS_Z4",
-        "FIX_NO_AXIS_PTS_Z5",
+        "FIX_NO_AXIS_PTS_4",
+        "FIX_NO_AXIS_PTS_5",
         # Function values
         "FNC_VALUES",
         # Format for strings / display
@@ -125,26 +129,22 @@ class A2LKeywordsTypes:
         "FUNCTION_VERSION",
         # Guard rails for curves, maps, axis points
         "GUARD_RAILS",
-        # Description of an 'identifier' in an adjustable object.
         "IDENTIFICATION",
-        # LAYOUT keyword describes the layout of a multi-dimensional measurement array.
+        "INPUT_QUANTITY",
         "LAYOUT",
-        # LEFT_SHIFT keyword used within the BIT_OPERATION keyword.
         "LEFT_SHIFT",
-        # MATRIX_DIM
+        "LIMITS",
         "MATRIX_DIM",
-        # MAX_GRAD
         "MAX_GRAD",
-        # MAX_REFRESH
         "MAX_REFRESH",
-        # MONOTONY
+        "MODEL_LINK",
         "MONOTONY",
         # NO_AXIS_PTS
         "NO_AXIS_PTS_X",
         "NO_AXIS_PTS_Y",
         "NO_AXIS_PTS_Z",
-        "NO_AXIS_PTS_Z4",
-        "NO_AXIS_PTS_Z5",
+        "NO_AXIS_PTS_4",
+        "NO_AXIS_PTS_5",
         # NO_OF_INTERFACES
         "NO_OF_INTERFACES",
         # NO_RESCALE_X
@@ -155,8 +155,8 @@ class A2LKeywordsTypes:
         "OFFSET_X",
         "OFFSET_Y",
         "OFFSET_Z",
-        "OFFSET_Z4",
-        "OFFSET_Z5",
+        "OFFSET_4",
+        "OFFSET_5",
         # PHONE_NO
         "PHONE_NO",
         # PHYS_UNIT
@@ -178,16 +178,16 @@ class A2LKeywordsTypes:
         "RIP_ADDR_X",
         "RIP_ADDR_Y",
         "RIP_ADDR_Z",
-        "RIP_ADDR_Z4",
-        "RIP_ADDR_Z5",
+        "RIP_ADDR_4",
+        "RIP_ADDR_5",
         # ROOT
         "ROOT",
         # SHIFT_OP
         "SHIFT_OP_X",
         "SHIFT_OP_Y",
         "SHIFT_OP_Z",
-        "SHIFT_OP_Z4",
-        "SHIFT_OP_Z5",
+        "SHIFT_OP_4",
+        "SHIFT_OP_5",
         # SIGN_EXTEND Bitoperation
         "SIGN_EXTEND",
         # SI_EXPONENTS
@@ -196,9 +196,10 @@ class A2LKeywordsTypes:
         "SRC_ADDR_X",
         "SRC_ADDR_Y",
         "SRC_ADDR_Z",
-        "SRC_ADDR_Z4",
-        "SRC_ADDR_Z5",
-        # STATIC_RECORD_LAYOUT
+        "SRC_ADDR_4",
+        "SRC_ADDR_5",
+        # STATICS
+        "STATIC_ADDRESS_OFFSETS",
         "STATIC_RECORD_LAYOUT",
         # STATUS_STRING_REF
         "STATUS_STRING_REF",
@@ -208,8 +209,11 @@ class A2LKeywordsTypes:
         "SUPPLIER",
         # SYMBOL_LINK
         "SYMBOL_LINK",
+        "SYMBOL_TYPE_LINK",
         # SYSTEM_CONSTANT
         "SYSTEM_CONSTANT",
+        "TRANSFORMER_IN_OBJECTS",
+        "TRANSFORMER_OUT_OBJECTS",
         # UNIT_CONVERSION
         "UNIT_CONVERSION",
         # USER

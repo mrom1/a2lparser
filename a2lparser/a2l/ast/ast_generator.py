@@ -47,7 +47,7 @@ _FILE_COMMENT = r"""
 # ---------------------------------------------------------------------- #
 # *** IMPORTENT ***                                                      #
 # This code was generated from the config file:                          #
-# $cfg_filename                                                          #
+#   $cfg_filename  #
 #                                                                        #
 # If you wish to edit this code use the generator in the subfolder gen   #
 # and adjust the config file, not the code itself!                       #

@@ -65,7 +65,7 @@ def test_rules_axis_descr():
         MONOTONY MON_INCREASE
     /end AXIS_DESCR
     """
-    parser = A2LYacc(debug=True)
+    parser = A2LYacc()
     ast = parser.generate_ast(axis_descr_block)
     assert ast
 
@@ -73,7 +73,7 @@ def test_rules_axis_descr():
     assert axis_descr
     assert axis_descr["Attribute"] == "STD_AXIS"
     assert axis_descr["InputQuantity"] == "N"
-    assert axis_descr["Conversion"] == "CONV_N"
+    assert axis_descr["CONVERSION"] == "CONV_N"
     assert axis_descr["MaxAxisPoints"] == "14"
     assert axis_descr["LowerLimit"] == "0.0"
     assert axis_descr["UpperLimit"] == "5800.0"

@@ -80,7 +80,7 @@ def test_rules_measurement():
     assert measurement["Name"] == "xxx4b4b52c91215c8.xc33258c9abefff4284.x87f0.x871bxxx"
     assert measurement["LongIdentifier"] == '"ex1"'
     assert measurement["Datatype"] == "SWORD"
-    assert measurement["Conversion"] == "NO_FORMULA"
+    assert measurement["CONVERSION"] == "NO_FORMULA"
     assert measurement["Resolution"] == "0"
     assert measurement["Accuracy"] == "0"
     assert measurement["LowerLimit"] == "-32768"

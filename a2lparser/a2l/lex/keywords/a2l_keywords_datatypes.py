@@ -34,6 +34,7 @@ class A2LKeywordsDataTypes:
         "SLONG",
         "A_UINT64",
         "A_INT64",
+        "FLOAT16_IEEE",
         "FLOAT32_IEEE",
         "FLOAT64_IEEE",
         # datasizes
@@ -44,16 +45,23 @@ class A2LKeywordsDataTypes:
         "PBYTE",
         "PWORD",
         "PLONG",
+        "PLONGLONG",
         "DIRECT",
         # byteoders
         "LITTLE_ENDIAN",
         "BIG_ENDIAN",
         "MSB_LAST",
         "MSB_FIRST",
+        "MSB_FIRST_MSW_LAST",
+        "MSB_LAST_MSW_FIRST",
         # indexorders
         "INDEX_INCR",
         "INDEX_DECR",
         # attributes
         "INTERN",
         "EXTERN",
+        # encoding types
+        "UTF8",
+        "UTF16",
+        "UTF32",
     ]

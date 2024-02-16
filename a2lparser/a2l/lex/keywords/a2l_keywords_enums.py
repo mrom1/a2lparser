@@ -25,6 +25,8 @@ class A2LKeywordsEnums:
     """
 
     keywords: list = [
+        # address type
+        "ADDRESS_TYPE",
         # axis description enum
         "CURVE_AXIS",
         "COM_AXIS",
@@ -69,6 +71,7 @@ class A2LKeywordsEnums:
         "RAM",
         "ROM",
         "REGISTER",
+        "NOT_IN_ECU",
         # monotony enum
         "MON_DECREASE",
         "MON_INCREASE",
@@ -94,4 +97,9 @@ class A2LKeywordsEnums:
         # tag enum
         "NUMERIC",
         "ALPHA",
+        # Encoding used e.g. UTF8
+        "ENCODING",
+        # Transformer trigger enum
+        "ON_CHANGE",
+        "ON_USER_REQUEST"
     ]

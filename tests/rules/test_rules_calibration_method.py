@@ -65,5 +65,5 @@ def test_rules_calibration_method():
     assert calibration_method_handle[1]["Handle"] == ["1", "0xBF010000", "0x20000"]
     assert calibration_method_handle[2]["Handle"] == ["0x10000", "0x200", "0x4", "0x10000", "0x10000"]
 
-    calibration_handle_text = calibration_method_handle[2]["CALIBRATION_HANDLE_TEXT"]
-    assert calibration_handle_text["CALIBRATION_HANDLE_TEXT"] == '"Nmot"'
+    calibration_handle_text = calibration_method_handle[2]["CALIBRATION_HANDLE_TEXT"].Text
+    assert calibration_handle_text == '"Nmot"'

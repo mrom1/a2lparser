@@ -105,7 +105,7 @@ def test_rules_axis_pts():
     assert axis_pts["InputQuantity"] == "N"
     assert axis_pts["Deposit_Ref"] == "DAMOS_SST"
     assert axis_pts["MaxDiff"] == "100.0"
-    assert axis_pts["Conversion"] == "R_SPEED"
+    assert axis_pts["CONVERSION"] == "R_SPEED"
     assert axis_pts["MaxAxisPoints"] == "21"
     assert axis_pts["LowerLimit"] == "0.0"
     assert axis_pts["UpperLimit"] == "5800.0"

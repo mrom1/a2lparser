@@ -19,29 +19,28 @@
 #######################################################################################
 
 
-class ASTStack(dict):
+from a2lparser.a2l.a2l_yacc import A2LYacc
+
+
+def test_rules_instance_minimal():
     """
-    @TODO
+    Test A2L instance section.
     """
+    instance_minimal = """
+    /begin INSTANCE
+        Bravo // instance name
+        "" // instance description
+        Alpha // reference to type definition
+        0x1800 // start address of instance
+    /end INSTANCE
+    """
+    ast = A2LYacc().generate_ast(instance_minimal)
+    assert ast
 
-    class ASTStackError(Exception):
-        """
-        @TODO
-        """
+    instance = ast["INSTANCE"]
+    assert instance
 
-    def __init__(self):
-        super().__init__()
-        self.current_section = {}
-
-    def push_section(self, keyword):
-        if self.current_section is not None:
-            self.current_section[keyword] = {}
-        else:
-            self[keyword] = {}
-            self.current_section = self[keyword]
-
-    def pop_section(self, keyword):
-        del self[keyword]
-
-    def feed_token(self, token):
-        self.current_section
+    assert instance["Name"] == "Bravo"
+    assert instance["LongIdentifier"] == '""'
+    assert instance["TypedefName"] == "Alpha"
+    assert instance["Address"] == "0x1800"

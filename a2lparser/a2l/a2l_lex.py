@@ -19,6 +19,7 @@
 #######################################################################################
 
 
+import re
 from ply.lex import lex, LexToken, TOKEN
 from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.lex.lexer_regex import LexerRegex
@@ -43,8 +44,7 @@ class A2LLex:
         "ID",
         "BEGIN",
         "END",
-        # "KEYWORD_SECTION",
-        # "KEYWORD_TYPE",
+        "A2ML_CONTENT",
     ]
     tokens_datatypes = [
         "STRING_LITERAL",
@@ -81,7 +81,7 @@ class A2LLex:
             - lex_table_file: the name of the lex table file
             - generated_files_dir: the directory to write the generated files to
         """
-        self.last_token: LexToken
+        self.last_token: LexToken = None
         self.progressbar = None
         self.lexer = lex(
             module=self,
@@ -90,11 +90,10 @@ class A2LLex:
             lextab=lex_table_file,
             outputdir=generated_files_dir,
         )
-        self.lexer.lineno = 1
 
     def token(self) -> LexToken:
         """
-        Retruns the current token the lexer processes.
+        Retruns the current token which the lexer processes.
         """
         token = self.lexer.token()
         if token:
@@ -140,6 +139,24 @@ class A2LLex:
         """
         msg = f"Illegal character {repr(t.value[0])}"
         self._error_handling(msg, t)
+
+    @TOKEN(LexerRegex.a2ml_content)
+    def t_A2ML_CONTENT(self, t):
+        """
+        Triggers on any content between /begin A2ML and /end A2ML.
+        """
+        # Adjusting line counter of the lexer
+        lines = t.value.count("\n")
+        self.lexer.lineno += lines
+        # Pattern for finding and filtering out the /begin and /end A2ML tags
+        pattern = r"/\s*(?:begin|BEGIN)\s+A2ML|/\s*(?:end|END)\s+A2ML"
+        # Perform a case-insensitive split using re.split
+        parts = re.split(pattern, t.value, flags=re.IGNORECASE)
+        t.value = parts[1].strip() if len(parts) >= 3 else ""
+        # Update progressbar with skipped lines
+        if self.progressbar:
+            self.progressbar(lines, skipped=True)  # pylint: disable=E1102
+        return t
 
     @TOKEN(LexerRegex.begin_section)
     def t_BEGIN(self, t):

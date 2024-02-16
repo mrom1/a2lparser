@@ -22,48 +22,49 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_error_handling_nested_section():
+def test_rules_structure_component_minimal():
     """
-    This tests aims to check that an error can occure in a nested section.
-    Expected behavior is for the error handling to allow all valid parts.
+    Test A2L STRUCTURE_COMPONENT section.
     """
-    erroneous_input = """
-    /begin MEASUREMENT
-        N /* name */
-        "Engine speed" /* long identifier */
-        UWORD /* datatype */
-        R_SPEED_3 /* conversion */
-        2 /* resolution */
-        2.5 /* accuracy */
-        120.0 /* lower limit */
-        8400.0 /* upper limit */
-        /begin ANNOTATION
-            ANNOTATION_LABEL "first valid label"
-            /begin ANNOTATION_TEXT
-                "first valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "first valid annotation origin"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "label inside erroneous section"
-            /begin ANNOTATION_TEXT
-                0xee00ee00 /* ERROR PROVOKING TOKEN */
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "origin inside erroneous section"
-        /end ANNOTATION
-        /begin ANNOTATION
-            ANNOTATION_LABEL "second valid label"
-            /begin ANNOTATION_TEXT
-                "second valid annotation text"
-            /end ANNOTATION_TEXT
-            ANNOTATION_ORIGIN "second valid annotation origin"
-        /end ANNOTATION
-        /begin FUNCTION_LIST
-            ID_ADJUSTX  /* Valid function name */
-            ID_ADJUSTY  /* Valid function name */
-        /end FUNCTION_LIST
-    /end MEASUREMENT
+    structure_component_minimal = """
+    /begin STRUCTURE_COMPONENT
+        XX MyUnsignedLongType
+        0 // address offset
+    /end STRUCTURE_COMPONENT
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(erroneous_input)
+    ast = A2LYacc().generate_ast(structure_component_minimal)
     assert ast
+
+    structure_component = ast["STRUCTURE_COMPONENT"]
+    assert structure_component["Name"] == "XX"
+    assert structure_component["TypedefName"] == "MyUnsignedLongType"
+    assert structure_component["AddressOffset"] == "0"
+
+
+def test_rules_structure_component_full():
+    """
+    Test A2L STRUCTURE_COMPONENT section.
+    """
+    structure_component_full = """
+    /begin STRUCTURE_COMPONENT
+        BXB MyComplexComponent
+        34                      // address offset
+
+        MATRIX_DIM 10
+        SYMBOL_TYPE_LINK "__MyComplexComponent.pdb"
+        ADDRESS_TYPE PLONGLONG
+        LAYOUT ALTERNATE_CURVES
+    /end STRUCTURE_COMPONENT
+    """
+    ast = A2LYacc().generate_ast(structure_component_full)
+    assert ast
+
+    structure_component = ast["STRUCTURE_COMPONENT"]
+    assert structure_component
+    assert structure_component["Name"] == "BXB"
+    assert structure_component["TypedefName"] == "MyComplexComponent"
+    assert structure_component["AddressOffset"] == "34"
+    assert structure_component["MATRIX_DIM"] == ["10"]
+    assert structure_component["SYMBOL_TYPE_LINK"] == '"__MyComplexComponent.pdb"'
+    assert structure_component["ADDRESS_TYPE"] == "PLONGLONG"
+    assert structure_component["LAYOUT"] == "ALTERNATE_CURVES"
