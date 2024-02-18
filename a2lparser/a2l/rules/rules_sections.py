@@ -510,7 +510,7 @@ class RulesSections:
         if len(p) > 2:
             p[0] = ASTNodes.Blob(Name=p[3], LongIdentifier=p[4], Address=p[5], Size=p[6])
 
-            if len(p) == 9:
+            if len(p) == 10:
                 p[0].OptionalParams = p[7]
                 self._remove_ast_node(ASTNodes.Blob_Opt)
 
@@ -1474,7 +1474,7 @@ class RulesSections:
         if len(p) > 2:
             p[0] = ASTNodes.Instance(Name=p[3], LongIdentifier=p[4], TypedefName=p[5], Address=p[6])
 
-            if len(p) == 9:
+            if len(p) == 10:
                 p[0].OptionalParams = p[7]
                 self._remove_ast_node(ASTNodes.Instance_Opt)
 
@@ -1688,8 +1688,8 @@ class RulesSections:
             node_class=node,
             ast_node_names=[
                 ASTNodes.Bit_Operation,
-                ASTNodes.Bit_Operation,
                 ASTNodes.Function_List,
+                ASTNodes.Matrix_Dim,
                 ASTNodes.Max_Refresh,
                 ASTNodes.Symbol_Link,
                 ASTNodes.Virtual,
@@ -2114,13 +2114,13 @@ class RulesSections:
 
     def p_overwrite(self, p):
         """
-        overwrite : BEGIN OVERWRITE ID constant END OVERWRITE
+        overwrite : BEGIN OVERWRITE ident constant END OVERWRITE
                   | BEGIN OVERWRITE ident constant overwrite_opt_list END OVERWRITE
         """
         p[0] = ASTNodes.Overwrite(Name=p[3], AxisNumber=p[4])
         if len(p) == 8:
             p[0].OptionalParams = p[5]
-        self._remove_ast_node(ASTNodes.Overwrite_Opt)
+            self._remove_ast_node(ASTNodes.Overwrite_Opt)
 
     def p_overwrite_opt_list(self, p):
         """
@@ -2792,7 +2792,8 @@ class RulesSections:
         if len(p) == 8:
             p[0] = ASTNodes.Typedef_Blob(Name=p[3], LongIdentifier=p[4], Size=p[5])
         elif len(p) == 9:
-            p[0] = ASTNodes.Typedef_Blob(Name=p[3], LongIdentifier=p[4], Size=p[5], AddressType=p[6])
+            address_type = p[6].AddressType
+            p[0] = ASTNodes.Typedef_Blob(Name=p[3], LongIdentifier=p[4], Size=p[5], Address_Type=address_type)
 
     def p_typedef_characteristic(self, p):
         """
@@ -2883,8 +2884,8 @@ class RulesSections:
                                 constant constant constant  \
                               END TYPEDEF_MEASUREMENT
                             | BEGIN TYPEDEF_MEASUREMENT \
-                                ident string_literal characteristic_enum ident constant \
-                                ident constant constant typedef_measurement_opt_list \
+                                ident string_literal datatype_enum ident constant \
+                                constant constant constant typedef_measurement_opt_list \
                               END TYPEDEF_MEASUREMENT
         """
         p[0] = ASTNodes.Typedef_Measurement(Name=p[3],
@@ -2910,7 +2911,6 @@ class RulesSections:
         """
         typedef_measurement_opt : address_type
                                 | bit_mask
-                                | bit_operation
                                 | byte_order
                                 | discrete
                                 | error_mask
@@ -2935,6 +2935,14 @@ class RulesSections:
             ],
             param=p[1],
         )
+        p[0] = node
+
+    def p_typedef_measurement_opt_objects(self, p):
+        """
+        typedef_measurement_opt : bit_operation
+        """
+        node = self._get_or_create_ast_node(ASTNodes.Typedef_Measurement_Opt)
+        self._add_ast_node_object(node_class=node, ast_node_names=[ASTNodes.Bit_Operation], param=p[1])
         p[0] = node
 
     def p_typedef_structure(self, p):

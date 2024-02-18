@@ -118,11 +118,6 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
             p[0] = ASTNodes.Abstract_Syntax_Tree(None)
         else:
             p[0] = ASTNodes.Abstract_Syntax_Tree(p[1])
-            # Update progressbar
-            progressed_newlines = self.a2l_lex.progressbar.current
-            diff = self.a2l_lex.lexer.lineno - progressed_newlines - 1
-            if diff > 0:
-                self.a2l_lex.progressbar(diff, skipped=True)  # pylint: disable=E1102
 
     def p_a2l_final(self, p):
         """

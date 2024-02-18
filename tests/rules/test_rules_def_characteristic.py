@@ -22,22 +22,17 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_header():
+def test_rules_def_characteristic():
     """
-    Tests parsing a A2L "HEADER" section.
+    Tests a A2L DEF_CHARACTERISTIC section.
     """
-    header_block = """
-    /begin HEADER "see also specification XYZ of 01.02.1994"
-        VERSION "BG5.0815"
-        PROJECT_NO M4711Z1
-    /end HEADER
+    characteristic_block = """
+    /begin DEF_CHARACTERISTIC INJECTION_CURVE
+        DELAY_FACTOR
+        RANDOM_FACTOR
+    /end DEF_CHARACTERISTIC
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(header_block)
+    ast = A2LYacc().generate_ast(characteristic_block)
     assert ast
-
-    header = ast["HEADER"]
-    assert header
-    assert header["Comment"] == '"see also specification XYZ of 01.02.1994"'
-    assert header["PROJECT_NO"] == "M4711Z1"
-    assert header["VERSION"] == '"BG5.0815"'
+    assert ast["DEF_CHARACTERISTIC"] == {'Identifier':
+                                         ['INJECTION_CURVE', 'DELAY_FACTOR', 'RANDOM_FACTOR']}

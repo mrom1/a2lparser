@@ -22,22 +22,9 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_header():
+def test_rules_project():
     """
-    Tests parsing a A2L "HEADER" section.
+    Tests a A2L "PROJECT" section.
     """
-    header_block = """
-    /begin HEADER "see also specification XYZ of 01.02.1994"
-        VERSION "BG5.0815"
-        PROJECT_NO M4711Z1
-    /end HEADER
-    """
-    parser = A2LYacc()
-    ast = parser.generate_ast(header_block)
-    assert ast
-
-    header = ast["HEADER"]
-    assert header
-    assert header["Comment"] == '"see also specification XYZ of 01.02.1994"'
-    assert header["PROJECT_NO"] == "M4711Z1"
-    assert header["VERSION"] == '"BG5.0815"'
+    # @TODO: Write complex project test with two modules
+    pass

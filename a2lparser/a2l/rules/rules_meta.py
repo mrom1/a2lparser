@@ -37,13 +37,6 @@ class RulesMeta:
         if p[1]:
             p[0] = p[1]
 
-    def p_meta_block_pre_error(self, p):
-        """
-        meta_block_error : error meta_block
-        """
-        if p[2]:
-            p[0] = p[2]
-
     def p_meta_block(self, p):
         """
         meta_block : project

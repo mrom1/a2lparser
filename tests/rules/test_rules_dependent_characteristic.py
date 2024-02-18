@@ -22,22 +22,18 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_header():
+def test_rules_dependent_characteristic():
     """
-    Tests parsing a A2L "HEADER" section.
+    Tests a A2L DEPENDENT_CHARACTERISTIC section.
     """
-    header_block = """
-    /begin HEADER "see also specification XYZ of 01.02.1994"
-        VERSION "BG5.0815"
-        PROJECT_NO M4711Z1
-    /end HEADER
+    dependent_characteristic_block = """
+    /begin DEPENDENT_CHARACTERISTIC
+        "X2-X1"
+        ParamA /* is referenced by X1 */
+        ParamB /* is referenced by X2 */
+    /end DEPENDENT_CHARACTERISTIC
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(header_block)
+    ast = A2LYacc().generate_ast(dependent_characteristic_block)
     assert ast
-
-    header = ast["HEADER"]
-    assert header
-    assert header["Comment"] == '"see also specification XYZ of 01.02.1994"'
-    assert header["PROJECT_NO"] == "M4711Z1"
-    assert header["VERSION"] == '"BG5.0815"'
+    assert ast["DEPENDENT_CHARACTERISTIC"]["FORMULA"] == '"X2-X1"'
+    assert ast["DEPENDENT_CHARACTERISTIC"]["CHARACTERISTIC"] == ["ParamA", "ParamB"]

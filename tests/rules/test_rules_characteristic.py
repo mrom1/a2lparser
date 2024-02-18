@@ -22,7 +22,41 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_characteristic():
+def test_rules_characteristic_minimal():
+    """
+    Test parsing a minimal "CHARACTERISTIC" block.
+    """
+    characteristic_block = """
+    /begin CHARACTERISTIC
+        PUMKF /* name */
+        "Pump characteristic map" /* long identifier */
+        MAP /* type */
+        0x7140 /* address */
+        DAMOS_KF /* deposit */
+        100.0 /* maxdiff */
+        R_VOLTAGE /* conversion */
+        0.0 /* lower limit */
+        5000.0 /* upper limit */
+    /end CHARACTERISTIC
+    """
+    parser = A2LYacc()
+    ast = parser.generate_ast(characteristic_block)
+    assert ast
+
+    characteristic = ast["CHARACTERISTIC"]
+    assert characteristic
+    assert characteristic["Name"] == "PUMKF"
+    assert characteristic["LongIdentifier"] == '"Pump characteristic map"'
+    assert characteristic["Type"] == "MAP"
+    assert characteristic["Address"] == "0x7140"
+    assert characteristic["Deposit_Ref"] == "DAMOS_KF"
+    assert characteristic["MaxDiff"] == "100.0"
+    assert characteristic["CONVERSION"] == "R_VOLTAGE"
+    assert characteristic["LowerLimit"] == "0.0"
+    assert characteristic["UpperLimit"] == "5000.0"
+
+
+def test_rules_characteristic_full():
     """
     Tests parsing a valid "CHARACTERISTIC" block.
     """
@@ -120,6 +154,7 @@ def test_rules_characteristic():
             FORMAT "%4.2"
             MONOTONY MON_INCREASE
         /end AXIS_DESCR
+        ENCODING UTF8
         /begin AXIS_DESCR
             /* description of Y-axis points */
             STD_AXIS /* standard axis points */
@@ -158,6 +193,7 @@ def test_rules_characteristic():
     assert characteristic["DISCRETE"] is True
     assert characteristic["DISPLAY_IDENTIFIER"] == "load_engine"
     assert characteristic["ECU_ADDRESS_EXTENSION"] == "2"
+    assert characteristic["ENCODING"] == "UTF8"
     assert characteristic["FORMAT"] == '"%0.2"'
     assert characteristic["GUARD_RAILS"] is True
     assert characteristic["NUMBER"] == "123123123"

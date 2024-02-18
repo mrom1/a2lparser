@@ -22,7 +22,7 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_typedef_blob():
+def test_rules_typedef_blob_minimal():
     """
     Test A2L TYPEDEF_BLOB section.
     """
@@ -41,3 +41,26 @@ def test_rules_typedef_blob():
     assert typedef_blob["Name"] == "T_BLOB"
     assert typedef_blob["LongIdentifier"] == '"binary blob"'
     assert typedef_blob["Size"] == "1024"
+
+
+def test_rules_typedef_blob_full():
+    """
+    Test A2L TYPEDEF_BLOB section.
+    """
+    typedef_blob_full = """
+    /begin TYPEDEF_BLOB
+        T_BLOB // type name
+        "binary blob" // description
+        1024 // number of bytes in blob
+        ADDRESS_TYPE PWORD
+    /end TYPEDEF_BLOB
+    """
+    ast = A2LYacc(debug=True).generate_ast(typedef_blob_full)
+    assert ast
+
+    typedef_blob = ast["TYPEDEF_BLOB"]
+    assert typedef_blob
+    assert typedef_blob["Name"] == "T_BLOB"
+    assert typedef_blob["LongIdentifier"] == '"binary blob"'
+    assert typedef_blob["Size"] == "1024"
+    assert typedef_blob["ADDRESS_TYPE"] == "PWORD"

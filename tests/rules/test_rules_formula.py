@@ -22,22 +22,20 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_header():
+def test_rules_formula():
     """
-    Tests parsing a A2L "HEADER" section.
+    Tests a A2L FORMULA section.
     """
-    header_block = """
-    /begin HEADER "see also specification XYZ of 01.02.1994"
-        VERSION "BG5.0815"
-        PROJECT_NO M4711Z1
-    /end HEADER
+    formula_block = """
+    /begin FORMULA
+        "sqrt( 3 - 4*sin(X1) )"
+        FORMULA_INV "asin( sqrt( (3 - X1)/4 ) )"
+    /end FORMULA
     """
-    parser = A2LYacc()
-    ast = parser.generate_ast(header_block)
+    ast = A2LYacc().generate_ast(formula_block)
     assert ast
 
-    header = ast["HEADER"]
-    assert header
-    assert header["Comment"] == '"see also specification XYZ of 01.02.1994"'
-    assert header["PROJECT_NO"] == "M4711Z1"
-    assert header["VERSION"] == '"BG5.0815"'
+    formula = ast["FORMULA"]
+    assert formula
+    assert formula["f_x"] == '"sqrt( 3 - 4*sin(X1) )"'
+    assert formula["FORMULA_INV"]["g_x"] == '"asin( sqrt( (3 - X1)/4 ) )"'

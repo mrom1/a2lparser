@@ -22,7 +22,7 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_typedef_measurement():
+def test_rules_typedef_measurement_minimal():
     """
     Test A2L TYPEDEF_MEASUREMENT section.
     """
@@ -51,3 +51,52 @@ def test_rules_typedef_measurement():
     assert typedef_measurement["Accuracy"] == "0"
     assert typedef_measurement["LowerLimit"] == "0"
     assert typedef_measurement["UpperLimit"] == "4294967295"
+
+
+def test_rules_typedef_measurement_full():
+    """
+    Test A2L TYPEDEF_MEASUREMENT section.
+    """
+    typedef_measurement_full = """
+    /begin TYPEDEF_MEASUREMENT
+        T_Register // type name
+        "register content" // description
+        UWORD // data type
+        RegisterConversion // conversion method
+        1 // resolution
+        0 // accuracy
+        0 // lower limit
+        4294967295 // upper limit
+        BIT_MASK 0x0F
+        ADDRESS_TYPE PLONGLONG
+        BYTE_ORDER MSB_LAST_MSW_FIRST
+        DISCRETE
+        ERROR_MASK 0xCC000000
+        FORMAT "10e-5f"
+        LAYOUT ALTERNATE_WITH_Y
+        MATRIX_DIM 1
+        PHYS_UNIT "V"
+    /end TYPEDEF_MEASUREMENT
+    """
+    ast = A2LYacc(debug=True).generate_ast(typedef_measurement_full)
+    assert ast
+
+    typedef_measurement = ast["TYPEDEF_MEASUREMENT"]
+    assert typedef_measurement
+    assert typedef_measurement["Name"] == "T_Register"
+    assert typedef_measurement["LongIdentifier"] == '"register content"'
+    assert typedef_measurement["Datatype"] == "UWORD"
+    assert typedef_measurement["Resolution"] == "1"
+    assert typedef_measurement["Accuracy"] == "0"
+    assert typedef_measurement["LowerLimit"] == "0"
+    assert typedef_measurement["UpperLimit"] == "4294967295"
+    assert typedef_measurement["CONVERSION"] == "RegisterConversion"
+    assert typedef_measurement["BIT_MASK"] == "0x0F"
+    assert typedef_measurement["ADDRESS_TYPE"] == "PLONGLONG"
+    assert typedef_measurement["BYTE_ORDER"] == "MSB_LAST_MSW_FIRST"
+    assert typedef_measurement["DISCRETE"] is True
+    assert typedef_measurement["ERROR_MASK"] == "0xCC000000"
+    assert typedef_measurement["FORMAT"] == '"10e-5f"'
+    assert typedef_measurement["LAYOUT"] == "ALTERNATE_WITH_Y"
+    assert typedef_measurement["MATRIX_DIM"] == ["1"]
+    assert typedef_measurement["PHYS_UNIT"] == '"V"'

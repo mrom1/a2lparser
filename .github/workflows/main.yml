@@ -40,7 +40,7 @@ jobs:
       # Run Testcases and generate report
       - name: Testcases
         run: | 
-          coverage run --omit=test_a2l_ast.py -m pytest -v --timeout=30
+          coverage run --omit="test_a2l_ast.py,a2lparser/gen/*" -m pytest -v --timeout=30
           coverage report -m
           coverage xml
 

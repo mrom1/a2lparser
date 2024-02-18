@@ -127,7 +127,7 @@ class RulesEnum:
                       | UTF16
                       | UTF32
         """
-        p[0] = p[2]
+        p[0] = p[1]
 
     def p_mode_enum(self, p):
         """

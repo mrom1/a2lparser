@@ -53,3 +53,49 @@ def test_rules_typedef_axis_minimal():
     assert typedef_axis["MaxAxisPoints"] == "100"
     assert typedef_axis["LowerLimit"] == "0.0"
     assert typedef_axis["UpperLimit"] == "2460.0"
+
+
+def test_rules_typedef_axis_full():
+    """
+    Test A2L TYPEDEF_AXIS section.
+    """
+    typedef_axis_full = """
+    /begin TYPEDEF_AXIS
+        T_AXIS_N // type name
+        "axis points" // description
+        N // input quantity
+        REC_DMMAX // reference to record layout
+        33.0 // maxdiff
+        CONV_DMMAX // reference to conversion method
+        100 // maximum number of axis points
+        0.0 // lower limit
+        2460.0 // upper limit
+        BYTE_ORDER MSB_LAST_MSW_FIRST
+        EXTENDED_LIMITS 0 3500
+        FORMAT "%0.01f"
+        MONOTONY STRICT_DECREASE
+        PHYS_UNIT "s"
+        STEP_SIZE 0.01
+        DEPOSIT ABSOLUTE
+    /end TYPEDEF_AXIS
+    """
+    ast = A2LYacc(debug=True).generate_ast(typedef_axis_full)
+    assert ast
+
+    typedef_axis = ast["TYPEDEF_AXIS"]
+    assert typedef_axis["Name"] == "T_AXIS_N"
+    assert typedef_axis["LongIdentifier"] == '"axis points"'
+    assert typedef_axis["InputQuantity"] == "N"
+    assert typedef_axis["RecordLayout"] == "REC_DMMAX"
+    assert typedef_axis["MaxDiff"] == "33.0"
+    assert typedef_axis["CONVERSION"] == "CONV_DMMAX"
+    assert typedef_axis["MaxAxisPoints"] == "100"
+    assert typedef_axis["LowerLimit"] == "0.0"
+    assert typedef_axis["UpperLimit"] == "2460.0"
+    assert typedef_axis["BYTE_ORDER"] == "MSB_LAST_MSW_FIRST"
+    assert typedef_axis["EXTENDED_LIMITS"] == {'LowerLimit': '0', 'UpperLimit': '3500'}
+    assert typedef_axis["FORMAT"] == '"%0.01f"'
+    assert typedef_axis["MONOTONY"] == "STRICT_DECREASE"
+    assert typedef_axis["PHYS_UNIT"] == '"s"'
+    assert typedef_axis["STEP_SIZE"] == "0.01"
+    assert typedef_axis["DEPOSIT"] == "ABSOLUTE"

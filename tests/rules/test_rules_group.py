@@ -61,6 +61,12 @@ def test_rules_group():
             FL_ADJUSTM
             SPEED_LIM
         /end FUNCTION_LIST
+        /begin IF_DATA MAP_REF_ADDR
+            LINK_MAP ref_name 0x003432
+        /end IF_DATA
+        /begin IF_DATA XCP_REF_ADDR
+            XCP_REF_MAP 0x00332266
+        /end IF_DATA
     /end GROUP
     """
     parser = A2LYacc()
@@ -82,3 +88,12 @@ def test_rules_group():
     assert group["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_2"'
     assert group["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_2"'
     assert group["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_BLOCK_2"']
+    assert len(group["IF_DATA"]) == 2
+    if_data_map = group["IF_DATA"][0]
+    if_data_xcp = group["IF_DATA"][1]
+    assert if_data_map
+    assert if_data_xcp
+    assert if_data_map["Name"] == "MAP_REF_ADDR"
+    assert if_data_map["DataParams"] == ['LINK_MAP', 'ref_name', '0x003432']
+    assert if_data_xcp["Name"] == "XCP_REF_ADDR"
+    assert if_data_xcp["DataParams"] == ['XCP_REF_MAP', '0x00332266']

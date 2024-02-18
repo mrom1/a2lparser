@@ -31,6 +31,9 @@ def test_rules_function():
         Sssm140_CalcStopDynDecel
         "IDENT_LNG"
         FUNCTION_VERSION "BG5.0815"
+        /begin IF_DATA MAP_REF_ADDR
+            LINK_MAP ref_name 0x003432
+        /end IF_DATA
         /begin SUB_FUNCTION
             CalcDynDecelState
             CalcStopDynDecel
@@ -66,6 +69,9 @@ def test_rules_function():
             OK_FLAG
             SENSOR_FLAG
         /end OUT_MEASUREMENT
+        /begin IF_DATA XCP_REF_ADDR
+            XCP_REF_MAP 0x00332266
+        /end IF_DATA
         /begin REF_CHARACTERISTIC
             ENG_SPEED_CORR_CURVE
             ENG_SPEED_CORR_CURVE_STD
@@ -99,3 +105,12 @@ def test_rules_function():
         "Sssm314_AEB_enabled",
         "Sssm37_Subsystem",
     ]
+    assert len(function["IF_DATA"]) == 2
+    if_data_map = function["IF_DATA"][0]
+    if_data_xcp = function["IF_DATA"][1]
+    assert if_data_map
+    assert if_data_xcp
+    assert if_data_map["Name"] == "MAP_REF_ADDR"
+    assert if_data_map["DataParams"] == ['LINK_MAP', 'ref_name', '0x003432']
+    assert if_data_xcp["Name"] == "XCP_REF_ADDR"
+    assert if_data_xcp["DataParams"] == ['XCP_REF_MAP', '0x00332266']

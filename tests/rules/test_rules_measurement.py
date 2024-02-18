@@ -109,3 +109,41 @@ def test_rules_measurement():
     assert measurement["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_2"'
     assert measurement["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_2"'
     assert len(measurement["ANNOTATION"][1]["ANNOTATION_TEXT"]) == 1
+
+
+def test_rules_in_measurement():
+    """
+    Tests a A2L IN_MEASUREMENT section.
+    """
+    in_measurement_input = """
+    /begin IN_MEASUREMENT 
+        WHEEL_REVOLUTIONS
+        ENGINE_SPEED
+        RESOLUTION_TICKS
+    /end IN_MEASUREMENT
+    """
+    ast = A2LYacc().generate_ast(in_measurement_input)
+    assert ast
+
+    in_measurement = ast["IN_MEASUREMENT"]
+    assert in_measurement
+    assert in_measurement["Identifier"] == ['WHEEL_REVOLUTIONS', 'ENGINE_SPEED', 'RESOLUTION_TICKS']
+
+
+def test_rules_out_measurement():
+    """
+    Tests a A2L OUT_MEASUREMENT section.
+    """
+    out_measurement_input = """
+    /begin OUT_MEASUREMENT OK_FLAG
+        SENSOR_FLAG
+        FAILURE_FLAG
+        GLOBAL_FLAG
+    /end OUT_MEASUREMENT
+    """
+    ast = A2LYacc().generate_ast(out_measurement_input)
+    assert ast
+
+    out_measurement = ast["OUT_MEASUREMENT"]
+    assert out_measurement
+    assert out_measurement["Identifier"] == ['OK_FLAG', 'SENSOR_FLAG', 'FAILURE_FLAG', 'GLOBAL_FLAG']
