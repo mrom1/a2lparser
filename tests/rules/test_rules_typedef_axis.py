@@ -79,7 +79,7 @@ def test_rules_typedef_axis_full():
         DEPOSIT ABSOLUTE
     /end TYPEDEF_AXIS
     """
-    ast = A2LYacc(debug=True).generate_ast(typedef_axis_full)
+    ast = A2LYacc().generate_ast(typedef_axis_full)
     assert ast
 
     typedef_axis = ast["TYPEDEF_AXIS"]

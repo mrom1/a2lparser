@@ -178,9 +178,10 @@ class A2LLex:
         Triggered when a newline token has been parsed.
         Will call the progressbar to advance if one has been defined.
         """
-        self.lexer.lineno += len(t.value)
+        newlines_count = len(t.value)
+        self.lexer.lineno += newlines_count
         if self.progressbar:
-            self.progressbar()  # pylint: disable=E1102
+            self.progressbar(newlines_count, skipped=True)  # pylint: disable=E1102
 
     @TOKEN(
         r"\b("

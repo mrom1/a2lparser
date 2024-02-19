@@ -31,6 +31,7 @@ def test_rules_record_layout():
         ALIGNMENT_BYTE 1
         ALIGNMENT_WORD 2
         ALIGNMENT_LONG 4
+        ALIGNMENT_FLOAT16_IEEE 1
         ALIGNMENT_FLOAT32_IEEE 2
         ALIGNMENT_FLOAT64_IEEE 4
         ALIGNMENT_INT64 4
@@ -81,6 +82,7 @@ def test_rules_record_layout():
         SHIFT_OP_4 21 UWORD
         SHIFT_OP_5 21 UWORD
         STATIC_RECORD_LAYOUT
+        STATIC_ADDRESS_OFFSETS
         RESERVED 2 BYTE
     /end RECORD_LAYOUT
     """
@@ -93,6 +95,7 @@ def test_rules_record_layout():
 
     assert record_layout["Name"] == "RL_MAP_SB"
     assert record_layout["ALIGNMENT_BYTE"] == "1"
+    assert record_layout["ALIGNMENT_FLOAT16_IEEE"] == "1"
     assert record_layout["ALIGNMENT_FLOAT32_IEEE"] == "2"
     assert record_layout["ALIGNMENT_FLOAT64_IEEE"] == "4"
     assert record_layout["ALIGNMENT_INT64"] == "4"
@@ -104,7 +107,6 @@ def test_rules_record_layout():
     assert record_layout["FIX_NO_AXIS_PTS_Z"] == "17"
     assert record_layout["FIX_NO_AXIS_PTS_4"] == "17"
     assert record_layout["FIX_NO_AXIS_PTS_5"] == "17"
-    assert record_layout["STATIC_RECORD_LAYOUT"] is True
 
     assert record_layout["AXIS_PTS_X"]["Position"] == "3"
     assert record_layout["AXIS_PTS_X"]["Datatype"] == "ULONG"
@@ -215,3 +217,6 @@ def test_rules_record_layout():
     assert record_layout["RESERVED"][0]["DataSize"] == "BYTE"
     assert record_layout["RESERVED"][1]["Position"] == "2"
     assert record_layout["RESERVED"][1]["DataSize"] == "BYTE"
+
+    assert record_layout["STATIC_RECORD_LAYOUT"] is True
+    assert record_layout["STATIC_ADDRESS_OFFSETS"] is True

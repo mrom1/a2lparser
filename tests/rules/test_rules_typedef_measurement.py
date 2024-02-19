@@ -67,8 +67,12 @@ def test_rules_typedef_measurement_full():
         0 // accuracy
         0 // lower limit
         4294967295 // upper limit
-        BIT_MASK 0x0F
         ADDRESS_TYPE PLONGLONG
+        /begin BIT_OPERATION
+            LEFT_SHIFT 4
+            SIGN_EXTEND
+        /end BIT_OPERATION
+        BIT_MASK 0x0F
         BYTE_ORDER MSB_LAST_MSW_FIRST
         DISCRETE
         ERROR_MASK 0xCC000000
@@ -78,7 +82,7 @@ def test_rules_typedef_measurement_full():
         PHYS_UNIT "V"
     /end TYPEDEF_MEASUREMENT
     """
-    ast = A2LYacc(debug=True).generate_ast(typedef_measurement_full)
+    ast = A2LYacc().generate_ast(typedef_measurement_full)
     assert ast
 
     typedef_measurement = ast["TYPEDEF_MEASUREMENT"]
@@ -100,3 +104,4 @@ def test_rules_typedef_measurement_full():
     assert typedef_measurement["LAYOUT"] == "ALTERNATE_WITH_Y"
     assert typedef_measurement["MATRIX_DIM"] == ["1"]
     assert typedef_measurement["PHYS_UNIT"] == '"V"'
+    assert typedef_measurement["BIT_OPERATION"] == {'LEFT_SHIFT': {'Bitcount': '4'}, 'SIGN_EXTEND': {'Boolean': True}}

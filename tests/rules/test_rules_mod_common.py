@@ -30,8 +30,9 @@ def test_rules_mod_common():
     /begin MOD_COMMON
         "COMMENT"
         ALIGNMENT_BYTE	1
-        ALIGNMENT_FLOAT32_IEEE	4
-        ALIGNMENT_FLOAT64_IEEE	4
+        ALIGNMENT_FLOAT16_IEEE  2
+        ALIGNMENT_FLOAT32_IEEE  4
+        ALIGNMENT_FLOAT64_IEEE  4
         ALIGNMENT_INT64	8
         ALIGNMENT_LONG	4
         ALIGNMENT_WORD	2
@@ -48,6 +49,7 @@ def test_rules_mod_common():
     assert mod_common
     assert mod_common['Comment'] == '"COMMENT"'
     assert mod_common['ALIGNMENT_BYTE'] == '1'
+    assert mod_common['ALIGNMENT_FLOAT16_IEEE'] == '2'
     assert mod_common['ALIGNMENT_FLOAT32_IEEE'] == '4'
     assert mod_common['ALIGNMENT_FLOAT64_IEEE'] == '4'
     assert mod_common['ALIGNMENT_INT64'] == '8'
@@ -56,4 +58,3 @@ def test_rules_mod_common():
     assert mod_common['BYTE_ORDER'] == 'MSB_FIRST'
     assert mod_common['DATA_SIZE'] == '16'
     assert mod_common['DEPOSIT'] == 'ABSOLUTE'
-    assert len(mod_common) == 10

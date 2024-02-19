@@ -39,14 +39,19 @@ class RulesSectionsErrorhandlers:
         addr_epk : ADDR_EPK error
         """
 
-    def p_asap2_version_error(self, p):
+    def p_address_type_error(self, p):
         """
-        asap2_version : ASAP2_VERSION error
+        address_type : ADDRESS_TYPE error
         """
 
     def p_alignment_byte_error(self, p):
         """
         alignment_byte : ALIGNMENT_BYTE error
+        """
+
+    def p_alignment_float16_ieee_error(self, p):
+        """
+        alignment_float16_ieee : ALIGNMENT_FLOAT16_IEEE error
         """
 
     def p_alignment_float32_ieee_error(self, p):
@@ -99,6 +104,22 @@ class RulesSectionsErrorhandlers:
     def p_array_size_error(self, p):
         """
         array_size : ARRAY_SIZE error
+        """
+
+    def p_ar_component_error(self, p):
+        """
+        ar_component : BEGIN AR_COMPONENT error END AR_COMPONENT
+                     | BEGIN AR_COMPONENT END AR_COMPONENT
+        """
+
+    def p_ar_prototype_of_error(self, p):
+        """
+        ar_prototype_of : AR_PROTOTYPE_OF error
+        """
+
+    def p_asap2_version_error(self, p):
+        """
+        asap2_version : ASAP2_VERSION error
         """
 
     def p_axis_descr_error(self, p):
@@ -157,6 +178,12 @@ class RulesSectionsErrorhandlers:
         """
         bit_operation : BEGIN BIT_OPERATION error END BIT_OPERATION
                       | BEGIN BIT_OPERATION END BIT_OPERATION
+        """
+
+    def p_blob_error(self, p):
+        """
+        blob : BEGIN BLOB error END BLOB
+             | BEGIN BLOB END BLOB
         """
 
     def p_byte_order_error(self, p):
@@ -234,6 +261,11 @@ class RulesSectionsErrorhandlers:
         """
         compu_vtab_range : BEGIN COMPU_VTAB_RANGE error END COMPU_VTAB_RANGE
                          | BEGIN COMPU_VTAB_RANGE END COMPU_VTAB_RANGE
+        """
+
+    def p_conversion_error(self, p):
+        """
+        conversion : CONVERSION error
         """
 
     def p_cpu_type_error(self, p):
@@ -336,6 +368,11 @@ class RulesSectionsErrorhandlers:
     def p_ecu_calibration_offset_error(self, p):
         """
         ecu_calibration_offset : ECU_CALIBRATION_OFFSET error
+        """
+
+    def p_encoding_error(self, p):
+        """
+        encoding : ENCODING error
         """
 
     def p_epk_error(self, p):
@@ -478,6 +515,17 @@ class RulesSectionsErrorhandlers:
                        | BEGIN IN_MEASUREMENT END IN_MEASUREMENT
         """
 
+    def p_input_quantity_error(self, p):
+        """
+        input_quantity : INPUT_QUANTITY error
+        """
+
+    def p_instance_error(self, p):
+        """
+        instance : BEGIN INSTANCE error END INSTANCE
+                 | BEGIN INSTANCE END INSTANCE
+        """
+
     def p_layout_error(self, p):
         """
         layout : LAYOUT error
@@ -486,6 +534,11 @@ class RulesSectionsErrorhandlers:
     def p_left_shift_error(self, p):
         """
         left_shift : LEFT_SHIFT error
+        """
+
+    def p_limits_error(self, p):
+        """
+        limits : LIMITS error
         """
 
     def p_loc_measurement_error(self, p):
@@ -543,6 +596,11 @@ class RulesSectionsErrorhandlers:
         """
         mod_par : BEGIN MOD_PAR error END MOD_PAR
                 | BEGIN MOD_PAR END MOD_PAR
+        """
+
+    def p_model_link_error(self, p):
+        """
+        model_link : MODEL_LINK error
         """
 
     def p_module_error(self, p):
@@ -698,14 +756,14 @@ class RulesSectionsErrorhandlers:
         right_shift : RIGHT_SHIFT error
         """
 
-    def p_rip_addr_x_error(self, p):
-        """
-        rip_addr_x : RIP_ADDR_X error
-        """
-
     def p_rip_addr_w_error(self, p):
         """
         rip_addr_w : RIP_ADDR_W error
+        """
+
+    def p_rip_addr_x_error(self, p):
+        """
+        rip_addr_x : RIP_ADDR_X error
         """
 
     def p_rip_addr_y_error(self, p):
@@ -793,6 +851,12 @@ class RulesSectionsErrorhandlers:
         step_size : STEP_SIZE error
         """
 
+    def p_structure_component_error(self, p):
+        """
+        structure_component : BEGIN STRUCTURE_COMPONENT error END STRUCTURE_COMPONENT
+                            | BEGIN STRUCTURE_COMPONENT END STRUCTURE_COMPONENT
+        """
+
     def p_sub_function_error(self, p):
         """
         sub_function : BEGIN SUB_FUNCTION error END SUB_FUNCTION
@@ -815,9 +879,62 @@ class RulesSectionsErrorhandlers:
         symbol_link : SYMBOL_LINK error
         """
 
+    def p_symbol_type_link_error(self, p):
+        """
+        symbol_type_link : SYMBOL_TYPE_LINK error
+        """
+
     def p_system_constant_error(self, p):
         """
         system_constant : SYSTEM_CONSTANT error
+        """
+
+    def p_transformer_error(self, p):
+        """
+        transformer : BEGIN TRANSFORMER error END TRANSFORMER
+                    | BEGIN TRANSFORMER END TRANSFORMER
+        """
+
+    def p_transformer_in_objects_error(self, p):
+        """
+        transformer_in_objects : BEGIN TRANSFORMER_IN_OBJECTS error END TRANSFORMER_IN_OBJECTS
+                               | BEGIN TRANSFORMER_IN_OBJECTS END TRANSFORMER_IN_OBJECTS
+        """
+
+    def p_transformer_out_objects_error(self, p):
+        """
+        transformer_out_objects : BEGIN TRANSFORMER_OUT_OBJECTS error END TRANSFORMER_OUT_OBJECTS
+                                | BEGIN TRANSFORMER_OUT_OBJECTS END TRANSFORMER_OUT_OBJECTS
+        """
+
+    def p_typedef_axis_error(self, p):
+        """
+        typedef_axis : BEGIN TYPEDEF_AXIS error END TYPEDEF_AXIS
+                     | BEGIN TYPEDEF_AXIS END TYPEDEF_AXIS
+        """
+
+    def p_typedef_blob_error(self, p):
+        """
+        typedef_blob : BEGIN TYPEDEF_BLOB error END TYPEDEF_BLOB
+                     | BEGIN TYPEDEF_BLOB END TYPEDEF_BLOB
+        """
+
+    def p_typedef_characteristic_error(self, p):
+        """
+        typedef_characteristic : BEGIN TYPEDEF_CHARACTERISTIC error END TYPEDEF_CHARACTERISTIC
+                               | BEGIN TYPEDEF_CHARACTERISTIC END TYPEDEF_CHARACTERISTIC
+        """
+
+    def p_typedef_measurement_error(self, p):
+        """
+        typedef_measurement : BEGIN TYPEDEF_MEASUREMENT error END TYPEDEF_MEASUREMENT
+                            | BEGIN TYPEDEF_MEASUREMENT END TYPEDEF_MEASUREMENT
+        """
+
+    def p_typedef_structure(self, p):
+        """
+        typedef_structure : BEGIN TYPEDEF_STRUCTURE error END TYPEDEF_STRUCTURE
+                          | BEGIN TYPEDEF_STRUCTURE END TYPEDEF_STRUCTURE
         """
 
     def p_unit_error(self, p):

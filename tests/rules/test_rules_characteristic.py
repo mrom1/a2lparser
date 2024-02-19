@@ -168,6 +168,11 @@ def test_rules_characteristic_full():
             "sin(X1)"
             B
         /end VIRTUAL_CHARACTERISTIC
+        /begin IF_DATA XCP_INTERVAL
+            XCP_x1
+            XCP_x2
+            XCP_x3
+        /end IF_DATA
     /end CHARACTERISTIC
     """
     parser = A2LYacc()
@@ -207,7 +212,7 @@ def test_rules_characteristic_full():
     assert characteristic["EXTENDED_LIMITS"]["UpperLimit"] == "4000.0"
     assert characteristic["FUNCTION_LIST"]["Name"] == ["ID_ADJUSTM", "FL_ADJUSTM", "SPEED_LIM"]
     assert characteristic["MAP_LIST"]["Name"] == ["one", "two", "three"]
-    assert characteristic["MATRIX_DIM"]["Dim"] == ['2', '4', '3']
+    assert characteristic["MATRIX_DIM"] == ['2', '4', '3']
     assert characteristic["MAX_REFRESH"]["ScalingUnit"] == "3"
     assert characteristic["MAX_REFRESH"]["Rate"] == "15"
     assert characteristic["SYMBOL_LINK"]["SymbolName"] == '"_VehicleSpeed"'
@@ -259,4 +264,14 @@ def test_rules_characteristic_full():
     assert characteristic["AXIS_DESCR"][1]["MaxAxisPoints"] == "17"
     assert characteristic["AXIS_DESCR"][1]["LowerLimit"] == "0.0"
     assert characteristic["AXIS_DESCR"][1]["UpperLimit"] == "43.0"
-    assert characteristic["IF_DATA"]["DataParams"] == ["EXTERNAL", "INDIRECT"]
+    assert len(characteristic["IF_DATA"]) == 2
+    if_data_1 = characteristic["IF_DATA"][0]
+    if_data_2 = characteristic["IF_DATA"][1]
+
+    assert if_data_1
+    assert if_data_1["Name"] == "DIM"
+    assert if_data_1["DataParams"] == ["EXTERNAL", "INDIRECT"]
+
+    assert if_data_2
+    assert if_data_2["Name"] == "XCP_INTERVAL"
+    assert if_data_2["DataParams"] == ["XCP_x1", "XCP_x2", "XCP_x3"]

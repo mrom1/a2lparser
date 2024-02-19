@@ -224,7 +224,8 @@ class RulesSections:
             p[0] = ASTNodes.Ar_Component(ComponentType=p[3])
 
             if len(p) == 7:
-                p[0].AR_Prototype_Of = p[4]
+                ar_prototype_of = p[4].Name
+                p[0].AR_Prototype_Of = ar_prototype_of
 
     def p_ar_prototype_of(self, p):
         """
@@ -361,6 +362,7 @@ class RulesSections:
                      | ecu_address_extension
                      | format
                      | guard_rails
+                     | model_link
                      | monotony
                      | phys_unit
                      | read_only
@@ -379,6 +381,7 @@ class RulesSections:
                 ASTNodes.Ecu_Address_Extension,
                 ASTNodes.Format,
                 ASTNodes.Guard_Rails,
+                ASTNodes.Model_Link,
                 ASTNodes.Monotony,
                 ASTNodes.Phys_Unit,
                 ASTNodes.Read_Only,
@@ -393,12 +396,19 @@ class RulesSections:
     def p_axis_pts_opt_objects(self, p):
         """
         axis_pts_opt : extended_limits
+                     | max_refresh
                      | symbol_link
                      | function_list
         """
         node = self._get_or_create_ast_node(ASTNodes.Axis_Pts_Opt)
         self._add_ast_node_object(
-            node_class=node, ast_node_names=[ASTNodes.Extended_Limits, ASTNodes.Symbol_Link, ASTNodes.Function_List], param=p[1]
+            node_class=node,
+            ast_node_names=[
+                ASTNodes.Max_Refresh,
+                ASTNodes.Extended_Limits,
+                ASTNodes.Symbol_Link,
+                ASTNodes.Function_List],
+            param=p[1]
         )
         p[0] = node
 
@@ -672,6 +682,7 @@ class RulesSections:
                            | format
                            | guard_rails
                            | number
+                           | matrix_dim
                            | model_link
                            | phys_unit
                            | read_only
@@ -694,6 +705,7 @@ class RulesSections:
                 ASTNodes.Format,
                 ASTNodes.Guard_Rails,
                 ASTNodes.Number,
+                ASTNodes.Matrix_Dim,
                 ASTNodes.Model_Link,
                 ASTNodes.Phys_Unit,
                 ASTNodes.Read_Only,
@@ -710,7 +722,6 @@ class RulesSections:
                            | extended_limits
                            | function_list
                            | map_list
-                           | matrix_dim
                            | max_refresh
                            | symbol_link
                            | virtual_characteristic
@@ -723,7 +734,6 @@ class RulesSections:
                 ASTNodes.Extended_Limits,
                 ASTNodes.Function_List,
                 ASTNodes.Map_List,
-                ASTNodes.Matrix_Dim,
                 ASTNodes.Max_Refresh,
                 ASTNodes.Symbol_Link,
                 ASTNodes.Virtual_Characteristic,
@@ -1493,6 +1503,7 @@ class RulesSections:
                      | ecu_address_extension
                      | layout
                      | read_write
+                     | matrix_dim
                      | model_link
         """
         node = self._get_or_create_ast_node(ASTNodes.Instance_Opt)
@@ -1505,6 +1516,7 @@ class RulesSections:
                 ASTNodes.Ecu_Address_Extension,
                 ASTNodes.Layout,
                 ASTNodes.Read_Write,
+                ASTNodes.Matrix_Dim,
                 ASTNodes.Model_Link,
             ],
             param=p[1],
@@ -1513,15 +1525,13 @@ class RulesSections:
 
     def p_instance_opt_objects(self, p):
         """
-        instance_opt : matrix_dim
-                     | max_refresh
+        instance_opt : max_refresh
                      | symbol_link
         """
         node = self._get_or_create_ast_node(ASTNodes.Instance_Opt)
         self._add_ast_node_object(
             node_class=node,
             ast_node_names=[
-                ASTNodes.Matrix_Dim,
                 ASTNodes.Max_Refresh,
                 ASTNodes.Symbol_Link,
             ],
@@ -1643,6 +1653,7 @@ class RulesSections:
                         | error_mask
                         | format
                         | layout
+                        | matrix_dim
                         | model_link
                         | phys_unit
                         | read_write
@@ -1664,6 +1675,7 @@ class RulesSections:
                 ASTNodes.Error_Mask,
                 ASTNodes.Format,
                 ASTNodes.Layout,
+                ASTNodes.Matrix_Dim,
                 ASTNodes.Model_Link,
                 ASTNodes.Phys_Unit,
                 ASTNodes.Read_Write,
@@ -1678,7 +1690,6 @@ class RulesSections:
         """
         measurement_opt : bit_operation
                         | function_list
-                        | matrix_dim
                         | max_refresh
                         | symbol_link
                         | virtual
@@ -1689,7 +1700,6 @@ class RulesSections:
             ast_node_names=[
                 ASTNodes.Bit_Operation,
                 ASTNodes.Function_List,
-                ASTNodes.Matrix_Dim,
                 ASTNodes.Max_Refresh,
                 ASTNodes.Symbol_Link,
                 ASTNodes.Virtual,
@@ -1939,10 +1949,17 @@ class RulesSections:
         self._remove_ast_node(ASTNodes.Module)
         self._remove_ast_node(ASTNodes.Module_Opt)
 
-    def p_module_opt_objects(self, p):
+    def p_module_opt_params(self, p):
         """
         module_opt : a2ml_block
-                   | mod_common
+        """
+        node = self._get_or_create_ast_node(ASTNodes.Module_Opt)
+        self._add_ast_node_param(node_class=node, ast_node_names=[ASTNodes.A2ml], param=p[1])
+        p[0] = node
+
+    def p_module_opt_objects(self, p):
+        """
+        module_opt : mod_common
                    | mod_par
                    | variant_coding
         """
@@ -1950,7 +1967,6 @@ class RulesSections:
         self._add_ast_node_object(
             node_class=node,
             ast_node_names=[
-                ASTNodes.A2ml,
                 ASTNodes.Mod_Common,
                 ASTNodes.Mod_Par,
                 ASTNodes.Variant_Coding,
@@ -2942,7 +2958,13 @@ class RulesSections:
         typedef_measurement_opt : bit_operation
         """
         node = self._get_or_create_ast_node(ASTNodes.Typedef_Measurement_Opt)
-        self._add_ast_node_object(node_class=node, ast_node_names=[ASTNodes.Bit_Operation], param=p[1])
+        self._add_ast_node_object(
+            node_class=node,
+            ast_node_names=[
+                ASTNodes.Bit_Operation,
+            ],
+            param=p[1],
+        )
         p[0] = node
 
     def p_typedef_structure(self, p):

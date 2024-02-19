@@ -52,7 +52,6 @@ def test_rules_memory_layout():
     assert memory_layout["Offset"] == ["-1", "-1", "-1", "-1", "-1"]
     assert len(memory_layout["IF_DATA"]) == 2
     assert memory_layout["IF_DATA"][0]["Name"] == "XCP"
-    assert len(memory_layout["IF_DATA"][0]["DataParams"]) == 3
+    assert memory_layout["IF_DATA"][0]["DataParams"] == ['LINK_MAP', 'ref_name', '0x003432']
     assert memory_layout["IF_DATA"][1]["Name"] == "CANAPE"
-    assert len(memory_layout["IF_DATA"][1]["DataParams"]) == 3
-    assert len(memory_layout["Offset"]) == 5
+    assert memory_layout["IF_DATA"][1]["DataParams"] == ['STATIC', 'ref_name', '0xFF']

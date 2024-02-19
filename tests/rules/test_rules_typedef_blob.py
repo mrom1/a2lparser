@@ -55,7 +55,7 @@ def test_rules_typedef_blob_full():
         ADDRESS_TYPE PWORD
     /end TYPEDEF_BLOB
     """
-    ast = A2LYacc(debug=True).generate_ast(typedef_blob_full)
+    ast = A2LYacc().generate_ast(typedef_blob_full)
     assert ast
 
     typedef_blob = ast["TYPEDEF_BLOB"]

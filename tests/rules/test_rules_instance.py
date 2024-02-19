@@ -39,7 +39,6 @@ def test_rules_instance_minimal():
 
     instance = ast["INSTANCE"]
     assert instance
-
     assert instance["Name"] == "Bravo"
     assert instance["LongIdentifier"] == '""'
     assert instance["TypedefName"] == "Alpha"
@@ -95,7 +94,7 @@ def test_rules_instance_full():
         SYMBOL_LINK "_InstanceReference" 0
     /end INSTANCE
     """
-    ast = A2LYacc(debug=True).generate_ast(instance_full)
+    ast = A2LYacc().generate_ast(instance_full)
     assert ast
 
     instance = ast["INSTANCE"]
@@ -112,7 +111,7 @@ def test_rules_instance_full():
     assert instance["LAYOUT"] == "ALTERNATE_WITH_X"
     assert instance["MODEL_LINK"] == '"system/referer/SwcXcpInstance.referer"'
     assert instance["READ_WRITE"] is True
-    assert instance["MATRIX_DIM"]["Dim"] == ['2', '4']
+    assert instance["MATRIX_DIM"] == ['2', '4']
     assert instance["MAX_REFRESH"] == {'ScalingUnit': '120', 'Rate': '250'}
     assert instance["SYMBOL_LINK"] == {'SymbolName': '"_InstanceReference"', 'Offset': '0'}
     assert len(instance["IF_DATA"]) == 2

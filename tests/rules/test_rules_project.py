@@ -22,9 +22,44 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_project():
+def test_rules_project_two_modules_minimal():
     """
     Tests a A2L "PROJECT" section.
     """
-    # @TODO: Write complex project test with two modules
-    pass
+    project_content = """
+    ASAP2_VERSION 1 71
+    /begin PROJECT Example_Project "ProjectBackupModule"
+        /begin HEADER
+            "Tests a Project with two modules"
+        /end HEADER
+
+        /begin MODULE Module_x1
+            "First Module Identifier"
+        /end MODULE
+
+        /begin MODULE Module_x2
+            "Second Module Identifier"
+        /end MODULE
+    /end PROJECT
+    """
+    ast = A2LYacc().generate_ast(project_content)
+    assert ast
+    assert ast["ASAP2_VERSION"] == {'VersionNo': '1', 'UpgradeNo': '71'}
+
+    project = ast["PROJECT"]
+    assert project
+    assert project["Name"] == "Example_Project"
+    assert project["LongIdentifier"] == '"ProjectBackupModule"'
+    assert project["HEADER"]["Comment"] == '"Tests a Project with two modules"'
+
+    assert len(project["MODULE"]) == 2
+
+    module_x1 = project["MODULE"][0]
+    assert module_x1
+    assert module_x1["Name"] == "Module_x1"
+    assert module_x1["LongIdentifier"] == '"First Module Identifier"'
+
+    module_x2 = project["MODULE"][1]
+    assert module_x2
+    assert module_x2["Name"] == "Module_x2"
+    assert module_x2["LongIdentifier"] == '"Second Module Identifier"'

@@ -22,6 +22,37 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
+def test_rules_a2ml_empty():
+    """
+    Tests parsing an empty A2ML section.
+    """
+    project_content = """
+    ASAP2_VERSION 1 71
+    /begin PROJECT Empty_A2ML_Project "ProjectIdentifier"
+
+      /begin MODULE Example ""
+
+      /begin A2ML
+      /end A2ML
+
+      /end MODULE
+    /end PROJECT
+    """
+    ast = A2LYacc().generate_ast(project_content)
+    assert ast
+
+    project = ast["PROJECT"]
+    assert project
+    assert project["Name"] == "Empty_A2ML_Project"
+    assert project["LongIdentifier"] == '"ProjectIdentifier"'
+
+    module = project["MODULE"]
+    assert module
+    assert module["Name"] == "Example"
+    assert module["LongIdentifier"] == '""'
+    assert module["A2ML"] == ""
+
+
 def test_rules_a2ml_only():
     """
     Function to test the rules for A2ML only, including parsing a2ml_block and asserting the AST.
@@ -146,7 +177,7 @@ def test_rules_a2ml_full_content():
     /end MOD_COMMON
 
     /end MODULE
-/end PROJECT
+    /end PROJECT
     """
     parser = A2LYacc()
     ast = parser.generate_ast(a2ml_full_content)
@@ -163,7 +194,7 @@ def test_rules_a2ml_full_content():
     assert header == {"Comment": '"ASAP2 Example File"',
                       "PROJECT_NO": "P2016_09_AE_MCD_2MC_BS_V1_7_1_main",
                       "VERSION": '"V1.7.1"'}
-    assert module["A2ML"].FormatSpecification == a2ml_content
+    assert module["A2ML"] == a2ml_content
     assert module["MOD_COMMON"] == {"Comment": '""', "ALIGNMENT_BYTE": "1",
                                     "ALIGNMENT_FLOAT32_IEEE": "4",
                                     "ALIGNMENT_FLOAT64_IEEE": "4",

@@ -22,7 +22,33 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_axis_descr():
+def test_rules_axis_descr_minimal():
+    """
+    Test parsing a minimal valid "AXIS_DESCR" block.
+    """
+    axis_descr_block = """
+    /begin AXIS_DESCR STD_AXIS /* Standard axis points */
+        N /* Reference to input quantity */
+        CONV_N /* Conversion */
+        14 /* Max.number of axis points*/
+        0.0 /* Lower limit */
+        5800.0 /* Upper limit*/
+    /end AXIS_DESCR
+    """
+    ast = A2LYacc().generate_ast(axis_descr_block)
+    assert ast
+
+    axis_descr = ast["AXIS_DESCR"]
+    assert axis_descr
+    assert axis_descr["Attribute"] == "STD_AXIS"
+    assert axis_descr["InputQuantity"] == "N"
+    assert axis_descr["CONVERSION"] == "CONV_N"
+    assert axis_descr["MaxAxisPoints"] == "14"
+    assert axis_descr["LowerLimit"] == "0.0"
+    assert axis_descr["UpperLimit"] == "5800.0"
+
+
+def test_rules_axis_descr_full():
     """
     Tests parsing a valid "AXIS_DESCR" block.
     """
@@ -88,7 +114,6 @@ def test_rules_axis_descr():
     assert axis_descr["READ_ONLY"] is True
     assert axis_descr["STEP_SIZE"] == "0.025"
     assert axis_descr["EXTENDED_LIMITS"]["LowerLimit"] == "0"
-    assert axis_descr["EXTENDED_LIMITS"]["UpperLimit"] == "6000.0"
     assert axis_descr["EXTENDED_LIMITS"]["UpperLimit"] == "6000.0"
     assert axis_descr["FIX_AXIS_PAR"]["Offset"] == "0"
     assert axis_descr["FIX_AXIS_PAR"]["Shift"] == "4"

@@ -55,6 +55,4 @@ def test_rules_ar_component_full():
     ar_component = ast["AR_COMPONENT"]
     assert ar_component
     assert ar_component["ComponentType"] == '"ApplicationSwComponentType"'
-
-    ar_prototype_of = ar_component["AR_PROTOTYPE_OF"]
-    assert ar_prototype_of.Name == '"HANDLE"'
+    assert ar_component["AR_PROTOTYPE_OF"] == '"HANDLE"'

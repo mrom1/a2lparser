@@ -22,7 +22,7 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_mod_par_valid():
+def test_rules_mod_par():
     """
     Tests parsing a valid "MOD_PAR" block.
     """

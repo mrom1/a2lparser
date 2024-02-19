@@ -78,6 +78,8 @@ def test_rules_axis_pts():
         FORMAT "%4.2"
         PHYS_UNIT "Nm"
         ECU_ADDRESS_EXTENSION 2
+        MAX_REFRESH 3 10
+        MODEL_LINK "axis_points/STV_N.obj"
         READ_ONLY
         SYMBOL_LINK
             "_VehicleSpeed" /* Symbol name */
@@ -116,6 +118,7 @@ def test_rules_axis_pts():
     assert axis_pts["ECU_ADDRESS_EXTENSION"] == "2"
     assert axis_pts["FORMAT"] == '"%4.2"'
     assert axis_pts["GUARD_RAILS"] is True
+    assert axis_pts["MAX_REFRESH"] == {"Rate": "10", "ScalingUnit": "3"}
     assert axis_pts["MONOTONY"] == "MON_INCREASE"
     assert axis_pts["PHYS_UNIT"] == '"Nm"'
     assert axis_pts["READ_ONLY"] is True

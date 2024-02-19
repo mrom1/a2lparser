@@ -92,9 +92,10 @@ def test_rules_typedef_characteristic_full():
             1000.0 /* Upper limit*/
             MAX_GRAD 20.0 /* Axis: maximum gradient*/
         /end AXIS_DESCR
+        DISCRETE
     /end TYPEDEF_CHARACTERISTIC
     """
-    ast = A2LYacc(debug=True).generate_ast(typedef_characteristic_full)
+    ast = A2LYacc().generate_ast(typedef_characteristic_full)
     assert ast
 
     typedef_characteristic = ast["TYPEDEF_CHARACTERISTIC"]
@@ -116,6 +117,7 @@ def test_rules_typedef_characteristic_full():
     assert typedef_characteristic["MATRIX_DIM"] == ["2", "3", "4"]
     assert typedef_characteristic["STEP_SIZE"] == "0.01"
     assert typedef_characteristic["ENCODING"] == "UTF32"
+    assert typedef_characteristic["DISCRETE"] is True
 
     assert len(typedef_characteristic["AXIS_DESCR"]) == 2
     axis_descr_1 = typedef_characteristic["AXIS_DESCR"][0]

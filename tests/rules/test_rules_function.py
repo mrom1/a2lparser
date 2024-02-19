@@ -41,6 +41,10 @@ def test_rules_function():
             Sssm314_AEB_enabled
             Sssm37_Subsystem
         /end SUB_FUNCTION
+        /begin AR_COMPONENT
+            "ApplicationSwComponentType"
+            AR_PROTOTYPE_OF "HANDLE"
+        /end AR_COMPONENT
         /begin LOC_MEASUREMENT
             SsmInLastWinsThreshold
             SsmInThrottlePedalPosition
@@ -92,6 +96,8 @@ def test_rules_function():
     assert function["LOC_MEASUREMENT"]["Identifier"] == ["SsmInLastWinsThreshold", "SsmInThrottlePedalPosition"]
     assert function["OUT_MEASUREMENT"]["Identifier"] == ["OK_FLAG", "SENSOR_FLAG"]
     assert function["REF_CHARACTERISTIC"]["Identifier"] == ["ENG_SPEED_CORR_CURVE", "ENG_SPEED_CORR_CURVE_STD"]
+    assert function["AR_COMPONENT"]["ComponentType"] == '"ApplicationSwComponentType"'
+    assert function["AR_COMPONENT"]["AR_PROTOTYPE_OF"] == '"HANDLE"'
     assert function["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_1"'
     assert function["ANNOTATION"][0]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_1"'
     assert function["ANNOTATION"][0]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_BLOCK_1"']

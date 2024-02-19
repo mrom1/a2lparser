@@ -94,6 +94,7 @@ def test_rules_blob_full():
             /end XCP_BLOB
         /end IF_DATA
         SYMBOL_LINK "_XCP_BLOB" 256
+        MODEL_LINK "binary/blobs/TP_BLOB.obj"
     /end BLOB
     """
     ast = A2LYacc().generate_ast(blob_full)
@@ -110,6 +111,7 @@ def test_rules_blob_full():
     assert blob["DISPLAY_IDENTIFIER"] == "Data_Blob_Display"
     assert blob["ECU_ADDRESS_EXTENSION"] == "0"
     assert blob["MAX_REFRESH"] == {'ScalingUnit': '5', 'Rate': '15'}
+    assert blob["MODEL_LINK"] == '"binary/blobs/TP_BLOB.obj"'
     assert blob["SYMBOL_LINK"] == {'SymbolName': '"_XCP_BLOB"', 'Offset': '256'}
     assert blob["ANNOTATION"][0] == {'ANNOTATION_LABEL': '"Data_Blob Description"',
                                      'ANNOTATION_TEXT': ['"Data_Blob_Description"', '"Data_Blob_Placeholder"']}

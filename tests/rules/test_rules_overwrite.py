@@ -55,7 +55,7 @@ def test_rules_overwrite_full():
         PHYS_UNIT "km/h"
     /end OVERWRITE
     """
-    ast = A2LYacc(debug=True).generate_ast(overwrite_full)
+    ast = A2LYacc().generate_ast(overwrite_full)
     assert ast
 
     overwrite = ast["OVERWRITE"]
