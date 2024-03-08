@@ -336,6 +336,8 @@ class AbstractSyntaxTree:
 
             if self._is_node_name_keyword(child_name):
                 child_name = child_name.upper()
+            elif child_name == ASTNodes.If_Data_Block.__name__:
+                child_name = child_obj.Name
 
             if child_name == "OptionalParams":
                 child_dict = parent_dict

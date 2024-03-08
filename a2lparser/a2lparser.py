@@ -17,8 +17,9 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
-
-
+# @TODO: refactor try catch block
+# @TODO: quiet mode
+#
 import os
 import sys
 import argparse
@@ -31,7 +32,9 @@ from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.parser import Parser
 from a2lparser.cli.command_prompt import CommandPrompt
 from a2lparser.a2l.ast.ast_generator import ASTGenerator
-from a2lparser.a2l.parsing_exception import ParsingException
+from a2lparser.a2l.converter.xml_converter import XMLConverter
+from a2lparser.a2l.converter.json_converter import JSONConverter
+from a2lparser.a2l.converter.yaml_converter import YAMLConverter
 
 
 @logger.catch
@@ -92,14 +95,33 @@ def main() -> None:
 
         # Initializing the A2L Parser
         parser = Parser(debug=args.debug, optimize=args.optimize)
+
+        # Parse input files into abstract syntax tree
         ast = parser.parse_files(args.filename)
+        if not ast:
+            logger.error("Unable to parse any of the given files! Aborting now...")
+            sys.exit(1)
 
         if args.xml:
-            raise NotImplementedError("A2L to XML converter not implemented yet.")
+            try:
+                XMLConverter().convert(ast, output_dir=args.output_dir)
+            except XMLConverter.XMLConverterException as ex:
+                logger.error(f"XML Conversion error: {ex}")
+        if args.json:
+            try:
+                JSONConverter().convert(ast, output_dir=args.output_dir)
+            except JSONConverter.JSONConverterException as ex:
+                logger.error(f"JSON Conversion error: {ex}")
+        if args.yaml:
+            try:
+                YAMLConverter().convert(ast, output_dir=args.output_dir)
+            except YAMLConverter.YAMLConverterException as ex:
+                logger.error(f"YAML Conversion error: {ex}")
 
-        CommandPrompt.prompt(ast)
+        if not args.no_prompt:
+            CommandPrompt.prompt(ast)
 
-    except ParsingException as ex:
+    except Exception as ex:
         logger.error(ex)
 
 
@@ -111,9 +133,14 @@ def parse_arguments(args: list) -> argparse.Namespace:
     parser.add_argument("filename", nargs="?", help="relative path to the full filename")
     parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
     parser.add_argument("-o", "--optimize", action="store_true", default=False, help="enables optimize mode")
-    parser.add_argument("-x", "--xml", action="store_true", help="XML output file")
+    parser.add_argument("-q", "--quiet", action="store_true", default=False, help="Quiet mode disables standard output.")
+    parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
+    parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
+    parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
+    parser.add_argument("--no-prompt", action="store_true", default=False, help="Disable prompt after parsing is done")
     parser.add_argument("--gen-ast", nargs="?", const=A2L_DEFAULT_CONFIG_NAME,
                         help="generates python file containing AST node classes")
+    parser.add_argument("--output-dir", nargs="?", default=None, help="Output directory for converted files")
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
     return parser.parse_args(args)
 

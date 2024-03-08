@@ -1,0 +1,92 @@
+/*  ==============================================================================================  */
+/*                                                                                                  */
+/*  Measurements (ASAP2 V1.7.1)                                                                     */
+/*                                                                                                  */
+/*  Note:                                                                                           */
+/*  These measurements are used for testing of the a2lparser package.                               */
+/*  The values used are not meant to make sense in a practical way.                                 */
+/*                                                                                                  */
+/*  ==============================================================================================  */
+
+/begin MEASUREMENT ASAM.M.SCALAR.UBYTE.FORM_X_PLUS_4
+    "Scalar measurement"
+    UBYTE CM.FORM.X_PLUS_4 0 0 4 259
+    ECU_ADDRESS 0x13A00
+    FORMAT "%5.0"    /* Note: Overwrites the format stated in the computation method */
+    /begin IF_DATA ETK  KP_BLOB 0x13A00 INTERN 1 RASTER 5 /end IF_DATA
+/end MEASUREMENT
+
+/begin MEASUREMENT ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL
+    "Virtual measurement with 2 * ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2 as input (based on the phys value of ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2)"
+    SWORD 
+    CM.VIRTUAL.EXTERNAL_VALUE                        
+    0 0 -32768 32767
+    ECU_ADDRESS 0x0                                      
+    /begin VIRTUAL
+        ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2                
+    /end VIRTUAL
+/end MEASUREMENT
+
+/begin MEASUREMENT ASAM.M.SCALAR.UBYTE.RAT_FUNC.IDENT.STATUS_STRING
+    "Scalar measurement with status string"
+    UBYTE CM.RAT_FUNC.IDENT.STATUS_STRING 0 0 0 252 
+    ARRAY_SIZE 4
+    /begin IF_DATA ETK  KP_BLOB 0x13A00 INTERN 1 RASTER 2 /end IF_DATA
+    BIT_MASK 0xFFFF
+    /begin BIT_OPERATION
+        RIGHT_SHIFT 4
+        SIGN_EXTEND
+    /end BIT_OPERATION
+    ADDRESS_TYPE PLONGLONG
+    BYTE_ORDER MSB_FIRST
+    DISPLAY_IDENTIFIER load_engine.MEASUREMENT.xxx4b4b
+    ECU_ADDRESS 0x2DDDD
+    ECU_ADDRESS_EXTENSION 0x0
+    FORMAT "%.3"
+    DISCRETE
+    /begin IF_DATA CANAPE_EXT
+        100
+        LINK_MAP "xxx79c13e523bc16dfbba3285.x794ec36d9751f96100" 0x2D474 0x0 0 0x0 1 0xCF 0x0
+        DISPLAY 0 -36044.75 36043.75
+    /end IF_DATA
+    /begin IF_DATA CANAPE
+        DISPLAY 0 -36044.75 36043.75
+    /end IF_DATA
+    /begin ANNOTATION
+        ANNOTATION_LABEL "ASAM ASAP2 v1.7.1"
+        ANNOTATION_ORIGIN "Test ASAP2 ANNOTATION origin."
+        /begin ANNOTATION_TEXT 
+            "ASAP2 annotation text list, index 0"
+            "ASAP2 annotation text list, index 1"
+            "ASAP2 annotation text list, index 2"
+            "ASAP2 annotation text list, index 3"
+        /end ANNOTATION_TEXT
+    /end ANNOTATION
+    ERROR_MASK 0x00000001
+    LAYOUT ALTERNATE_WITH_Y
+    MATRIX_DIM 2 4 3
+    MAX_REFRESH 998 2
+    PHYS_UNIT "Nm"
+    READ_WRITE
+    REF_MEMORY_SEGMENT Data1
+    /begin FUNCTION_LIST
+        FNC_VAL_1
+        FNC_VAL_2
+        FNC_VAL_3
+    /end FUNCTION_LIST
+    MODEL_LINK "system/measurement/ecu_x79c13.obj"
+    /begin ANNOTATION
+        ANNOTATION_LABEL "ASAM Workinggroup"
+        ANNOTATION_ORIGIN ""
+        /begin ANNOTATION_TEXT
+            "Test the A2L annotation"
+        /end ANNOTATION_TEXT
+    /end ANNOTATION
+    /begin VIRTUAL
+        PHI_BASIS
+        PHI_CORR
+    /end VIRTUAL
+    SYMBOL_LINK
+        "_VehicleSpeed" /* Symbol name */
+        0 /* Offset */
+/end MEASUREMENT

@@ -28,6 +28,8 @@ import a2lparser.gen.a2l_ast as ASTNodes
 class RulesSections:
     """
     Grammar for parsing A2L sections.
+    @TODO: Code quality on AST nodes (Stack)
+    @TODO: Code quality on grammar optionals
     """
 
     def __init__(self):
@@ -250,8 +252,7 @@ class RulesSections:
 
             if len(p) == 12:
                 p[0].OptionalParams = p[9]
-
-            self._remove_ast_node(ASTNodes.Axis_Descr_Opt)
+                self._remove_ast_node(ASTNodes.Axis_Descr_Opt)
 
     def p_axis_descr_opt_params(self, p):
         """
@@ -350,8 +351,7 @@ class RulesSections:
 
             if len(p) == 16:
                 p[0].OptionalParams = p[13]
-
-            self._remove_ast_node(ASTNodes.Axis_Pts_Opt)
+                self._remove_ast_node(ASTNodes.Axis_Pts_Opt)
 
     def p_axis_pts_opt_params(self, p):
         """
@@ -666,8 +666,7 @@ class RulesSections:
 
             if len(p) == 15:
                 p[0].OptionalParams = p[12]
-
-        self._remove_ast_node(ASTNodes.Characteristic_Opt)
+                self._remove_ast_node(ASTNodes.Characteristic_Opt)
 
     def p_characteristic_opt_params(self, p):
         """
@@ -801,11 +800,9 @@ class RulesSections:
 
         if len(p) == 11:
             node.OptionalParams = p[8]
+            self._remove_ast_node(ASTNodes.Compu_Method_Opt)
 
         p[0] = node
-
-        self._remove_ast_node(ASTNodes.Compu_Method)
-        self._remove_ast_node(ASTNodes.Compu_Method_Opt)
 
     def p_compu_method_opt_params(self, p):
         """
@@ -1424,6 +1421,26 @@ class RulesSections:
         if_data_opt : constant
                     | string_literal
                     | ident
+                    | meta_block_keyword
+                    | addrtype_enum
+                    | attribute_enum
+                    | axis_descr_enum
+                    | byte_order_enum
+                    | calibration_access_enum
+                    | characteristic_enum
+                    | conversion_type_enum
+                    | datasize_enum
+                    | datatype_enum
+                    | encoding_enum
+                    | mode_enum
+                    | indexmode_enum
+                    | indexorder_enum
+                    | memorytype_enum
+                    | monotony_enum
+                    | transformer_trigger_enum
+                    | prgtype_enum
+                    | unit_type_enum
+                    | tag_enum
         """
         p[0] = p[1]
 

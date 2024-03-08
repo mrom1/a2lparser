@@ -1,0 +1,25 @@
+/*  ==============================================================================================  */
+/*                                                                                                  */
+/*  Nested Includes Test File (ASAP2 V1.7.1)                                                        */
+/*                                                                                                  */
+/*  Note:                                                                                           */
+/*  This A2L file will include a module which itself uses the include mechanism.                    */
+/*  The values used are not meant to make sense in a practical way.                                 */
+/*  Used for testing nested include mechanism.                                                      */
+/*                                                                                                  */
+/*  ==============================================================================================  */
+
+
+ASAP2_VERSION 1 71 /* Version 1.7.1 */
+
+
+/begin PROJECT NESTED_INCLUDES "Tests including multiple subnested modules."
+
+  /begin HEADER "Multiple Nested Includes Example File"
+    VERSION "V1.7.1"
+    PROJECT_NO T23_NESTED_MULTIPLE_INCLUDES
+  /end HEADER
+
+  /INCLUDE "submodules/MODULE_INCLUDES.a2l"
+  
+/end PROJECT

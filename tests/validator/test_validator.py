@@ -34,7 +34,7 @@ def test_validator_with_valid_file():
     /end CHARACTERISTIC
     /end MOD_PAR
     /end PROJECT"""
-    assert A2LValidator.validate_syntax(a2l_string) is None
+    assert A2LValidator.validate(a2l_string) is None
 
 
 def test_validator_with_missing_end_statement():
@@ -47,7 +47,7 @@ def test_validator_with_missing_end_statement():
     /begin CHARACTERISTIC foo
     /end MOD_PAR"""
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
-        A2LValidator.validate_syntax(a2l_string)
+        A2LValidator.validate(a2l_string)
     assert ex.value.errors[0]
     assert ex.value.errors[0] == "Found /end mod_par tag without matching /begin characteristic tag at line 4, column 5."
     assert ex.value.errors[1]
@@ -65,7 +65,7 @@ def test_validator_with_missing_begin_statement():
     /end MOD_PAR
     /end PROJECT"""
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
-        A2LValidator.validate_syntax(a2l_string)
+        A2LValidator.validate(a2l_string)
     assert ex
 
 
@@ -83,5 +83,5 @@ def test_validator_with_nested_structure_error():
         /end MOD_PAR
     /end PROJECT"""
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
-        A2LValidator.validate_syntax(a2l_string)
+        A2LValidator.validate(a2l_string)
     assert ex

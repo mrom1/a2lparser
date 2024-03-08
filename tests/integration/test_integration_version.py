@@ -19,48 +19,26 @@
 #######################################################################################
 
 
-from pathlib import Path
-from prompt_toolkit import PromptSession
-from prompt_toolkit.history import FileHistory
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from a2lparser import A2L_PACKAGE_DIR
-from a2lparser import A2L_PARSER_HEADLINE
+import pytest
+from a2lparser import __version__
+from a2lparser.a2lparser import main
 
 
-class CommandPrompt:
+def test_integration_version_argument(monkeypatch, capsys):
     """
-    CommandPrompt class which lets the user evaluate any input.
-    Used to access the generated AST dictionary.
+    Tests the "version" parameter of the a2lparser.
 
-    Usage:
-        >>> parser = Parser()
-        >>> ast = parser.parse_files("ECU_Example.a2l")
-        >>> CommandPrompt.prompt(ast)
+    Calls "a2lparser --version" and checks if the output contains the expected version information.
     """
+    # Modify sys.argv to include the version argument
+    monkeypatch.setattr('sys.argv', ['a2lparser', '--version'])
 
-    @staticmethod
-    def prompt(ast):
-        """
-        Prompts the user for input..
-        """
-        history_file: Path = A2L_PACKAGE_DIR / "logs" / "a2lparser_history"
-        session = PromptSession(history=FileHistory(str(history_file)), auto_suggest=AutoSuggestFromHistory())
+    # Call main function
+    with pytest.raises(SystemExit):
+        main()
 
-        print(A2L_PARSER_HEADLINE)
-        print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
-        while True:
-            try:
-                user_input = session.prompt(">>> ")
-            except KeyboardInterrupt:
-                continue
-            except EOFError:
-                break
+    # Capture the output
+    captured = capsys.readouterr()
 
-            if user_input == "exit":
-                break
-
-            try:
-                if result := eval(user_input, {}, {"ast": ast}):
-                    print(result)
-            except Exception as ex:
-                print(ex)
+    # Check if the output contains the expected version information
+    assert f"a2lparser version: {__version__}\n" == captured.out

@@ -25,9 +25,12 @@ class RulesSectionsErrorhandlers:
 
     Current error handling strategy is to throw out all sections
     which encounter errors, and resynchronize the parser at the next section.
-    """
 
-    error_tokens = []
+    @TODO: add Constructor taking error resolve config flag.
+    @TODO: add experimental error resolving
+    @TODO: change IF_DATA so it allows certain keywords as idents in grammar rule.
+    @TODO: add error resolve for optional parameters.
+    """
 
     def p_a2ml_version_error(self, p):
         """
@@ -507,6 +510,7 @@ class RulesSectionsErrorhandlers:
         """
         if_data_opt : error
         """
+        # We allow all parsed tokens inside an IF_DATA block
         p[0] = p[1].value if p[1] else p[1]
 
     def p_in_measurement_error(self, p):

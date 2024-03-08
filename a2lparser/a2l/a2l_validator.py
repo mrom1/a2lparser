@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
+# @TODO Ignore lines that start with a comment
 
 
 import re
@@ -29,8 +30,8 @@ class A2LValidator:
 
     Usage:
         >>> try:
-        >>>     A2LValidator.validate_syntax("/begin MEASUREMENT /end")
-        >>> expect A2LValidationError as ex:
+        >>>     A2LValidator.validate("/begin MEASUREMENT /end")
+        >>> expect A2LValidator.A2LValidationError as ex:
         >>>     print(e)
     """
 
@@ -47,7 +48,7 @@ class A2LValidator:
             return f"A2L validation failed with the following errors:\n{error_messages}"
 
     @staticmethod
-    def validate_syntax(a2l_content: str) -> None:
+    def validate(a2l_content: str) -> None:
         """
         Validates the syntax of the A2L content.
 

@@ -1,6 +1,6 @@
 ply
-lxml
 loguru
 alive-progress
 prompt-toolkit
+pyyaml
 xmltodict

@@ -17,50 +17,23 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
+# @TODO
 
 
-from pathlib import Path
-from prompt_toolkit import PromptSession
-from prompt_toolkit.history import FileHistory
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
+import tempfile
 from a2lparser import A2L_PACKAGE_DIR
-from a2lparser import A2L_PARSER_HEADLINE
+from a2lparser.a2lparser import main
 
 
-class CommandPrompt:
+def test_integration_nested_includes(monkeypatch):
     """
-    CommandPrompt class which lets the user evaluate any input.
-    Used to access the generated AST dictionary.
-
-    Usage:
-        >>> parser = Parser()
-        >>> ast = parser.parse_files("ECU_Example.a2l")
-        >>> CommandPrompt.prompt(ast)
+    Tests parsing and converting the NESTED_INCLUDES.a2l file.
     """
+    a2l_filename = "TEST_Nested_Includes.a2l"
+    temp_test_output_path = A2L_PACKAGE_DIR / "../tests"
+    temp_test_dir_prefix = "temp_dir_output_"
 
-    @staticmethod
-    def prompt(ast):
-        """
-        Prompts the user for input..
-        """
-        history_file: Path = A2L_PACKAGE_DIR / "logs" / "a2lparser_history"
-        session = PromptSession(history=FileHistory(str(history_file)), auto_suggest=AutoSuggestFromHistory())
-
-        print(A2L_PARSER_HEADLINE)
-        print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
-        while True:
-            try:
-                user_input = session.prompt(">>> ")
-            except KeyboardInterrupt:
-                continue
-            except EOFError:
-                break
-
-            if user_input == "exit":
-                break
-
-            try:
-                if result := eval(user_input, {}, {"ast": ast}):
-                    print(result)
-            except Exception as ex:
-                print(ex)
+    with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
+        monkeypatch.setattr("sys.argv", ["a2lparser", f"testfiles/A2L/{a2l_filename}",
+                            f"--output-dir {tempdir}", "--json", "--xml", "--yaml", "--quiet", "--no-prompt"])
+        main()

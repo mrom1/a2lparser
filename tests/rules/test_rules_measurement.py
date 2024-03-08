@@ -75,7 +75,7 @@ def test_rules_measurement_full():
         DISCRETE
         /begin IF_DATA CANAPE_EXT
             100
-            LINK_MAP "xxx79c13e523bc16dfbba3285.x794ec36d9751f96100fb3400ff.x79f0cb.x791bcbxxx" 0x2D474 0x0 0 0x0 1 0xCF 0x0
+            LINK_MAP "xxx79c13e523bc16dfbba3285.x794ec36d9751f96100" 0x2D474 0x0 0 0x0 1 0xCF 0x0
             DISPLAY 0 -36044.75 36043.75
         /end IF_DATA
         /begin IF_DATA CANAPE
@@ -153,9 +153,12 @@ def test_rules_measurement_full():
 
     assert len(measurement["IF_DATA"]) == 2
     assert measurement["IF_DATA"][0]["Name"] == "CANAPE_EXT"
-    assert len(measurement["IF_DATA"][0]["DataParams"]) == 14
+    assert measurement["IF_DATA"][0]["DataParams"] == ['100', 'LINK_MAP',
+                                                       '"xxx79c13e523bc16dfbba3285.x794ec36d9751f96100"',
+                                                       '0x2D474', '0x0', '0', '0x0', '1', '0xCF', '0x0',
+                                                       'DISPLAY', '0', '-36044.75', '36043.75']
     assert measurement["IF_DATA"][1]["Name"] == "CANAPE"
-    assert len(measurement["IF_DATA"][1]["DataParams"]) == 4
+    assert measurement["IF_DATA"][1]["DataParams"] == ['DISPLAY', '0', '-36044.75', '36043.75']
 
     assert len(measurement["ANNOTATION"]) == 2
     assert measurement["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_1"'

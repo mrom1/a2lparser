@@ -19,25 +19,29 @@
 #######################################################################################
 
 
-import xmltodict
+import pytest
+from a2lparser.a2l.parser import Parser
 
 
-class XMLConverter:
+@pytest.mark.parametrize('matching_includes, expected_filename', [
+    (r'/include "C:\DATA\ECU.A2L"', r'C:\DATA\ECU.A2L'),
+    (r'/INCLUDE "..\includes\CANAPE_OET.A2L"', r'..\includes\CANAPE_OET.A2L'),
+    (r'/INCLUDE "\\server1\documents\templates\template.aml"', r'\\server1\documents\templates\template.aml'),
+    (r'/Include ECU_DATA.a2l', r'ECU_DATA.a2l'),
+    (r'/include "AML Template.aml"', r'AML Template.aml'),
+    (r'/include "/home/user/A2L\ Files/ECU_1221.A2L"', r'/home/user/A2L\ Files/ECU_1221.A2L'),
+    (r'/include "../../../blobs/TP_BLOB.a2l"', r'../../../blobs/TP_BLOB.a2l'),
+    (r'/begin A2ML /include "/home/user/IF_DATA/XCP.txt" STV_N /* name */ /end A2ML', r'/home/user/IF_DATA/XCP.txt'),
+    (r'/begin MODULE /Include My_Module.A2L UNIT 2 "" "" DERIVED /end MODULE', r'My_Module.A2L'),
+    (r'/begin PROJECT /include "\\Z:\tmp\ecu project.a2l" /* EOF */ /end PROJECT', r'\\Z:\tmp\ecu project.a2l'),
+    (r'/begin PROJECT /include "/home/ecu/header/my_header.a2l" /include my_module.a2l /end PROJECT',
+     [r'/home/ecu/header/my_header.a2l', r'my_module.a2l']),
+    (r'/begin MODULE /begin MEASUREMENT /end MEASUREMENT /end MODULE', None)
+])
+def test_parser_load_file_include_mechanism(matching_includes, expected_filename):
     """
-    Converts an abstract syntax tree dictionary to an XML file.
+    Tests the include mechanism of the A2L parser.
     """
-
-    @staticmethod
-    def convert(ast_dict, encoding="utf-8", pretty=True):
-        """
-        Convert the given AST dictionary to an XML string.
-
-        Parameters:
-            ast_dict (dict): The AST dictionary to be converted to XML.
-            encoding (str): The encoding to be used for the XML string (default is "utf-8").
-            pretty (bool): Whether to format the XML string with indentation and newlines (default is True).
-
-        Returns:
-            str: The XML string representing the AST dictionary.
-        """
-        return xmltodict.unparse(ast_dict, encoding=encoding, pretty=pretty)
+    parser = Parser()
+    filename = parser._find_includes(matching_includes)
+    assert filename == expected_filename

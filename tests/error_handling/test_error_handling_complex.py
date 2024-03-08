@@ -17,7 +17,8 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
-
+# @TODO: Finish and add more complex error handling tests
+# @TODO: test invalid quotes
 
 from a2lparser.a2l.a2l_yacc import A2LYacc
 

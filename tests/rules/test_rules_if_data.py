@@ -71,44 +71,43 @@ def test_rules_if_data():
     assert if_data
     assert if_data["Name"] == "XCP"
     assert if_data["DataParams"] == ["IF_DATA_PARAM_TEST_FIRST", "IF_DATA_PARAM_TEST_LAST"]
-    assert len(if_data["If_Data_Block"]) == 2
 
     # First If_Data_Block
-    if_data_block_0 = if_data["If_Data_Block"][0]
-    assert if_data_block_0["Name"] == "DAQ"
-    assert if_data_block_0["DataParams"] == ["STATIC", "ALSLA", "DAQ_END"]
-    assert "If_Data_Block" in if_data_block_0
+    if_data_daq = if_data["DAQ"]
+    assert if_data_daq["Name"] == "DAQ"
+    assert if_data_daq["DataParams"] == ["STATIC", "ALSLA", "DAQ_END"]
 
-    daq_if_data_block = if_data_block_0["If_Data_Block"]
-    assert daq_if_data_block["Name"] == "TIMESTAMP_SUPPORTED"
-    assert daq_if_data_block["DataParams"] == ["TIMESTAMP_SUPPORTED_PARAM_FIRST", "TIMESTAMP_SUPPORTED_PARAM_LAST"]
-    assert "If_Data_Block" in daq_if_data_block
+    daq_timestamp_supported = if_data_daq["TIMESTAMP_SUPPORTED"]
+    assert daq_timestamp_supported["Name"] == "TIMESTAMP_SUPPORTED"
+    assert daq_timestamp_supported["DataParams"] == ["TIMESTAMP_SUPPORTED_PARAM_FIRST", "TIMESTAMP_SUPPORTED_PARAM_LAST"]
 
-    event_if_data_block = daq_if_data_block["If_Data_Block"]
-    assert event_if_data_block["Name"] == "EVENT"
-    assert event_if_data_block["DataParams"] == ["EVENT_PARAM_END"]
-    assert len(event_if_data_block["If_Data_Block"]) == 3
+    daq_event = daq_timestamp_supported["EVENT"]
+    assert daq_event["Name"] == "EVENT"
+    assert daq_event["DataParams"] == ["EVENT_PARAM_END"]
 
     # First nested If_Data_Block within EVENT
-    event_if_data_block_0 = event_if_data_block["If_Data_Block"][0]
-    assert event_if_data_block_0["Name"] == "TEST"
-    assert event_if_data_block_0["DataParams"] == ["TEST_PARAM_FIRST", "TEST_PARAM_LAST"]
-    assert "If_Data_Block" in event_if_data_block_0
+    daq_event_test = daq_event["TEST"]
+    assert daq_event_test["Name"] == "TEST"
+    assert daq_event_test["DataParams"] == ["TEST_PARAM_FIRST", "TEST_PARAM_LAST"]
+    assert daq_event_test["FOO"]["Name"] == "FOO"
+    assert daq_event_test["FOO"]["DataParams"] == ["FOO"]
+    assert daq_event_test["FOO"]["BAR"]["Name"] == "BAR"
+    assert daq_event_test["FOO"]["BAR"]["DataParams"] == ["BAR"]
 
     # Second nested If_Data_Block within EVENT
-    event_if_data_block_1 = event_if_data_block["If_Data_Block"][1]
-    assert event_if_data_block_1["Name"] == "X"
-    assert event_if_data_block_1["DataParams"] == ["X"]
+    daq_event_X = daq_event["X"]
+    assert daq_event_X["Name"] == "X"
+    assert daq_event_X["DataParams"] == ["X"]
 
     # Third nested If_Data_Block within EVENT
-    event_if_data_block_2 = event_if_data_block["If_Data_Block"][2]
-    assert event_if_data_block_2["Name"] == "Y"
-    assert event_if_data_block_2["DataParams"] == ["Y"]
+    daq_event_Y = daq_event["Y"]
+    assert daq_event_Y["Name"] == "Y"
+    assert daq_event_Y["DataParams"] == ["Y"]
 
     # Second If_Data_Block
-    if_data_block_1 = if_data["If_Data_Block"][1]
-    assert if_data_block_1["Name"] == "PROTOCOL_LAYER"
-    assert if_data_block_1["DataParams"] == ["1", "2", "3"]
+    protocol_layer = if_data["PROTOCOL_LAYER"]
+    assert protocol_layer["Name"] == "PROTOCOL_LAYER"
+    assert protocol_layer["DataParams"] == ["1", "2", "3"]
 
 
 def test_rules_if_data_including_keywords():
@@ -171,18 +170,18 @@ def test_rules_if_data_including_keywords():
     if_data = ast["IF_DATA"]
     assert if_data
     assert if_data["Name"] == "ETK"
-    source_1 = if_data["If_Data_Block"][0]
-    source_2 = if_data["If_Data_Block"][1]
-    source_3 = if_data["If_Data_Block"][2]
-    source_4 = if_data["If_Data_Block"][3]
-    source_5 = if_data["If_Data_Block"][4]
-    tp_blob = if_data["If_Data_Block"][5]
+    tp_blob = if_data["TP_BLOB"]
+    source_1 = if_data["SOURCE"][0]
+    source_2 = if_data["SOURCE"][1]
+    source_3 = if_data["SOURCE"][2]
+    source_4 = if_data["SOURCE"][3]
+    source_5 = if_data["SOURCE"][4]
+    assert tp_blob
     assert source_1
     assert source_2
     assert source_3
     assert source_4
     assert source_5
-    assert tp_blob
 
     assert source_1["Name"] == "SOURCE"
     assert source_1["DataParams"] == ['"Engine_1"', '103', '1', 'QP_BLOB', '0x100', '1', 'DIRECT', '23', 'MEASUREMENT',
@@ -208,7 +207,7 @@ def test_rules_if_data_including_keywords():
                                      'MAILBOX', '0x1', '0x1F4', '0xAFF7C928', 'AUTOSTART_BEHAVIOR', 'ALWAYS_RP',
                                      'OCT_WORKINGPAGE', '0x400', '0xAFF7C84C', '0xDC']
 
-    tp_blob_distab_cfg = tp_blob["If_Data_Block"]
+    tp_blob_distab_cfg = tp_blob["DISTAB_CFG"]
     assert tp_blob_distab_cfg
     assert tp_blob_distab_cfg["Name"] == "DISTAB_CFG"
     assert tp_blob_distab_cfg["DataParams"] == ['0xD', '0x122', '0x2', '0x0', '0x0', 'TRG_MOD', '0x0']

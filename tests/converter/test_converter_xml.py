@@ -21,10 +21,30 @@
 
 import xmltodict
 from a2lparser.a2l.a2l_yacc import A2LYacc
-from a2lparser.converter.xml_converter import XMLConverter
+from a2lparser.a2l.converter.xml_converter import XMLConverter
 
 
-def test_converter_xml():
+def test_converter_xml_multiple_root_entries():
+    """
+    Tests converting a dictionary with multiple root entries which are not A2L keywords.
+    """
+    ast_dict = {"root1": {"key1": "value1"}, "root2": {"key2": "value2"}}
+    converted_xml_list = XMLConverter().convert_to_string(ast_dict)
+    assert converted_xml_list
+    assert len(converted_xml_list) == 2
+
+    root1_filename, root1_xml = converted_xml_list[0]
+    root1_parsed_xml = xmltodict.parse(root1_xml)
+    assert root1_filename == "root1.xml"
+    assert root1_parsed_xml["A2L-File"]["key1"] == "value1"
+
+    root2_filename, root2_xml = converted_xml_list[1]
+    root2_parsed_xml = xmltodict.parse(root2_xml)
+    assert root2_filename == "root2.xml"
+    assert root2_parsed_xml["A2L-File"]["key2"] == "value2"
+
+
+def test_converter_xml_single_measurement_entry():
     """
     Tests converting an abstract syntax tree to an XML file.
     """
@@ -39,7 +59,7 @@ def test_converter_xml():
         DISCRETE
         /begin IF_DATA CANAPE_EXT
             100
-            LINK_MAP "xxx79c13e523bc16dfbba3285.x794ec36d9751f96100fb3400ff.x79f0cb.x791bcbxxx" 0x2D474 0x0 0 0x0 1 0xCF 0x0
+            LINK_MAP "xxx79c13e523bc16dfbba3285.x794ec36d9751f96100" 0x2D474 0x0 0 0x0 1 0xCF 0x0
             DISPLAY 0 -36044.75 36043.75
         /end IF_DATA
         /begin IF_DATA CANAPE
@@ -71,18 +91,18 @@ def test_converter_xml():
     """
     ast = A2LYacc().generate_ast(measurement_block)
     assert ast
-    ast_measurement_root = ast._dict
-    xml_measurement_root = XMLConverter.convert(ast_measurement_root)
-    assert xml_measurement_root
+    xml_measurement = XMLConverter().convert_to_string(ast.get_dict(), output_filename="measurement")
+    assert xml_measurement
 
+    xml_measurement_filename, xml_measurement_root = xml_measurement[0]
+    assert xml_measurement_filename == "measurement.xml"
     parsed_xml_dict = xmltodict.parse(xml_measurement_root)
     assert parsed_xml_dict
-
-    ast_measurement = ast_measurement_root["MEASUREMENT"]
-    xml_measurement_parsed = parsed_xml_dict["MEASUREMENT"]
-
+    xml_measurement_parsed = parsed_xml_dict["A2L-File"]["MEASUREMENT"]
+    ast_measurement = ast["MEASUREMENT"]
     assert ast_measurement
     assert xml_measurement_parsed
+
     assert ast_measurement["Name"] == xml_measurement_parsed["Name"]
     assert ast_measurement["LongIdentifier"] == xml_measurement_parsed["LongIdentifier"]
     assert ast_measurement["Datatype"] == xml_measurement_parsed["Datatype"]

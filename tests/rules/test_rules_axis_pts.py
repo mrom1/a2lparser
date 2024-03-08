@@ -136,8 +136,9 @@ def test_rules_axis_pts():
     assert axis_pts["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_2"'
     assert axis_pts["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_BLOCK_2"']
     assert axis_pts["IF_DATA"][0]["Name"] == "ASAP1B_EXAMPLE"
-    assert axis_pts["IF_DATA"][0]["If_Data_Block"][0]["Name"] == "DP_BLOB"
-    assert axis_pts["IF_DATA"][0]["If_Data_Block"][0]["DataParams"] == ["0x12129977", "0xFF"]
-    assert axis_pts["IF_DATA"][0]["If_Data_Block"][1]["Name"] == "PA_BLOB"
-    assert axis_pts["IF_DATA"][0]["If_Data_Block"][1]["DataParams"] == ['"Pumpenkennfeld"', "1", "2", "17"]
+    assert axis_pts["IF_DATA"][0]["DP_BLOB"]["Name"] == "DP_BLOB"
+    assert axis_pts["IF_DATA"][0]["DP_BLOB"]["DataParams"] == ["0x12129977", "0xFF"]
+    assert axis_pts["IF_DATA"][0]["PA_BLOB"]["Name"] == "PA_BLOB"
+    assert axis_pts["IF_DATA"][0]["PA_BLOB"]["DataParams"] == ['"Pumpenkennfeld"', "1", "2", "17"]
+    assert axis_pts["IF_DATA"][1]["Name"] == "ASAP1B_EXAMPLE"
     assert axis_pts["IF_DATA"][1]["DataParams"] == ['"TEST_STRING"', "0x0123212", "TEST_IDENT"]

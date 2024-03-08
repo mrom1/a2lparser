@@ -19,69 +19,60 @@
 #######################################################################################
 
 
-import xmltodict
+import yaml
 from a2lparser.a2l.converter.a2l_converter import A2LConverter
 
 
-class XMLConverter(A2LConverter):
+class YAMLConverter(A2LConverter):
     """
-    Converter class for converting an A2L abstract syntax tree to an XML file.
+    Converter class for converting an A2L abstract syntax tree to an YAML file.
 
     Usage Example:
-        >>> XMLConverter().convert(ast_dict, output_dir="./xml_files/")
+        >>> YAMLConverter().convert(ast_dict, output_dir="./yaml_files/")
     """
 
-    class XMLConverterException(Exception):
+    class YAMLConverterException(Exception):
         """
-        Exception raised when an error occurs while converting an AST to a XML file.
+        Exception raised when an error occurs while converting an AST to a YAML file.
         """
 
     def convert(self, ast: dict,
                 output_dir: str = ".",
-                output_filename: str = None,
-                encoding: str = "utf-8",
-                pretty: bool = True) -> None:
+                output_filename: str = None) -> None:
         """
-        Convert the given AST dictionary to XML and write it to a file.
+        Convert the given AST dictionary to YAML and write it to a file.
 
         Args:
-            ast (dict): The AST dictionary to be converted to XML.
-            output_dir (str, optional): The directory to write the XML file.
-            output_filename (str, optional): The filename of the XML file.
-            encoding (str, optional): The encoding to be used for the XML file.
-            pretty (bool, optional): Whether to format the XML file with indentation and newlines.
+            ast (dict): The AST dictionary to be converted to YAML.
+            output_dir (str, optional): The directory to write the YAML file.
+            output_filename (str, optional): The filename of the YAML file.
         """
         try:
-            converted_tuples = self.convert_to_string(ast, output_filename, encoding, pretty)
+            converted_tuples = self.convert_to_string(ast, output_filename)
             for tup in converted_tuples:
-                filename, xml_string = tup
-                self.write_to_file(content=xml_string, filename=filename, output_dir=output_dir)
+                filename, yaml_string = tup
+                self.write_to_file(content=yaml_string, filename=filename, output_dir=output_dir)
         except Exception as e:
-            raise self.XMLConverterException(e) from e
+            raise self.YAMLConverterException(e) from e
 
-    def convert_to_string(self, ast: dict,
-                          output_filename: str = None,
-                          encoding: str = "utf-8",
-                          pretty: bool = True) -> list:
+    def convert_to_string(self, ast: dict, output_filename: str = None) -> list:
         """
-        Convert the given AST dictionary to a XML string.
+        Convert the given AST dictionary to a YAML string.
 
         Args:
-            ast (dict): The AST dictionary to be converted to XML.
-            output_filename (str, optional): The filename to be used for the XML string.
-            encoding (str, optional): The encoding to be used for the XML string (default is "utf-8").
-            pretty (bool, optional): Whether to format the XML string with indentation and newlines (default is True).
+            ast (dict): The AST dictionary to be converted to YAML.
+            output_filename (str, optional): The filename to be used.
 
         Returns:
-            str: List of tuples (filename, xml_string).
+            str: List of tuples (filename, yaml_string).
         """
         try:
             result = []
-            sliced_ast = self.slice_ast(ast, file_extension="xml", filename=output_filename)
+            sliced_ast = self.slice_ast(ast, file_extension="yml", filename=output_filename)
             for tup in sliced_ast:
                 filename, root = tup
-                xml_string = xmltodict.unparse(root, encoding=encoding, pretty=pretty)
-                result.append((filename, xml_string))
+                yaml_string = yaml.dump(root)
+                result.append((filename, yaml_string))
             return result
         except Exception as e:
-            raise self.XMLConverterException(e) from e
+            raise self.YAMLConverterException(e) from e

@@ -31,10 +31,7 @@ __author_email__ = "mrom@linuxmail.org"
 __description__ = "A2L file parsing tool and XML converter."
 __license__ = "GPLv3"
 __url__ = "https://github.com/mrom1/a2lparser"
-A2L_PACKAGE_DIR = Path(__file__).parent
-A2L_GENERATED_FILES_DIR = A2L_PACKAGE_DIR / "gen"
-A2L_CONFIGS_DIR = A2L_PACKAGE_DIR / "configs"
-A2L_DEFAULT_CONFIG_NAME = "ASAP2_MCD_v171.cfg"
+
 A2L_PARSER_HEADLINE = """
  ████╗ ██████╗██╗      ██████╗ ████╗ █████╗ ██████╗██████╗█████╗
 ██╔═██╗╚═══██║██║      ██╔═██║██╔═██╗██╔═██╗██╔═══╝██╔═══╝██╔═██╗
@@ -43,6 +40,10 @@ A2L_PARSER_HEADLINE = """
 ██║ ██║██████╗██████╗  ██║    ██║ ██║██║ ██║██████║██████╗██║ ██║
 ╚═╝ ╚═╝╚═════╝╚═════╝  ╚═╝    ╚═╝ ╚═╝╚═╝ ╚═╝╚═════╝╚═════╝╚═╝ ╚═╝
 """
+A2L_PACKAGE_DIR = Path(__file__).parent
+A2L_GENERATED_FILES_DIR = A2L_PACKAGE_DIR / "gen"
+A2L_CONFIGS_DIR = A2L_PACKAGE_DIR / "configs"
+A2L_DEFAULT_CONFIG_NAME = "ASAP2_MCD_v171.cfg"
 
 
 #############################
