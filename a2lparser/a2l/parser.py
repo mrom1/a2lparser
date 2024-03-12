@@ -17,8 +17,7 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
-# @TODO: Add validation of a2l files.
-# @TODO: Refactor with exception
+
 
 import os
 import re
@@ -43,14 +42,16 @@ class Parser:
         >>>     print(ex)
     """
 
-    def __init__(self, debug: bool = False, optimize: bool = True):
+    def __init__(self, debug: bool = False, optimize: bool = True, validation: bool = True) -> None:
         """
         Parser Constructor.
 
         Args:
             - debug: Will print detailed parsing debug information.
             - optimize: Will optimize the lex and yacc parsing process.
+            - validation: Will validate the A2L content before parsing.
         """
+        self.validation = validation
         self.parser = A2LYacc(debug=debug, optimize=optimize)
         self._include_pattern = re.compile(r"""
             /include    # matches literal string "/include"
@@ -78,10 +79,11 @@ class Parser:
                 a2l_content = self._load_file(filename=a2l_file)
 
                 # Validate the content read
-                # try:
-                #     A2LValidator().validate(a2l_content)
-                # except A2LValidator.A2LValidationError as e:
-                #     logger.warning(f"Validation of file \"{a2l_file}\" failed!\n{e}")
+                if self.validation:
+                    try:
+                        A2LValidator().validate(a2l_content)
+                    except A2LValidator.A2LValidationError as e:
+                        logger.warning(f"Validation of file \"{a2l_file}\" failed!\n{e}")
 
                 # Parse the content
                 filename = os.path.basename(a2l_file)

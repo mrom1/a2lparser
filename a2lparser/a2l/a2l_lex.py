@@ -82,6 +82,7 @@ class A2LLex:
             - generated_files_dir: the directory to write the generated files to
         """
         self.last_token: LexToken = None
+        self.current_section: str = None
         self.progressbar = None
         self.lexer = lex(
             module=self,
@@ -201,6 +202,7 @@ class A2LLex:
         Sets the type of the token to the specific keyword found.
         """
         t.type = t.value
+        self.current_section = t.value
         return t
 
     @TOKEN(LexerRegex.identifier)

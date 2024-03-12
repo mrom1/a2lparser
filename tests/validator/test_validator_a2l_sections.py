@@ -23,7 +23,7 @@ import pytest
 from a2lparser.a2l.a2l_validator import A2LValidator
 
 
-def test_validator_with_valid_file():
+def test_validator_with_valid_content_simple():
     """
     Test that a valid A2L file passes syntax validation without errors.
     """
@@ -33,8 +33,9 @@ def test_validator_with_valid_file():
     /begin CHARACTERISTIC foo
     /end CHARACTERISTIC
     /end MOD_PAR
-    /end PROJECT"""
-    assert A2LValidator.validate(a2l_string) is None
+    /end PROJECT
+    """
+    assert A2LValidator().validate(a2l_string) is None
 
 
 def test_validator_with_missing_end_statement():
@@ -45,13 +46,15 @@ def test_validator_with_missing_end_statement():
     /begin PROJECT "test"
     /begin MOD_PAR "module"
     /begin CHARACTERISTIC foo
-    /end MOD_PAR"""
+    /end MOD_PAR
+    """
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
-        A2LValidator.validate(a2l_string)
-    assert ex.value.errors[0]
-    assert ex.value.errors[0] == "Found /end mod_par tag without matching /begin characteristic tag at line 4, column 5."
-    assert ex.value.errors[1]
-    assert ex.value.errors[1] == "Found /begin mod_par tag without matching /end tag at line 2, column 5."
+        A2LValidator().validate(a2l_string)
+    assert len(ex.value.errors) == 4
+    assert ex.value.errors[0] == "Invalid \"/end MOD_PAR\" found at line 4. Last found section CHARACTERISTIC at line 3."
+    assert ex.value.errors[1] == "Found \"/begin PROJECT\" tag without matching /end tag at line 1."
+    assert ex.value.errors[2] == "Found \"/begin MOD_PAR\" tag without matching /end tag at line 2."
+    assert ex.value.errors[3] == "Found \"/begin CHARACTERISTIC\" tag without matching /end tag at line 3."
 
 
 def test_validator_with_missing_begin_statement():
@@ -63,10 +66,12 @@ def test_validator_with_missing_begin_statement():
     /begin MOD_PAR "module"
     /end CHARACTERISTIC
     /end MOD_PAR
-    /end PROJECT"""
+    /end PROJECT
+    """
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
-        A2LValidator.validate(a2l_string)
-    assert ex
+        A2LValidator().validate(a2l_string)
+    assert len(ex.value.errors) == 1
+    assert ex.value.errors[0] == "Invalid \"/end CHARACTERISTIC\" found at line 3. Last found section MOD_PAR at line 2."
 
 
 def test_validator_with_nested_structure_error():
@@ -81,7 +86,8 @@ def test_validator_with_nested_structure_error():
         /end CHARACTERISTIC
             /end CURVE
         /end MOD_PAR
-    /end PROJECT"""
+    /end PROJECT
+    """
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
-        A2LValidator.validate(a2l_string)
+        A2LValidator().validate(a2l_string)
     assert ex

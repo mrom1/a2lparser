@@ -85,6 +85,8 @@ class A2LConverter():
         """
         if output_dir is None:
             output_dir = "."
+        else:
+            output_dir = output_dir.replace("\"", "").replace("'", "")
         full_output_dir = os.path.abspath(output_dir)
 
         if not os.path.isdir(full_output_dir):

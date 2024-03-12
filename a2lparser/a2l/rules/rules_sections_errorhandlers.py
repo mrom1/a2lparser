@@ -26,9 +26,6 @@ class RulesSectionsErrorhandlers:
     Current error handling strategy is to throw out all sections
     which encounter errors, and resynchronize the parser at the next section.
 
-    @TODO: add Constructor taking error resolve config flag.
-    @TODO: add experimental error resolving
-    @TODO: change IF_DATA so it allows certain keywords as idents in grammar rule.
     @TODO: add error resolve for optional parameters.
     """
 

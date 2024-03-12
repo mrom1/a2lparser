@@ -1,0 +1,388 @@
+A2L-File:
+  ASAP2_VERSION:
+    UpgradeNo: '71'
+    VersionNo: '1'
+  PROJECT:
+    HEADER:
+      Comment: '"Multiple Nested Includes Example File"'
+      PROJECT_NO: T23_NESTED_MULTIPLE_INCLUDES
+      VERSION: '"V1.7.1"'
+    LongIdentifier: '"Tests including multiple subnested modules."'
+    MODULE:
+      A2ML: "/* template.aml *******************************************************************/\
+        \ \n/*                                              */ \n/*              \
+        \                                                                  */ \n/*\
+        \ Template for designing IF_DATA fields for ASAM MCD-2MC files and BLOB's\
+        \        */ \n/* for driver interface.                                   \
+        \                       */ \n/* ********************************************************************************/\
+        \ \nblock \"IF_DATA\" taggedunion if_data \n{ \n  \"ASAP1B_EXAMPLE\"  /* The\
+        \ tag of ASAP1B is reserved for ASAM Interfaces  */ \n            /* EXAMPLE\
+        \ shall be substituted with a name of     */ \n            /* manufacturer's\
+        \ choice.                               */ \n \n  taggedstruct  /* optional\
+        \ parameters  */ \n   \n    (block \"SOURCE\" struct  \n    { \n      struct\
+        \  /*  indispensable */  \n      { \n        char [101];  /* source name (string)*/\
+        \ \n        int;  /* min period ( conforming together with min factor */ \n\
+        \            /* the fastest samplingrate available ).            */ \n   \
+        \     long;  /* min factor */     \n      }; \n      taggedstruct    /* optional\
+        \ parameters  */ \n      { \n        block \"QP_BLOB\" struct   /* QP_BLOB\
+        \ for driver */ \n        { \n          /* QP_BLOB specification  */ \n  \
+        \      }; \n      }; \n    } \n    )*;      /*  multiple SOURCE may exist\
+        \ */ \n \n    block \"TP_BLOB\" struct    /* TP_BLOB for driver */ \n    {\
+        \ \n      /* TP_BLOB specification  */ \n    }; \n \n    block \"DP_BLOB\"\
+        \ struct   /* DP_BLOB for driver */  \n    { \n            /* DP_BLOB specification\
+        \  */ \n    }; \n \n    block \"PA_BLOB\" struct   /* PA_BLOB for driver */\
+        \ \n    { \n      /* PA_BLOB specification  */ \n    }; \n    block \"KP_BLOB\"\
+        \ struct   /* KP_BLOB for driver */  \n    { \n      /* KP_BLOB specification\
+        \  */ \n    }; \n \n    /*  for MODULE  may only TP_BLOB and SOURCE be specified\
+        \    */ \n    /*  for CHARACTERISTIC  may only DP_BLOB and PA_BLOB be specified\
+        \    */ \n    /*  for AXIS_PTS  may only DP_BLOB and PA_BLOB be specified\
+        \    */ \n    /*  for MEMORY_LAYOUT  may only DP_BLOB and PA_BLOB be specified\
+        \    */ \n    /*  for MEASUREMENT  may only KP_BLOB, DP_BLOB and PA_BLOB be\
+        \ specified  */ \n  }; \n \n  /* Extra tags can be defined here */ \n \n};\
+        \ \n \n/***********************************************************************/"
+      CHARACTERISTIC:
+      - ANNOTATION:
+          ANNOTATION_LABEL: '"ASAM Workinggroup"'
+          ANNOTATION_ORIGIN: '""'
+          ANNOTATION_TEXT:
+          - '"Test the A2L annotation"'
+        Address: '0x810002'
+        BIT_MASK: '0xFFFF'
+        CONVERSION: CM.IDENTICAL
+        DISPLAY_IDENTIFIER: DI.ASAM.C.SCALAR.UWORD.IDENTICAL
+        Deposit_Ref: RL.FNC.UWORD.ROW_DIR
+        EXTENDED_LIMITS:
+          LowerLimit: '0'
+          UpperLimit: '65535'
+        FORMAT: '"%5.0"'
+        LongIdentifier: '"Scalar UWORD"'
+        LowerLimit: '0'
+        MaxDiff: '0'
+        Name: ASAM.C.SCALAR.UWORD.IDENTICAL
+        Type: VALUE
+        UpperLimit: '65535'
+      - AXIS_DESCR:
+        - Attribute: STD_AXIS
+          CONVERSION: CON_N
+          InputQuantity: N
+          LowerLimit: '0.0'
+          MAX_GRAD: '20.0'
+          MaxAxisPoints: '13'
+          UpperLimit: '5800.0'
+        - Attribute: STD_AXIS
+          CONVERSION: CON_ME
+          InputQuantity: AMOUNT
+          LowerLimit: '0.0'
+          MaxAxisPoints: '17'
+          UpperLimit: '43.0'
+        Address: '0x7140'
+        CONVERSION: R_VOLTAGE
+        Deposit_Ref: DAMOS_KF
+        FUNCTION_LIST:
+          Name:
+          - NL_ADJUSTMENT
+          - FL_ADJUSTMENT
+          - SPEED_LIM
+        IF_DATA:
+          DataParams:
+          - EXTERNAL
+          - INDIRECT
+          Name: DIM
+        LongIdentifier: '"Pumpk characteristic map"'
+        LowerLimit: '0.0'
+        MAX_REFRESH:
+          Rate: '15'
+          ScalingUnit: '3'
+        MaxDiff: '100.0'
+        Name: PUMKF
+        REF_MEMORY_SEGMENT: Data1
+        Type: MAP
+        UpperLimit: '5000.0'
+        VIRTUAL_CHARACTERISTIC:
+          CHARACTERISTIC:
+          - B_AREA
+          FORMULA: '"sqrt(X1)"'
+      - ANNOTATION:
+        - ANNOTATION_LABEL: '"ANNOTATION_LABEL_CHARACTERISTIC_1"'
+          ANNOTATION_ORIGIN: '"ANNOTATION_ORIGIN_CHARACTERISTIC_1"'
+        - ANNOTATION_LABEL: '"ANNOTATION_LABEL_CHARACTERISTIC_2"'
+          ANNOTATION_ORIGIN: '"ANNOTATION_ORIGIN_CHARACTERISTIC_2"'
+          ANNOTATION_TEXT:
+          - '"ANNOTATION_TEXT_CHARACERISTIC"'
+        AXIS_DESCR:
+        - ANNOTATION:
+          - ANNOTATION_LABEL: '"AXIS_DESCR_LABEL_BLOCK_1"'
+            ANNOTATION_ORIGIN: '"AXIS_DESCR_ORIGIN_BLOCK_1"'
+            ANNOTATION_TEXT:
+            - '"AXIS_DESCR_TEXT_BLOCK_1"'
+          - ANNOTATION_LABEL: '"AXIS_DESCR_LABEL_BLOCK_2"'
+            ANNOTATION_ORIGIN: '"AXIS_DESCR_ORIGIN_BLOCK_2"'
+            ANNOTATION_TEXT:
+            - '"AXIS_DESCR_TEXT_BLOCK_2"'
+          AXIS_PTS_REF: GRP_N
+          Attribute: STD_AXIS
+          BYTE_ORDER: MSB_LAST
+          CONVERSION: CONV_N
+          CURVE_AXIS_REF: SPD_NORM
+          DEPOSIT: ABSOLUTE
+          EXTENDED_LIMITS:
+            LowerLimit: '0'
+            UpperLimit: '6000.0'
+          FIX_AXIS_PAR:
+            Numberapo: '6'
+            Offset: '0'
+            Shift: '4'
+          FIX_AXIS_PAR_DIST:
+            Distance: '100'
+            Numberapo: '8'
+            Offset: '0'
+          FIX_AXIS_PAR_LIST:
+            AxisPts_Value:
+            - '2'
+            - '5'
+            - '9'
+          FORMAT: '"%4.2"'
+          InputQuantity: N
+          LowerLimit: '0.0'
+          MAX_GRAD: '20.0'
+          MONOTONY: MON_INCREASE
+          MaxAxisPoints: '14'
+          PHYS_UNIT: '"Nm"'
+          READ_ONLY: true
+          STEP_SIZE: '0.025'
+          UpperLimit: '5800.0'
+        - Attribute: STD_AXIS
+          CONVERSION: CON_ME
+          InputQuantity: AMOUNT
+          LowerLimit: '0.0'
+          MaxAxisPoints: '17'
+          UpperLimit: '43.0'
+        Address: '0x7140'
+        BIT_MASK: '0x40'
+        BYTE_ORDER: MSB_LAST
+        CALIBRATION_ACCESS: OFFLINE_CALIBRATION
+        COMPARISON_QUANTITY: COMPARISON_QUANTITY_NAME
+        CONVERSION: R_VOLTAGE
+        DEPENDENT_CHARACTERISTIC:
+          CHARACTERISTIC:
+          - BETA
+          FORMULA: '"sin(X1)"'
+        DISCRETE: true
+        DISPLAY_IDENTIFIER: load_engine
+        Deposit_Ref: DAMOS_KF
+        ECU_ADDRESS_EXTENSION: '2'
+        ENCODING: UTF8
+        EXTENDED_LIMITS:
+          LowerLimit: '0'
+          UpperLimit: '4000.0'
+        FORMAT: '"%0.2"'
+        FUNCTION_LIST:
+          Name:
+          - ID_ADJUSTM
+          - FL_ADJUSTM
+          - SPEED_LIM
+        GUARD_RAILS: true
+        IF_DATA:
+        - DataParams:
+          - EXTERNAL
+          - INDIRECT
+          Name: DIM
+        - DataParams:
+          - XCP_x1
+          - XCP_x2
+          - XCP_x3
+          Name: XCP_INTERVAL
+        LongIdentifier: '"PumpB characteristic map"'
+        LowerLimit: '0.0'
+        MAP_LIST:
+          Name:
+          - one
+          - two
+          - three
+        MATRIX_DIM:
+        - '2'
+        - '4'
+        - '3'
+        MAX_REFRESH:
+          Rate: '15'
+          ScalingUnit: '3'
+        MODEL_LINK: '"system/sub-system/object.name"'
+        MaxDiff: '100.0'
+        NUMBER: '123123123'
+        Name: PUKMPF
+        PHYS_UNIT: '"Nm"'
+        READ_ONLY: true
+        REF_MEMORY_SEGMENT: Data1
+        STEP_SIZE: '3'
+        SYMBOL_LINK:
+          Offset: '0'
+          SymbolName: '"_VehicleSpeed"'
+        Type: MAP
+        UpperLimit: '5000.0'
+        VIRTUAL_CHARACTERISTIC:
+          CHARACTERISTIC:
+          - B
+          FORMULA: '"sin(X1)"'
+      LongIdentifier: '"TEST_MODULE_NESTED_INCLUDES"'
+      MEASUREMENT:
+      - Accuracy: '0'
+        CONVERSION: CM.FORM.X_PLUS_4
+        Datatype: UBYTE
+        ECU_ADDRESS: '0x13A00'
+        FORMAT: '"%5.0"'
+        IF_DATA:
+          DataParams:
+          - KP_BLOB
+          - '0x13A00'
+          - INTERN
+          - '1'
+          - RASTER
+          - '5'
+          Name: ETK
+        LongIdentifier: '"Scalar measurement"'
+        LowerLimit: '4'
+        Name: ASAM.M.SCALAR.UBYTE.FORM_X_PLUS_4
+        Resolution: '0'
+        UpperLimit: '259'
+      - Accuracy: '0'
+        CONVERSION: CM.VIRTUAL.EXTERNAL_VALUE
+        Datatype: SWORD
+        ECU_ADDRESS: '0x0'
+        LongIdentifier: '"Virtual measurement with 2 * ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2
+          as input (based on the phys value of ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2)"'
+        LowerLimit: '-32768'
+        Name: ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL
+        Resolution: '0'
+        UpperLimit: '32767'
+        VIRTUAL:
+          MeasuringChannel:
+          - ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2
+      - ADDRESS_TYPE: PLONGLONG
+        ANNOTATION:
+        - ANNOTATION_LABEL: '"ASAM ASAP2 v1.7.1"'
+          ANNOTATION_ORIGIN: '"Test ASAP2 ANNOTATION origin."'
+          ANNOTATION_TEXT:
+          - '"ASAP2 annotation text list, index 0"'
+          - '"ASAP2 annotation text list, index 1"'
+          - '"ASAP2 annotation text list, index 2"'
+          - '"ASAP2 annotation text list, index 3"'
+        - ANNOTATION_LABEL: '"ASAM Workinggroup"'
+          ANNOTATION_ORIGIN: '""'
+          ANNOTATION_TEXT:
+          - '"Test the A2L annotation"'
+        ARRAY_SIZE: '4'
+        Accuracy: '0'
+        BIT_MASK: '0xFFFF'
+        BIT_OPERATION:
+          RIGHT_SHIFT:
+            Bitcount: '4'
+          SIGN_EXTEND:
+            Boolean: true
+        BYTE_ORDER: MSB_FIRST
+        CONVERSION: CM.RAT_FUNC.IDENT.STATUS_STRING
+        DISCRETE: true
+        DISPLAY_IDENTIFIER: load_engine.MEASUREMENT.xxx4b4b
+        Datatype: UBYTE
+        ECU_ADDRESS: '0x2DDDD'
+        ECU_ADDRESS_EXTENSION: '0x0'
+        ERROR_MASK: '0x00000001'
+        FORMAT: '"%.3"'
+        FUNCTION_LIST:
+          Name:
+          - FNC_VAL_1
+          - FNC_VAL_2
+          - FNC_VAL_3
+        IF_DATA:
+        - DataParams:
+          - KP_BLOB
+          - '0x13A00'
+          - INTERN
+          - '1'
+          - RASTER
+          - '2'
+          Name: ETK
+        - DataParams:
+          - '100'
+          - LINK_MAP
+          - '"xxx79c13e523bc16dfbba3285.x794ec36d9751f96100"'
+          - '0x2D474'
+          - '0x0'
+          - '0'
+          - '0x0'
+          - '1'
+          - '0xCF'
+          - '0x0'
+          - DISPLAY
+          - '0'
+          - '-36044.75'
+          - '36043.75'
+          Name: CANAPE_EXT
+        - DataParams:
+          - DISPLAY
+          - '0'
+          - '-36044.75'
+          - '36043.75'
+          Name: CANAPE
+        LAYOUT: ALTERNATE_WITH_Y
+        LongIdentifier: '"Scalar measurement with status string"'
+        LowerLimit: '0'
+        MATRIX_DIM:
+        - '2'
+        - '4'
+        - '3'
+        MAX_REFRESH:
+          Rate: '2'
+          ScalingUnit: '998'
+        MODEL_LINK: '"system/measurement/ecu_x79c13.obj"'
+        Name: ASAM.M.SCALAR.UBYTE.RAT_FUNC.IDENT.STATUS_STRING
+        PHYS_UNIT: '"Nm"'
+        READ_WRITE: true
+        REF_MEMORY_SEGMENT: Data1
+        Resolution: '0'
+        SYMBOL_LINK:
+          Offset: '0'
+          SymbolName: '"_VehicleSpeed"'
+        UpperLimit: '252'
+        VIRTUAL:
+          MeasuringChannel:
+          - PHI_BASIS
+          - PHI_CORR
+      Name: MODULE_INCLUDES
+      TRANSFORMER:
+      - Executable32: '"TransformerTestV171.dll"'
+        Executable64: '""'
+        InverseTransformer: TestTransformerBlobReverse
+        Name: TestTransformerBlob
+        TRANSFORMER_IN_OBJECTS:
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME_REVERSE
+        - ASAM.C.BLOB.TRANSFORMER_TEST
+        TRANSFORMER_OUT_OBJECTS:
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME_REVERSE
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_1
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_2
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_3
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_4
+        Timeout: '2000'
+        Trigger: ON_USER_REQUEST
+        VERSION: '"1.1.0.0"'
+      - Executable32: '"TransformerTestV171.dll"'
+        Executable64: '""'
+        InverseTransformer: TestTransformerBlob
+        Name: TestTransformerBlobReverse
+        TRANSFORMER_IN_OBJECTS:
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME_REVERSE
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_1
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_2
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_3
+        - ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_4
+        TRANSFORMER_OUT_OBJECTS:
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME
+        - ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME_REVERSE
+        - ASAM.C.BLOB.TRANSFORMER_TEST
+        Timeout: '1500'
+        Trigger: ON_CHANGE
+        VERSION: '"1.1.0.0"'
+    Name: NESTED_INCLUDES

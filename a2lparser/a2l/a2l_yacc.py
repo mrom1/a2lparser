@@ -110,7 +110,7 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
         if not p:
             # End of file reached. This section could be used for validation.
             return
-        logger.error(f"Syntax error at line {p.lineno} on token \"{p.value}\"")
+        logger.error(f"Syntax error at line {p.lineno} on token \"{p.value}\" in section {self.a2l_lex.current_section}.")
 
     def p_abstract_syntax_tree_final(self, p):
         """

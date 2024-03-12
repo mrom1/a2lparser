@@ -17,23 +17,48 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
-# @TODO
 
 
 import tempfile
+from pathlib import Path
 from a2lparser import A2L_PACKAGE_DIR
 from a2lparser.a2lparser import main
+from tests.fixture_utils import compare_files, check_files_exist
 
 
-def test_integration_nested_includes(monkeypatch):
+def test_integration_nested_includes(monkeypatch, compare_files, check_files_exist):
     """
     Tests parsing and converting the NESTED_INCLUDES.a2l file.
     """
     a2l_filename = "TEST_Nested_Includes.a2l"
-    temp_test_output_path = A2L_PACKAGE_DIR / "../tests"
+    temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
     temp_test_dir_prefix = "temp_dir_output_"
 
     with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
-        monkeypatch.setattr("sys.argv", ["a2lparser", f"testfiles/A2L/{a2l_filename}",
-                            f"--output-dir {tempdir}", "--json", "--xml", "--yaml", "--quiet", "--no-prompt"])
+        monkeypatch.setattr("sys.argv", [
+            "a2lparser",  f"testfiles/A2L/{a2l_filename}",
+            "--json", "--xml", "--yaml", "--no-prompt",
+            "--output-dir",  f"\"{Path(tempdir).resolve().as_posix()}\"",
+        ])
         main()
+
+        # Check if files were generated
+        check_files_exist(
+            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.xml",
+            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.json",
+            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.yml",
+        )
+
+        # Compare files
+        compare_files(
+            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.xml",
+            f"{temp_test_output_path.as_posix()}/XML/TEST_Nested_Includes.xml",
+        )
+        compare_files(
+            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.json",
+            f"{temp_test_output_path.as_posix()}/JSON/TEST_Nested_Includes.json",
+        )
+        compare_files(
+            f"{Path(tempdir)}/TEST_Nested_Includes.yml",
+            f"{temp_test_output_path.as_posix()}/YAML/TEST_Nested_Includes.yml",
+        )

@@ -17,16 +17,15 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
-# @TODO: refactor try catch block
-# @TODO: quiet mode
-#
+
+
 import os
 import sys
 import argparse
 from loguru import logger
 from a2lparser import __version__
-from a2lparser import A2L_PARSER_HEADLINE
 from a2lparser import A2L_CONFIGS_DIR
+from a2lparser import A2L_PARSER_HEADLINE
 from a2lparser import A2L_DEFAULT_CONFIG_NAME
 from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.parser import Parser
@@ -63,7 +62,7 @@ def main() -> None:
             )
         else:
             logger.add(
-                sink=sys.stderr,
+                sink=sys.stdout,
                 format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
                 level="INFO",
             )
@@ -94,7 +93,9 @@ def main() -> None:
             sys.exit(1)
 
         # Initializing the A2L Parser
-        parser = Parser(debug=args.debug, optimize=args.optimize)
+        parser = Parser(debug=args.debug,
+                        optimize=not args.no_optimize,
+                        validation=not args.no_validation)
 
         # Parse input files into abstract syntax tree
         ast = parser.parse_files(args.filename)
@@ -132,12 +133,12 @@ def parse_arguments(args: list) -> argparse.Namespace:
     parser = argparse.ArgumentParser(prog="a2lparser")
     parser.add_argument("filename", nargs="?", help="relative path to the full filename")
     parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
-    parser.add_argument("-o", "--optimize", action="store_true", default=False, help="enables optimize mode")
-    parser.add_argument("-q", "--quiet", action="store_true", default=False, help="Quiet mode disables standard output.")
     parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
     parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
     parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
     parser.add_argument("--no-prompt", action="store_true", default=False, help="Disable prompt after parsing is done")
+    parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
+    parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
     parser.add_argument("--gen-ast", nargs="?", const=A2L_DEFAULT_CONFIG_NAME,
                         help="generates python file containing AST node classes")
     parser.add_argument("--output-dir", nargs="?", default=None, help="Output directory for converted files")

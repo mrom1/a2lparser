@@ -88,7 +88,7 @@ def test_parser_load_file_simple(create_file, a2l_content_sections_tuple):
     '''
 
     # Path for temporary directory and files
-    temp_test_output_path = A2L_PACKAGE_DIR / "../tests"
+    temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
     temp_test_dir_prefix = "temp_dir_output_"
 
     # Parser object
@@ -113,7 +113,7 @@ def test_parser_load_file_simple(create_file, a2l_content_sections_tuple):
 
 def test_parser_load_file_complex(create_file, a2l_content_sections_tuple):
     """
-    Tests loading files recursivly containing include tags.
+    Tests loading files recursively containing include tags.
 
     Include Structure:
     My_Project.a2l -> My_Module.a2l -> My_Characteristic.a2l & My_Measurement.a2l
@@ -141,7 +141,7 @@ def test_parser_load_file_complex(create_file, a2l_content_sections_tuple):
     '''.replace("  ", "").replace("\n", "").replace("\t", "")
 
     # Path for temporary directory and files
-    temp_test_output_path = A2L_PACKAGE_DIR / "../tests"
+    temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
     temp_test_dir_prefix = "temp_dir_output_"
 
     # Parser object

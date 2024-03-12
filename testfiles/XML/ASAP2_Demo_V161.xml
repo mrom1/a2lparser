@@ -1,0 +1,4563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<A2L-File>
+	<ASAP2_VERSION>
+		<VersionNo>1</VersionNo>
+		<UpgradeNo>61</UpgradeNo>
+	</ASAP2_VERSION>
+	<PROJECT>
+		<Name>ASAP2_Example</Name>
+		<LongIdentifier>""</LongIdentifier>
+		<HEADER>
+			<Comment>"ASAP2 Example File"</Comment>
+			<PROJECT_NO>MCD_P12_08</PROJECT_NO>
+			<VERSION>"V1.61"</VERSION>
+		</HEADER>
+		<MODULE>
+			<Name>Example</Name>
+			<LongIdentifier>""</LongIdentifier>
+			<A2ML>block "IF_DATA" taggedunion if_data {
+
+
+/*  ==============================================================================================  */
+/*                                                                                                  */
+/*  ASAM XCP AML                                                                                    */
+/*                                                                                                  */
+/*  ==============================================================================================  */
+
+        "XCP" struct {
+          taggedstruct {
+            block "PROTOCOL_LAYER" struct {
+              uint;
+              uint;
+              uint;
+              uint;
+              uint;
+              uint;
+              uint;
+              uint;
+              uchar;
+              uint;
+              enum {
+                "BYTE_ORDER_MSB_LAST" = 0,
+                "BYTE_ORDER_MSB_FIRST" = 1
+              };
+              enum {
+                "ADDRESS_GRANULARITY_BYTE" = 1,
+                "ADDRESS_GRANULARITY_WORD" = 2,
+                "ADDRESS_GRANULARITY_DWORD" = 4
+              };
+              taggedstruct {
+                ("OPTIONAL_CMD" enum {
+                  "GET_COMM_MODE_INFO" = 251,
+                  "GET_ID" = 250,
+                  "SET_REQUEST" = 249,
+                  "GET_SEED" = 248,
+                  "UNLOCK" = 247,
+                  "SET_MTA" = 246,
+                  "UPLOAD" = 245,
+                  "SHORT_UPLOAD" = 244,
+                  "BUILD_CHECKSUM" = 243,
+                  "TRANSPORT_LAYER_CMD" = 242,
+                  "USER_CMD" = 241,
+                  "DOWNLOAD" = 240,
+                  "DOWNLOAD_NEXT" = 239,
+                  "DOWNLOAD_MAX" = 238,
+                  "SHORT_DOWNLOAD" = 237,
+                  "MODIFY_BITS" = 236,
+                  "SET_CAL_PAGE" = 235,
+                  "GET_CAL_PAGE" = 234,
+                  "GET_PAG_PROCESSOR_INFO" = 233,
+                  "GET_SEGMENT_INFO" = 232,
+                  "GET_PAGE_INFO" = 231,
+                  "SET_SEGMENT_MODE" = 230,
+                  "GET_SEGMENT_MODE" = 229,
+                  "COPY_CAL_PAGE" = 228,
+                  "CLEAR_DAQ_LIST" = 227,
+                  "SET_DAQ_PTR" = 226,
+                  "WRITE_DAQ" = 225,
+                  "SET_DAQ_LIST_MODE" = 224,
+                  "GET_DAQ_LIST_MODE" = 223,
+                  "START_STOP_DAQ_LIST" = 222,
+                  "START_STOP_SYNCH" = 221,
+                  "GET_DAQ_CLOCK" = 220,
+                  "READ_DAQ" = 219,
+                  "GET_DAQ_PROCESSOR_INFO" = 218,
+                  "GET_DAQ_RESOLUTION_INFO" = 217,
+                  "GET_DAQ_LIST_INFO" = 216,
+                  "GET_DAQ_EVENT_INFO" = 215,
+                  "FREE_DAQ" = 214,
+                  "ALLOC_DAQ" = 213,
+                  "ALLOC_ODT" = 212,
+                  "ALLOC_ODT_ENTRY" = 211,
+                  "PROGRAM_START" = 210,
+                  "PROGRAM_CLEAR" = 209,
+                  "PROGRAM" = 208,
+                  "PROGRAM_RESET" = 207,
+                  "GET_PGM_PROCESSOR_INFO" = 206,
+                  "GET_SECTOR_INFO" = 205,
+                  "PROGRAM_PREPARE" = 204,
+                  "PROGRAM_FORMAT" = 203,
+                  "PROGRAM_NEXT" = 202,
+                  "PROGRAM_MAX" = 201,
+                  "PROGRAM_VERIFY" = 200
+                })*;
+                "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                  "BLOCK" taggedstruct {
+                    "SLAVE" ;
+                    "MASTER" struct {
+                      uchar;
+                      uchar;
+                    };
+                  };
+                  "INTERLEAVED" uchar;
+                };
+                "SEED_AND_KEY_EXTERNAL_FUNCTION" char[256];
+              };
+            };
+            block "SEGMENT" struct {
+              uchar;
+              uchar;
+              uchar;
+              uchar;
+              uchar;
+              taggedstruct {
+                block "CHECKSUM" struct {
+                  enum {
+                    "XCP_ADD_11" = 1,
+                    "XCP_ADD_12" = 2,
+                    "XCP_ADD_14" = 3,
+                    "XCP_ADD_22" = 4,
+                    "XCP_ADD_24" = 5,
+                    "XCP_ADD_44" = 6,
+                    "XCP_CRC_16" = 7,
+                    "XCP_CRC_16_CITT" = 8,
+                    "XCP_CRC_32" = 9,
+                    "XCP_USER_DEFINED" = 255
+                  };
+                  taggedstruct {
+                    "MAX_BLOCK_SIZE" ulong;
+                    "EXTERNAL_FUNCTION" char[256];
+                  };
+                };
+                (block "PAGE" struct {
+                  uchar;
+                  enum {
+                    "ECU_ACCESS_NOT_ALLOWED" = 0,
+                    "ECU_ACCESS_WITHOUT_XCP_ONLY" = 1,
+                    "ECU_ACCESS_WITH_XCP_ONLY" = 2,
+                    "ECU_ACCESS_DONT_CARE" = 3
+                  };
+                  enum {
+                    "XCP_READ_ACCESS_NOT_ALLOWED" = 0,
+                    "XCP_READ_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                    "XCP_READ_ACCESS_WITH_ECU_ONLY" = 2,
+                    "XCP_READ_ACCESS_DONT_CARE" = 3
+                  };
+                  enum {
+                    "XCP_WRITE_ACCESS_NOT_ALLOWED" = 0,
+                    "XCP_WRITE_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                    "XCP_WRITE_ACCESS_WITH_ECU_ONLY" = 2,
+                    "XCP_WRITE_ACCESS_DONT_CARE" = 3
+                  };
+                  taggedstruct {
+                    "INIT_SEGMENT" uchar;
+                  };
+                })*;
+                (block "ADDRESS_MAPPING" struct {
+                  ulong;
+                  ulong;
+                  ulong;
+                })*;
+                "PGM_VERIFY" ulong;
+              };
+            };
+            block "DAQ" struct {
+              enum {
+                "STATIC" = 0,
+                "DYNAMIC" = 1
+              };
+              uint;
+              uint;
+              uchar;
+              enum {
+                "OPTIMISATION_TYPE_DEFAULT" = 0,
+                "OPTIMISATION_TYPE_ODT_TYPE_16" = 1,
+                "OPTIMISATION_TYPE_ODT_TYPE_32" = 2,
+                "OPTIMISATION_TYPE_ODT_TYPE_64" = 3,
+                "OPTIMISATION_TYPE_ODT_TYPE_ALIGNMENT" = 4,
+                "OPTIMISATION_TYPE_MAX_ENTRY_SIZE" = 5
+              };
+              enum {
+                "ADDRESS_EXTENSION_FREE" = 0,
+                "ADDRESS_EXTENSION_ODT" = 1,
+                "ADDRESS_EXTENSION_DAQ" = 3
+              };
+              enum {
+                "IDENTIFICATION_FIELD_TYPE_ABSOLUTE" = 0,
+                "IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE" = 1,
+                "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD" = 2,
+                "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED" = 3
+              };
+              enum {
+                "GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE" = 1,
+                "GRANULARITY_ODT_ENTRY_SIZE_DAQ_WORD" = 2,
+                "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DWORD" = 4,
+                "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DLONG" = 8
+              };
+              uchar;
+              enum {
+                "NO_OVERLOAD_INDICATION" = 0,
+                "OVERLOAD_INDICATION_PID" = 1,
+                "OVERLOAD_INDICATION_EVENT" = 2
+              };
+              taggedstruct {
+                "PRESCALER_SUPPORTED" ;
+                "RESUME_SUPPORTED" ;
+                block "STIM" struct {
+                  enum {
+                    "GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE" = 1,
+                    "GRANULARITY_ODT_ENTRY_SIZE_STIM_WORD" = 2,
+                    "GRANULARITY_ODT_ENTRY_SIZE_STIM_DWORD" = 4,
+                    "GRANULARITY_ODT_ENTRY_SIZE_STIM_DLONG" = 8
+                  };
+                  uchar;
+                  taggedstruct {
+                    "BIT_STIM_SUPPORTED" ;
+                  };
+                };
+                block "TIMESTAMP_SUPPORTED" struct {
+                  uint;
+                  enum {
+                    "NO_TIME_STAMP" = 0,
+                    "SIZE_BYTE" = 1,
+                    "SIZE_WORD" = 2,
+                    "SIZE_DWORD" = 4
+                  };
+                  enum {
+                    "UNIT_1NS" = 0,
+                    "UNIT_10NS" = 1,
+                    "UNIT_100NS" = 2,
+                    "UNIT_1US" = 3,
+                    "UNIT_10US" = 4,
+                    "UNIT_100US" = 5,
+                    "UNIT_1MS" = 6,
+                    "UNIT_10MS" = 7,
+                    "UNIT_100MS" = 8,
+                    "UNIT_1S" = 9
+                  };
+                  taggedstruct {
+                    "TIMESTAMP_FIXED" ;
+                  };
+                };
+                "PID_OFF_SUPPORTED" ;
+                (block "DAQ_LIST" struct {
+                  uint;
+                  taggedstruct {
+                    "DAQ_LIST_TYPE" enum {
+                      "DAQ" = 1,
+                      "STIM" = 2,
+                      "DAQ_STIM" = 3
+                    };
+                    "MAX_ODT" uchar;
+                    "MAX_ODT_ENTRIES" uchar;
+                    "FIRST_PID" uchar;
+                    "EVENT_FIXED" uint;
+                    block "PREDEFINED" taggedstruct {
+                      (block "ODT" struct {
+                        uchar;
+                        taggedstruct {
+                          ("ODT_ENTRY" struct {
+                            uchar;
+                            ulong;
+                            uchar;
+                            uchar;
+                            uchar;
+                          })*;
+                        };
+                      })*;
+                    };
+                  };
+                })*;
+                (block "EVENT" struct {
+                  char[101];
+                  char[9];
+                  uint;
+                  enum {
+                    "DAQ" = 1,
+                    "STIM" = 2,
+                    "DAQ_STIM" = 3
+                  };
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                })*;
+              };
+            };
+            block "PAG" struct {
+              uchar;
+              taggedstruct {
+                "FREEZE_SUPPORTED" ;
+              };
+            };
+            block "PGM" struct {
+              enum {
+                "PGM_MODE_ABSOLUTE" = 1,
+                "PGM_MODE_FUNCTIONAL" = 2,
+                "PGM_MODE_ABSOLUTE_AND_FUNCTIONAL" = 3
+              };
+              uchar;
+              uchar;
+              taggedstruct {
+                (block "SECTOR" struct {
+                  char[101];
+                  uchar;
+                  ulong;
+                  ulong;
+                  uchar;
+                  uchar;
+                  uchar;
+                })*;
+                "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                  "BLOCK" taggedstruct {
+                    "SLAVE" ;
+                    "MASTER" struct {
+                      uchar;
+                      uchar;
+                    };
+                  };
+                  "INTERLEAVED" uchar;
+                };
+              };
+            };
+            block "DAQ_EVENT" taggedunion {
+              "FIXED_EVENT_LIST" taggedstruct {
+                ("EVENT" uint)*;
+              };
+              "VARIABLE" taggedstruct {
+                block "AVAILABLE_EVENT_LIST" taggedstruct {
+                  ("EVENT" uint)*;
+                };
+                block "DEFAULT_EVENT_LIST" taggedstruct {
+                  ("EVENT" uint)*;
+                };
+              };
+            };
+            block "XCP_ON_CAN" struct {
+              uint;
+              taggedstruct {
+                "CAN_ID_BROADCAST" ulong;
+                "CAN_ID_MASTER" ulong;
+                "CAN_ID_SLAVE" ulong;
+                "BAUDRATE" ulong;
+                "SAMPLE_POINT" uchar;
+                "SAMPLE_RATE" enum {
+                  "SINGLE" = 1,
+                  "TRIPLE" = 3
+                };
+                "BTL_CYCLES" uchar;
+                "SJW" uchar;
+                "SYNC_EDGE" enum {
+                  "SINGLE" = 1,
+                  "DUAL" = 2
+                };
+                "MAX_DLC_REQUIRED" ;
+                (block "DAQ_LIST_CAN_ID" struct {
+                  uint;
+                  taggedstruct {
+                    "VARIABLE" ;
+                    "FIXED" ulong;
+                  };
+                })*;
+                block "PROTOCOL_LAYER" struct {
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uchar;
+                  uint;
+                  enum {
+                    "BYTE_ORDER_MSB_LAST" = 0,
+                    "BYTE_ORDER_MSB_FIRST" = 1
+                  };
+                  enum {
+                    "ADDRESS_GRANULARITY_BYTE" = 1,
+                    "ADDRESS_GRANULARITY_WORD" = 2,
+                    "ADDRESS_GRANULARITY_DWORD" = 4
+                  };
+                  taggedstruct {
+                    ("OPTIONAL_CMD" enum {
+                      "GET_COMM_MODE_INFO" = 251,
+                      "GET_ID" = 250,
+                      "SET_REQUEST" = 249,
+                      "GET_SEED" = 248,
+                      "UNLOCK" = 247,
+                      "SET_MTA" = 246,
+                      "UPLOAD" = 245,
+                      "SHORT_UPLOAD" = 244,
+                      "BUILD_CHECKSUM" = 243,
+                      "TRANSPORT_LAYER_CMD" = 242,
+                      "USER_CMD" = 241,
+                      "DOWNLOAD" = 240,
+                      "DOWNLOAD_NEXT" = 239,
+                      "DOWNLOAD_MAX" = 238,
+                      "SHORT_DOWNLOAD" = 237,
+                      "MODIFY_BITS" = 236,
+                      "SET_CAL_PAGE" = 235,
+                      "GET_CAL_PAGE" = 234,
+                      "GET_PAG_PROCESSOR_INFO" = 233,
+                      "GET_SEGMENT_INFO" = 232,
+                      "GET_PAGE_INFO" = 231,
+                      "SET_SEGMENT_MODE" = 230,
+                      "GET_SEGMENT_MODE" = 229,
+                      "COPY_CAL_PAGE" = 228,
+                      "CLEAR_DAQ_LIST" = 227,
+                      "SET_DAQ_PTR" = 226,
+                      "WRITE_DAQ" = 225,
+                      "SET_DAQ_LIST_MODE" = 224,
+                      "GET_DAQ_LIST_MODE" = 223,
+                      "START_STOP_DAQ_LIST" = 222,
+                      "START_STOP_SYNCH" = 221,
+                      "GET_DAQ_CLOCK" = 220,
+                      "READ_DAQ" = 219,
+                      "GET_DAQ_PROCESSOR_INFO" = 218,
+                      "GET_DAQ_RESOLUTION_INFO" = 217,
+                      "GET_DAQ_LIST_INFO" = 216,
+                      "GET_DAQ_EVENT_INFO" = 215,
+                      "FREE_DAQ" = 214,
+                      "ALLOC_DAQ" = 213,
+                      "ALLOC_ODT" = 212,
+                      "ALLOC_ODT_ENTRY" = 211,
+                      "PROGRAM_START" = 210,
+                      "PROGRAM_CLEAR" = 209,
+                      "PROGRAM" = 208,
+                      "PROGRAM_RESET" = 207,
+                      "GET_PGM_PROCESSOR_INFO" = 206,
+                      "GET_SECTOR_INFO" = 205,
+                      "PROGRAM_PREPARE" = 204,
+                      "PROGRAM_FORMAT" = 203,
+                      "PROGRAM_NEXT" = 202,
+                      "PROGRAM_MAX" = 201,
+                      "PROGRAM_VERIFY" = 200
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                    "SEED_AND_KEY_EXTERNAL_FUNCTION" char[256];
+                  };
+                };
+                block "SEGMENT" struct {
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    block "CHECKSUM" struct {
+                      enum {
+                        "XCP_ADD_11" = 1,
+                        "XCP_ADD_12" = 2,
+                        "XCP_ADD_14" = 3,
+                        "XCP_ADD_22" = 4,
+                        "XCP_ADD_24" = 5,
+                        "XCP_ADD_44" = 6,
+                        "XCP_CRC_16" = 7,
+                        "XCP_CRC_16_CITT" = 8,
+                        "XCP_CRC_32" = 9,
+                        "XCP_USER_DEFINED" = 255
+                      };
+                      taggedstruct {
+                        "MAX_BLOCK_SIZE" ulong;
+                        "EXTERNAL_FUNCTION" char[256];
+                      };
+                    };
+                    (block "PAGE" struct {
+                      uchar;
+                      enum {
+                        "ECU_ACCESS_NOT_ALLOWED" = 0,
+                        "ECU_ACCESS_WITHOUT_XCP_ONLY" = 1,
+                        "ECU_ACCESS_WITH_XCP_ONLY" = 2,
+                        "ECU_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_READ_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_READ_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_READ_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_READ_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_WRITE_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_WRITE_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_WRITE_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_WRITE_ACCESS_DONT_CARE" = 3
+                      };
+                      taggedstruct {
+                        "INIT_SEGMENT" uchar;
+                      };
+                    })*;
+                    (block "ADDRESS_MAPPING" struct {
+                      ulong;
+                      ulong;
+                      ulong;
+                    })*;
+                    "PGM_VERIFY" ulong;
+                  };
+                };
+                block "DAQ" struct {
+                  enum {
+                    "STATIC" = 0,
+                    "DYNAMIC" = 1
+                  };
+                  uint;
+                  uint;
+                  uchar;
+                  enum {
+                    "OPTIMISATION_TYPE_DEFAULT" = 0,
+                    "OPTIMISATION_TYPE_ODT_TYPE_16" = 1,
+                    "OPTIMISATION_TYPE_ODT_TYPE_32" = 2,
+                    "OPTIMISATION_TYPE_ODT_TYPE_64" = 3,
+                    "OPTIMISATION_TYPE_ODT_TYPE_ALIGNMENT" = 4,
+                    "OPTIMISATION_TYPE_MAX_ENTRY_SIZE" = 5
+                  };
+                  enum {
+                    "ADDRESS_EXTENSION_FREE" = 0,
+                    "ADDRESS_EXTENSION_ODT" = 1,
+                    "ADDRESS_EXTENSION_DAQ" = 3
+                  };
+                  enum {
+                    "IDENTIFICATION_FIELD_TYPE_ABSOLUTE" = 0,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE" = 1,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD" = 2,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED" = 3
+                  };
+                  enum {
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE" = 1,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_WORD" = 2,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DWORD" = 4,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DLONG" = 8
+                  };
+                  uchar;
+                  enum {
+                    "NO_OVERLOAD_INDICATION" = 0,
+                    "OVERLOAD_INDICATION_PID" = 1,
+                    "OVERLOAD_INDICATION_EVENT" = 2
+                  };
+                  taggedstruct {
+                    "PRESCALER_SUPPORTED" ;
+                    "RESUME_SUPPORTED" ;
+                    block "STIM" struct {
+                      enum {
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE" = 1,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_WORD" = 2,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DWORD" = 4,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DLONG" = 8
+                      };
+                      uchar;
+                      taggedstruct {
+                        "BIT_STIM_SUPPORTED" ;
+                      };
+                    };
+                    block "TIMESTAMP_SUPPORTED" struct {
+                      uint;
+                      enum {
+                        "NO_TIME_STAMP" = 0,
+                        "SIZE_BYTE" = 1,
+                        "SIZE_WORD" = 2,
+                        "SIZE_DWORD" = 4
+                      };
+                      enum {
+                        "UNIT_1NS" = 0,
+                        "UNIT_10NS" = 1,
+                        "UNIT_100NS" = 2,
+                        "UNIT_1US" = 3,
+                        "UNIT_10US" = 4,
+                        "UNIT_100US" = 5,
+                        "UNIT_1MS" = 6,
+                        "UNIT_10MS" = 7,
+                        "UNIT_100MS" = 8,
+                        "UNIT_1S" = 9
+                      };
+                      taggedstruct {
+                        "TIMESTAMP_FIXED" ;
+                      };
+                    };
+                    "PID_OFF_SUPPORTED" ;
+                    (block "DAQ_LIST" struct {
+                      uint;
+                      taggedstruct {
+                        "DAQ_LIST_TYPE" enum {
+                          "DAQ" = 1,
+                          "STIM" = 2,
+                          "DAQ_STIM" = 3
+                        };
+                        "MAX_ODT" uchar;
+                        "MAX_ODT_ENTRIES" uchar;
+                        "FIRST_PID" uchar;
+                        "EVENT_FIXED" uint;
+                        block "PREDEFINED" taggedstruct {
+                          (block "ODT" struct {
+                            uchar;
+                            taggedstruct {
+                              ("ODT_ENTRY" struct {
+                                uchar;
+                                ulong;
+                                uchar;
+                                uchar;
+                                uchar;
+                              })*;
+                            };
+                          })*;
+                        };
+                      };
+                    })*;
+                    (block "EVENT" struct {
+                      char[101];
+                      char[9];
+                      uint;
+                      enum {
+                        "DAQ" = 1,
+                        "STIM" = 2,
+                        "DAQ_STIM" = 3
+                      };
+                      uchar;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                  };
+                };
+                block "PAG" struct {
+                  uchar;
+                  taggedstruct {
+                    "FREEZE_SUPPORTED" ;
+                  };
+                };
+                block "PGM" struct {
+                  enum {
+                    "PGM_MODE_ABSOLUTE" = 1,
+                    "PGM_MODE_FUNCTIONAL" = 2,
+                    "PGM_MODE_ABSOLUTE_AND_FUNCTIONAL" = 3
+                  };
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    (block "SECTOR" struct {
+                      char[101];
+                      uchar;
+                      ulong;
+                      ulong;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                  };
+                };
+                block "DAQ_EVENT" taggedunion {
+                  "FIXED_EVENT_LIST" taggedstruct {
+                    ("EVENT" uint)*;
+                  };
+                  "VARIABLE" taggedstruct {
+                    block "AVAILABLE_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                    block "DEFAULT_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                  };
+                };
+              };
+            };
+            block "XCP_ON_SxI" struct {
+              uint;
+              ulong;
+              taggedstruct {
+                "ASYNCH_FULL_DUPLEX_MODE" struct {
+                  enum {
+                    "PARITY_NONE" = 0,
+                    "PARITY_ODD" = 1,
+                    "PARITY_EVEN" = 2
+                  };
+                  enum {
+                    "ONE_STOP_BIT" = 1,
+                    "TWO_STOP_BITS" = 2
+                  };
+                };
+                "SYNCH_FULL_DUPLEX_MODE_BYTE" ;
+                "SYNCH_FULL_DUPLEX_MODE_WORD" ;
+                "SYNCH_FULL_DUPLEX_MODE_DWORD" ;
+                "SYNCH_MASTER_SLAVE_MODE_BYTE" ;
+                "SYNCH_MASTER_SLAVE_MODE_WORD" ;
+                "SYNCH_MASTER_SLAVE_MODE_DWORD" ;
+              };
+              enum {
+                "HEADER_LEN_BYTE" = 0,
+                "HEADER_LEN_CTR_BYTE" = 1,
+                "HEADER_LEN_WORD" = 2,
+                "HEADER_LEN_CTR_WORD" = 3
+              };
+              enum {
+                "NO_CHECKSUM" = 0,
+                "CHECKSUM_BYTE" = 1,
+                "CHECKSUM_WORD" = 2
+              };
+              taggedstruct {
+                block "PROTOCOL_LAYER" struct {
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uchar;
+                  uint;
+                  enum {
+                    "BYTE_ORDER_MSB_LAST" = 0,
+                    "BYTE_ORDER_MSB_FIRST" = 1
+                  };
+                  enum {
+                    "ADDRESS_GRANULARITY_BYTE" = 1,
+                    "ADDRESS_GRANULARITY_WORD" = 2,
+                    "ADDRESS_GRANULARITY_DWORD" = 4
+                  };
+                  taggedstruct {
+                    ("OPTIONAL_CMD" enum {
+                      "GET_COMM_MODE_INFO" = 251,
+                      "GET_ID" = 250,
+                      "SET_REQUEST" = 249,
+                      "GET_SEED" = 248,
+                      "UNLOCK" = 247,
+                      "SET_MTA" = 246,
+                      "UPLOAD" = 245,
+                      "SHORT_UPLOAD" = 244,
+                      "BUILD_CHECKSUM" = 243,
+                      "TRANSPORT_LAYER_CMD" = 242,
+                      "USER_CMD" = 241,
+                      "DOWNLOAD" = 240,
+                      "DOWNLOAD_NEXT" = 239,
+                      "DOWNLOAD_MAX" = 238,
+                      "SHORT_DOWNLOAD" = 237,
+                      "MODIFY_BITS" = 236,
+                      "SET_CAL_PAGE" = 235,
+                      "GET_CAL_PAGE" = 234,
+                      "GET_PAG_PROCESSOR_INFO" = 233,
+                      "GET_SEGMENT_INFO" = 232,
+                      "GET_PAGE_INFO" = 231,
+                      "SET_SEGMENT_MODE" = 230,
+                      "GET_SEGMENT_MODE" = 229,
+                      "COPY_CAL_PAGE" = 228,
+                      "CLEAR_DAQ_LIST" = 227,
+                      "SET_DAQ_PTR" = 226,
+                      "WRITE_DAQ" = 225,
+                      "SET_DAQ_LIST_MODE" = 224,
+                      "GET_DAQ_LIST_MODE" = 223,
+                      "START_STOP_DAQ_LIST" = 222,
+                      "START_STOP_SYNCH" = 221,
+                      "GET_DAQ_CLOCK" = 220,
+                      "READ_DAQ" = 219,
+                      "GET_DAQ_PROCESSOR_INFO" = 218,
+                      "GET_DAQ_RESOLUTION_INFO" = 217,
+                      "GET_DAQ_LIST_INFO" = 216,
+                      "GET_DAQ_EVENT_INFO" = 215,
+                      "FREE_DAQ" = 214,
+                      "ALLOC_DAQ" = 213,
+                      "ALLOC_ODT" = 212,
+                      "ALLOC_ODT_ENTRY" = 211,
+                      "PROGRAM_START" = 210,
+                      "PROGRAM_CLEAR" = 209,
+                      "PROGRAM" = 208,
+                      "PROGRAM_RESET" = 207,
+                      "GET_PGM_PROCESSOR_INFO" = 206,
+                      "GET_SECTOR_INFO" = 205,
+                      "PROGRAM_PREPARE" = 204,
+                      "PROGRAM_FORMAT" = 203,
+                      "PROGRAM_NEXT" = 202,
+                      "PROGRAM_MAX" = 201,
+                      "PROGRAM_VERIFY" = 200
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                    "SEED_AND_KEY_EXTERNAL_FUNCTION" char[256];
+                  };
+                };
+                block "SEGMENT" struct {
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    block "CHECKSUM" struct {
+                      enum {
+                        "XCP_ADD_11" = 1,
+                        "XCP_ADD_12" = 2,
+                        "XCP_ADD_14" = 3,
+                        "XCP_ADD_22" = 4,
+                        "XCP_ADD_24" = 5,
+                        "XCP_ADD_44" = 6,
+                        "XCP_CRC_16" = 7,
+                        "XCP_CRC_16_CITT" = 8,
+                        "XCP_CRC_32" = 9,
+                        "XCP_USER_DEFINED" = 255
+                      };
+                      taggedstruct {
+                        "MAX_BLOCK_SIZE" ulong;
+                        "EXTERNAL_FUNCTION" char[256];
+                      };
+                    };
+                    (block "PAGE" struct {
+                      uchar;
+                      enum {
+                        "ECU_ACCESS_NOT_ALLOWED" = 0,
+                        "ECU_ACCESS_WITHOUT_XCP_ONLY" = 1,
+                        "ECU_ACCESS_WITH_XCP_ONLY" = 2,
+                        "ECU_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_READ_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_READ_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_READ_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_READ_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_WRITE_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_WRITE_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_WRITE_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_WRITE_ACCESS_DONT_CARE" = 3
+                      };
+                      taggedstruct {
+                        "INIT_SEGMENT" uchar;
+                      };
+                    })*;
+                    (block "ADDRESS_MAPPING" struct {
+                      ulong;
+                      ulong;
+                      ulong;
+                    })*;
+                    "PGM_VERIFY" ulong;
+                  };
+                };
+                block "DAQ" struct {
+                  enum {
+                    "STATIC" = 0,
+                    "DYNAMIC" = 1
+                  };
+                  uint;
+                  uint;
+                  uchar;
+                  enum {
+                    "OPTIMISATION_TYPE_DEFAULT" = 0,
+                    "OPTIMISATION_TYPE_ODT_TYPE_16" = 1,
+                    "OPTIMISATION_TYPE_ODT_TYPE_32" = 2,
+                    "OPTIMISATION_TYPE_ODT_TYPE_64" = 3,
+                    "OPTIMISATION_TYPE_ODT_TYPE_ALIGNMENT" = 4,
+                    "OPTIMISATION_TYPE_MAX_ENTRY_SIZE" = 5
+                  };
+                  enum {
+                    "ADDRESS_EXTENSION_FREE" = 0,
+                    "ADDRESS_EXTENSION_ODT" = 1,
+                    "ADDRESS_EXTENSION_DAQ" = 3
+                  };
+                  enum {
+                    "IDENTIFICATION_FIELD_TYPE_ABSOLUTE" = 0,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE" = 1,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD" = 2,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED" = 3
+                  };
+                  enum {
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE" = 1,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_WORD" = 2,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DWORD" = 4,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DLONG" = 8
+                  };
+                  uchar;
+                  enum {
+                    "NO_OVERLOAD_INDICATION" = 0,
+                    "OVERLOAD_INDICATION_PID" = 1,
+                    "OVERLOAD_INDICATION_EVENT" = 2
+                  };
+                  taggedstruct {
+                    "PRESCALER_SUPPORTED" ;
+                    "RESUME_SUPPORTED" ;
+                    block "STIM" struct {
+                      enum {
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE" = 1,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_WORD" = 2,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DWORD" = 4,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DLONG" = 8
+                      };
+                      uchar;
+                      taggedstruct {
+                        "BIT_STIM_SUPPORTED" ;
+                      };
+                    };
+                    block "TIMESTAMP_SUPPORTED" struct {
+                      uint;
+                      enum {
+                        "NO_TIME_STAMP" = 0,
+                        "SIZE_BYTE" = 1,
+                        "SIZE_WORD" = 2,
+                        "SIZE_DWORD" = 4
+                      };
+                      enum {
+                        "UNIT_1NS" = 0,
+                        "UNIT_10NS" = 1,
+                        "UNIT_100NS" = 2,
+                        "UNIT_1US" = 3,
+                        "UNIT_10US" = 4,
+                        "UNIT_100US" = 5,
+                        "UNIT_1MS" = 6,
+                        "UNIT_10MS" = 7,
+                        "UNIT_100MS" = 8,
+                        "UNIT_1S" = 9
+                      };
+                      taggedstruct {
+                        "TIMESTAMP_FIXED" ;
+                      };
+                    };
+                    "PID_OFF_SUPPORTED" ;
+                    (block "DAQ_LIST" struct {
+                      uint;
+                      taggedstruct {
+                        "DAQ_LIST_TYPE" enum {
+                          "DAQ" = 1,
+                          "STIM" = 2,
+                          "DAQ_STIM" = 3
+                        };
+                        "MAX_ODT" uchar;
+                        "MAX_ODT_ENTRIES" uchar;
+                        "FIRST_PID" uchar;
+                        "EVENT_FIXED" uint;
+                        block "PREDEFINED" taggedstruct {
+                          (block "ODT" struct {
+                            uchar;
+                            taggedstruct {
+                              ("ODT_ENTRY" struct {
+                                uchar;
+                                ulong;
+                                uchar;
+                                uchar;
+                                uchar;
+                              })*;
+                            };
+                          })*;
+                        };
+                      };
+                    })*;
+                    (block "EVENT" struct {
+                      char[101];
+                      char[9];
+                      uint;
+                      enum {
+                        "DAQ" = 1,
+                        "STIM" = 2,
+                        "DAQ_STIM" = 3
+                      };
+                      uchar;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                  };
+                };
+                block "PAG" struct {
+                  uchar;
+                  taggedstruct {
+                    "FREEZE_SUPPORTED" ;
+                  };
+                };
+                block "PGM" struct {
+                  enum {
+                    "PGM_MODE_ABSOLUTE" = 1,
+                    "PGM_MODE_FUNCTIONAL" = 2,
+                    "PGM_MODE_ABSOLUTE_AND_FUNCTIONAL" = 3
+                  };
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    (block "SECTOR" struct {
+                      char[101];
+                      uchar;
+                      ulong;
+                      ulong;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                  };
+                };
+                block "DAQ_EVENT" taggedunion {
+                  "FIXED_EVENT_LIST" taggedstruct {
+                    ("EVENT" uint)*;
+                  };
+                  "VARIABLE" taggedstruct {
+                    block "AVAILABLE_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                    block "DEFAULT_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                  };
+                };
+              };
+            };
+            block "XCP_ON_TCP_IP" struct {
+              uint;
+              uint;
+              taggedunion {
+                "HOST_NAME" char[256];
+                "ADDRESS" char[15];
+              };
+              taggedstruct {
+                block "PROTOCOL_LAYER" struct {
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uchar;
+                  uint;
+                  enum {
+                    "BYTE_ORDER_MSB_LAST" = 0,
+                    "BYTE_ORDER_MSB_FIRST" = 1
+                  };
+                  enum {
+                    "ADDRESS_GRANULARITY_BYTE" = 1,
+                    "ADDRESS_GRANULARITY_WORD" = 2,
+                    "ADDRESS_GRANULARITY_DWORD" = 4
+                  };
+                  taggedstruct {
+                    ("OPTIONAL_CMD" enum {
+                      "GET_COMM_MODE_INFO" = 251,
+                      "GET_ID" = 250,
+                      "SET_REQUEST" = 249,
+                      "GET_SEED" = 248,
+                      "UNLOCK" = 247,
+                      "SET_MTA" = 246,
+                      "UPLOAD" = 245,
+                      "SHORT_UPLOAD" = 244,
+                      "BUILD_CHECKSUM" = 243,
+                      "TRANSPORT_LAYER_CMD" = 242,
+                      "USER_CMD" = 241,
+                      "DOWNLOAD" = 240,
+                      "DOWNLOAD_NEXT" = 239,
+                      "DOWNLOAD_MAX" = 238,
+                      "SHORT_DOWNLOAD" = 237,
+                      "MODIFY_BITS" = 236,
+                      "SET_CAL_PAGE" = 235,
+                      "GET_CAL_PAGE" = 234,
+                      "GET_PAG_PROCESSOR_INFO" = 233,
+                      "GET_SEGMENT_INFO" = 232,
+                      "GET_PAGE_INFO" = 231,
+                      "SET_SEGMENT_MODE" = 230,
+                      "GET_SEGMENT_MODE" = 229,
+                      "COPY_CAL_PAGE" = 228,
+                      "CLEAR_DAQ_LIST" = 227,
+                      "SET_DAQ_PTR" = 226,
+                      "WRITE_DAQ" = 225,
+                      "SET_DAQ_LIST_MODE" = 224,
+                      "GET_DAQ_LIST_MODE" = 223,
+                      "START_STOP_DAQ_LIST" = 222,
+                      "START_STOP_SYNCH" = 221,
+                      "GET_DAQ_CLOCK" = 220,
+                      "READ_DAQ" = 219,
+                      "GET_DAQ_PROCESSOR_INFO" = 218,
+                      "GET_DAQ_RESOLUTION_INFO" = 217,
+                      "GET_DAQ_LIST_INFO" = 216,
+                      "GET_DAQ_EVENT_INFO" = 215,
+                      "FREE_DAQ" = 214,
+                      "ALLOC_DAQ" = 213,
+                      "ALLOC_ODT" = 212,
+                      "ALLOC_ODT_ENTRY" = 211,
+                      "PROGRAM_START" = 210,
+                      "PROGRAM_CLEAR" = 209,
+                      "PROGRAM" = 208,
+                      "PROGRAM_RESET" = 207,
+                      "GET_PGM_PROCESSOR_INFO" = 206,
+                      "GET_SECTOR_INFO" = 205,
+                      "PROGRAM_PREPARE" = 204,
+                      "PROGRAM_FORMAT" = 203,
+                      "PROGRAM_NEXT" = 202,
+                      "PROGRAM_MAX" = 201,
+                      "PROGRAM_VERIFY" = 200
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                    "SEED_AND_KEY_EXTERNAL_FUNCTION" char[256];
+                  };
+                };
+                block "SEGMENT" struct {
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    block "CHECKSUM" struct {
+                      enum {
+                        "XCP_ADD_11" = 1,
+                        "XCP_ADD_12" = 2,
+                        "XCP_ADD_14" = 3,
+                        "XCP_ADD_22" = 4,
+                        "XCP_ADD_24" = 5,
+                        "XCP_ADD_44" = 6,
+                        "XCP_CRC_16" = 7,
+                        "XCP_CRC_16_CITT" = 8,
+                        "XCP_CRC_32" = 9,
+                        "XCP_USER_DEFINED" = 255
+                      };
+                      taggedstruct {
+                        "MAX_BLOCK_SIZE" ulong;
+                        "EXTERNAL_FUNCTION" char[256];
+                      };
+                    };
+                    (block "PAGE" struct {
+                      uchar;
+                      enum {
+                        "ECU_ACCESS_NOT_ALLOWED" = 0,
+                        "ECU_ACCESS_WITHOUT_XCP_ONLY" = 1,
+                        "ECU_ACCESS_WITH_XCP_ONLY" = 2,
+                        "ECU_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_READ_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_READ_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_READ_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_READ_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_WRITE_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_WRITE_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_WRITE_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_WRITE_ACCESS_DONT_CARE" = 3
+                      };
+                      taggedstruct {
+                        "INIT_SEGMENT" uchar;
+                      };
+                    })*;
+                    (block "ADDRESS_MAPPING" struct {
+                      ulong;
+                      ulong;
+                      ulong;
+                    })*;
+                    "PGM_VERIFY" ulong;
+                  };
+                };
+                block "DAQ" struct {
+                  enum {
+                    "STATIC" = 0,
+                    "DYNAMIC" = 1
+                  };
+                  uint;
+                  uint;
+                  uchar;
+                  enum {
+                    "OPTIMISATION_TYPE_DEFAULT" = 0,
+                    "OPTIMISATION_TYPE_ODT_TYPE_16" = 1,
+                    "OPTIMISATION_TYPE_ODT_TYPE_32" = 2,
+                    "OPTIMISATION_TYPE_ODT_TYPE_64" = 3,
+                    "OPTIMISATION_TYPE_ODT_TYPE_ALIGNMENT" = 4,
+                    "OPTIMISATION_TYPE_MAX_ENTRY_SIZE" = 5
+                  };
+                  enum {
+                    "ADDRESS_EXTENSION_FREE" = 0,
+                    "ADDRESS_EXTENSION_ODT" = 1,
+                    "ADDRESS_EXTENSION_DAQ" = 3
+                  };
+                  enum {
+                    "IDENTIFICATION_FIELD_TYPE_ABSOLUTE" = 0,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE" = 1,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD" = 2,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED" = 3
+                  };
+                  enum {
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE" = 1,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_WORD" = 2,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DWORD" = 4,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DLONG" = 8
+                  };
+                  uchar;
+                  enum {
+                    "NO_OVERLOAD_INDICATION" = 0,
+                    "OVERLOAD_INDICATION_PID" = 1,
+                    "OVERLOAD_INDICATION_EVENT" = 2
+                  };
+                  taggedstruct {
+                    "PRESCALER_SUPPORTED" ;
+                    "RESUME_SUPPORTED" ;
+                    block "STIM" struct {
+                      enum {
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE" = 1,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_WORD" = 2,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DWORD" = 4,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DLONG" = 8
+                      };
+                      uchar;
+                      taggedstruct {
+                        "BIT_STIM_SUPPORTED" ;
+                      };
+                    };
+                    block "TIMESTAMP_SUPPORTED" struct {
+                      uint;
+                      enum {
+                        "NO_TIME_STAMP" = 0,
+                        "SIZE_BYTE" = 1,
+                        "SIZE_WORD" = 2,
+                        "SIZE_DWORD" = 4
+                      };
+                      enum {
+                        "UNIT_1NS" = 0,
+                        "UNIT_10NS" = 1,
+                        "UNIT_100NS" = 2,
+                        "UNIT_1US" = 3,
+                        "UNIT_10US" = 4,
+                        "UNIT_100US" = 5,
+                        "UNIT_1MS" = 6,
+                        "UNIT_10MS" = 7,
+                        "UNIT_100MS" = 8,
+                        "UNIT_1S" = 9
+                      };
+                      taggedstruct {
+                        "TIMESTAMP_FIXED" ;
+                      };
+                    };
+                    "PID_OFF_SUPPORTED" ;
+                    (block "DAQ_LIST" struct {
+                      uint;
+                      taggedstruct {
+                        "DAQ_LIST_TYPE" enum {
+                          "DAQ" = 1,
+                          "STIM" = 2,
+                          "DAQ_STIM" = 3
+                        };
+                        "MAX_ODT" uchar;
+                        "MAX_ODT_ENTRIES" uchar;
+                        "FIRST_PID" uchar;
+                        "EVENT_FIXED" uint;
+                        block "PREDEFINED" taggedstruct {
+                          (block "ODT" struct {
+                            uchar;
+                            taggedstruct {
+                              ("ODT_ENTRY" struct {
+                                uchar;
+                                ulong;
+                                uchar;
+                                uchar;
+                                uchar;
+                              })*;
+                            };
+                          })*;
+                        };
+                      };
+                    })*;
+                    (block "EVENT" struct {
+                      char[101];
+                      char[9];
+                      uint;
+                      enum {
+                        "DAQ" = 1,
+                        "STIM" = 2,
+                        "DAQ_STIM" = 3
+                      };
+                      uchar;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                  };
+                };
+                block "PAG" struct {
+                  uchar;
+                  taggedstruct {
+                    "FREEZE_SUPPORTED" ;
+                  };
+                };
+                block "PGM" struct {
+                  enum {
+                    "PGM_MODE_ABSOLUTE" = 1,
+                    "PGM_MODE_FUNCTIONAL" = 2,
+                    "PGM_MODE_ABSOLUTE_AND_FUNCTIONAL" = 3
+                  };
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    (block "SECTOR" struct {
+                      char[101];
+                      uchar;
+                      ulong;
+                      ulong;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                  };
+                };
+                block "DAQ_EVENT" taggedunion {
+                  "FIXED_EVENT_LIST" taggedstruct {
+                    ("EVENT" uint)*;
+                  };
+                  "VARIABLE" taggedstruct {
+                    block "AVAILABLE_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                    block "DEFAULT_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                  };
+                };
+              };
+            };
+            block "XCP_ON_UDP_IP" struct {
+              uint;
+              uint;
+              taggedunion {
+                "HOST_NAME" char[256];
+                "ADDRESS" char[15];
+              };
+              taggedstruct {
+                block "PROTOCOL_LAYER" struct {
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uchar;
+                  uint;
+                  enum {
+                    "BYTE_ORDER_MSB_LAST" = 0,
+                    "BYTE_ORDER_MSB_FIRST" = 1
+                  };
+                  enum {
+                    "ADDRESS_GRANULARITY_BYTE" = 1,
+                    "ADDRESS_GRANULARITY_WORD" = 2,
+                    "ADDRESS_GRANULARITY_DWORD" = 4
+                  };
+                  taggedstruct {
+                    ("OPTIONAL_CMD" enum {
+                      "GET_COMM_MODE_INFO" = 251,
+                      "GET_ID" = 250,
+                      "SET_REQUEST" = 249,
+                      "GET_SEED" = 248,
+                      "UNLOCK" = 247,
+                      "SET_MTA" = 246,
+                      "UPLOAD" = 245,
+                      "SHORT_UPLOAD" = 244,
+                      "BUILD_CHECKSUM" = 243,
+                      "TRANSPORT_LAYER_CMD" = 242,
+                      "USER_CMD" = 241,
+                      "DOWNLOAD" = 240,
+                      "DOWNLOAD_NEXT" = 239,
+                      "DOWNLOAD_MAX" = 238,
+                      "SHORT_DOWNLOAD" = 237,
+                      "MODIFY_BITS" = 236,
+                      "SET_CAL_PAGE" = 235,
+                      "GET_CAL_PAGE" = 234,
+                      "GET_PAG_PROCESSOR_INFO" = 233,
+                      "GET_SEGMENT_INFO" = 232,
+                      "GET_PAGE_INFO" = 231,
+                      "SET_SEGMENT_MODE" = 230,
+                      "GET_SEGMENT_MODE" = 229,
+                      "COPY_CAL_PAGE" = 228,
+                      "CLEAR_DAQ_LIST" = 227,
+                      "SET_DAQ_PTR" = 226,
+                      "WRITE_DAQ" = 225,
+                      "SET_DAQ_LIST_MODE" = 224,
+                      "GET_DAQ_LIST_MODE" = 223,
+                      "START_STOP_DAQ_LIST" = 222,
+                      "START_STOP_SYNCH" = 221,
+                      "GET_DAQ_CLOCK" = 220,
+                      "READ_DAQ" = 219,
+                      "GET_DAQ_PROCESSOR_INFO" = 218,
+                      "GET_DAQ_RESOLUTION_INFO" = 217,
+                      "GET_DAQ_LIST_INFO" = 216,
+                      "GET_DAQ_EVENT_INFO" = 215,
+                      "FREE_DAQ" = 214,
+                      "ALLOC_DAQ" = 213,
+                      "ALLOC_ODT" = 212,
+                      "ALLOC_ODT_ENTRY" = 211,
+                      "PROGRAM_START" = 210,
+                      "PROGRAM_CLEAR" = 209,
+                      "PROGRAM" = 208,
+                      "PROGRAM_RESET" = 207,
+                      "GET_PGM_PROCESSOR_INFO" = 206,
+                      "GET_SECTOR_INFO" = 205,
+                      "PROGRAM_PREPARE" = 204,
+                      "PROGRAM_FORMAT" = 203,
+                      "PROGRAM_NEXT" = 202,
+                      "PROGRAM_MAX" = 201,
+                      "PROGRAM_VERIFY" = 200
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                    "SEED_AND_KEY_EXTERNAL_FUNCTION" char[256];
+                  };
+                };
+                block "SEGMENT" struct {
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    block "CHECKSUM" struct {
+                      enum {
+                        "XCP_ADD_11" = 1,
+                        "XCP_ADD_12" = 2,
+                        "XCP_ADD_14" = 3,
+                        "XCP_ADD_22" = 4,
+                        "XCP_ADD_24" = 5,
+                        "XCP_ADD_44" = 6,
+                        "XCP_CRC_16" = 7,
+                        "XCP_CRC_16_CITT" = 8,
+                        "XCP_CRC_32" = 9,
+                        "XCP_USER_DEFINED" = 255
+                      };
+                      taggedstruct {
+                        "MAX_BLOCK_SIZE" ulong;
+                        "EXTERNAL_FUNCTION" char[256];
+                      };
+                    };
+                    (block "PAGE" struct {
+                      uchar;
+                      enum {
+                        "ECU_ACCESS_NOT_ALLOWED" = 0,
+                        "ECU_ACCESS_WITHOUT_XCP_ONLY" = 1,
+                        "ECU_ACCESS_WITH_XCP_ONLY" = 2,
+                        "ECU_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_READ_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_READ_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_READ_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_READ_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_WRITE_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_WRITE_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_WRITE_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_WRITE_ACCESS_DONT_CARE" = 3
+                      };
+                      taggedstruct {
+                        "INIT_SEGMENT" uchar;
+                      };
+                    })*;
+                    (block "ADDRESS_MAPPING" struct {
+                      ulong;
+                      ulong;
+                      ulong;
+                    })*;
+                    "PGM_VERIFY" ulong;
+                  };
+                };
+                block "DAQ" struct {
+                  enum {
+                    "STATIC" = 0,
+                    "DYNAMIC" = 1
+                  };
+                  uint;
+                  uint;
+                  uchar;
+                  enum {
+                    "OPTIMISATION_TYPE_DEFAULT" = 0,
+                    "OPTIMISATION_TYPE_ODT_TYPE_16" = 1,
+                    "OPTIMISATION_TYPE_ODT_TYPE_32" = 2,
+                    "OPTIMISATION_TYPE_ODT_TYPE_64" = 3,
+                    "OPTIMISATION_TYPE_ODT_TYPE_ALIGNMENT" = 4,
+                    "OPTIMISATION_TYPE_MAX_ENTRY_SIZE" = 5
+                  };
+                  enum {
+                    "ADDRESS_EXTENSION_FREE" = 0,
+                    "ADDRESS_EXTENSION_ODT" = 1,
+                    "ADDRESS_EXTENSION_DAQ" = 3
+                  };
+                  enum {
+                    "IDENTIFICATION_FIELD_TYPE_ABSOLUTE" = 0,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE" = 1,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD" = 2,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED" = 3
+                  };
+                  enum {
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE" = 1,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_WORD" = 2,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DWORD" = 4,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DLONG" = 8
+                  };
+                  uchar;
+                  enum {
+                    "NO_OVERLOAD_INDICATION" = 0,
+                    "OVERLOAD_INDICATION_PID" = 1,
+                    "OVERLOAD_INDICATION_EVENT" = 2
+                  };
+                  taggedstruct {
+                    "PRESCALER_SUPPORTED" ;
+                    "RESUME_SUPPORTED" ;
+                    block "STIM" struct {
+                      enum {
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE" = 1,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_WORD" = 2,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DWORD" = 4,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DLONG" = 8
+                      };
+                      uchar;
+                      taggedstruct {
+                        "BIT_STIM_SUPPORTED" ;
+                      };
+                    };
+                    block "TIMESTAMP_SUPPORTED" struct {
+                      uint;
+                      enum {
+                        "NO_TIME_STAMP" = 0,
+                        "SIZE_BYTE" = 1,
+                        "SIZE_WORD" = 2,
+                        "SIZE_DWORD" = 4
+                      };
+                      enum {
+                        "UNIT_1NS" = 0,
+                        "UNIT_10NS" = 1,
+                        "UNIT_100NS" = 2,
+                        "UNIT_1US" = 3,
+                        "UNIT_10US" = 4,
+                        "UNIT_100US" = 5,
+                        "UNIT_1MS" = 6,
+                        "UNIT_10MS" = 7,
+                        "UNIT_100MS" = 8,
+                        "UNIT_1S" = 9
+                      };
+                      taggedstruct {
+                        "TIMESTAMP_FIXED" ;
+                      };
+                    };
+                    "PID_OFF_SUPPORTED" ;
+                    (block "DAQ_LIST" struct {
+                      uint;
+                      taggedstruct {
+                        "DAQ_LIST_TYPE" enum {
+                          "DAQ" = 1,
+                          "STIM" = 2,
+                          "DAQ_STIM" = 3
+                        };
+                        "MAX_ODT" uchar;
+                        "MAX_ODT_ENTRIES" uchar;
+                        "FIRST_PID" uchar;
+                        "EVENT_FIXED" uint;
+                        block "PREDEFINED" taggedstruct {
+                          (block "ODT" struct {
+                            uchar;
+                            taggedstruct {
+                              ("ODT_ENTRY" struct {
+                                uchar;
+                                ulong;
+                                uchar;
+                                uchar;
+                                uchar;
+                              })*;
+                            };
+                          })*;
+                        };
+                      };
+                    })*;
+                    (block "EVENT" struct {
+                      char[101];
+                      char[9];
+                      uint;
+                      enum {
+                        "DAQ" = 1,
+                        "STIM" = 2,
+                        "DAQ_STIM" = 3
+                      };
+                      uchar;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                  };
+                };
+                block "PAG" struct {
+                  uchar;
+                  taggedstruct {
+                    "FREEZE_SUPPORTED" ;
+                  };
+                };
+                block "PGM" struct {
+                  enum {
+                    "PGM_MODE_ABSOLUTE" = 1,
+                    "PGM_MODE_FUNCTIONAL" = 2,
+                    "PGM_MODE_ABSOLUTE_AND_FUNCTIONAL" = 3
+                  };
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    (block "SECTOR" struct {
+                      char[101];
+                      uchar;
+                      ulong;
+                      ulong;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                  };
+                };
+                block "DAQ_EVENT" taggedunion {
+                  "FIXED_EVENT_LIST" taggedstruct {
+                    ("EVENT" uint)*;
+                  };
+                  "VARIABLE" taggedstruct {
+                    block "AVAILABLE_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                    block "DEFAULT_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                  };
+                };
+              };
+            };
+            block "XCP_ON_USB" struct {
+              uint;
+              uint;
+              uint;
+              uchar;
+              enum {
+                "HEADER_LEN_BYTE" = 0,
+                "HEADER_LEN_CTR_BYTE" = 1,
+                "HEADER_LEN_FILL_BYTE" = 2,
+                "HEADER_LEN_WORD" = 3,
+                "HEADER_LEN_CTR_WORD" = 4,
+                "HEADER_LEN_FILL_WORD" = 5
+              };
+              taggedunion {
+                block "OUT_EP_CMD_STIM" struct {
+                  uchar;
+                  enum {
+                    "BULK_TRANSFER" = 2,
+                    "INTERRUPT_TRANSFER" = 3
+                  };
+                  uint;
+                  uchar;
+                  enum {
+                    "MESSAGE_PACKING_SINGLE" = 0,
+                    "MESSAGE_PACKING_MULTIPLE" = 1,
+                    "MESSAGE_PACKING_STREAMING" = 2
+                  };
+                  enum {
+                    "ALIGNMENT_8_BIT" = 0,
+                    "ALIGNMENT_16_BIT" = 1,
+                    "ALIGNMENT_32_BIT" = 2,
+                    "ALIGNMENT_64_BIT" = 3
+                  };
+                  taggedstruct {
+                    "RECOMMENDED_HOST_BUFSIZE" uint;
+                  };
+                };
+              };
+              taggedunion {
+                block "IN_EP_RESERR_DAQ_EVSERV" struct {
+                  uchar;
+                  enum {
+                    "BULK_TRANSFER" = 2,
+                    "INTERRUPT_TRANSFER" = 3
+                  };
+                  uint;
+                  uchar;
+                  enum {
+                    "MESSAGE_PACKING_SINGLE" = 0,
+                    "MESSAGE_PACKING_MULTIPLE" = 1,
+                    "MESSAGE_PACKING_STREAMING" = 2
+                  };
+                  enum {
+                    "ALIGNMENT_8_BIT" = 0,
+                    "ALIGNMENT_16_BIT" = 1,
+                    "ALIGNMENT_32_BIT" = 2,
+                    "ALIGNMENT_64_BIT" = 3
+                  };
+                  taggedstruct {
+                    "RECOMMENDED_HOST_BUFSIZE" uint;
+                  };
+                };
+              };
+              taggedstruct {
+                "ALTERNATE_SETTING_NO" uchar;
+                "INTERFACE_STRING_DESCRIPTOR" char[101];
+                (block "OUT_EP_ONLY_STIM" struct {
+                  uchar;
+                  enum {
+                    "BULK_TRANSFER" = 2,
+                    "INTERRUPT_TRANSFER" = 3
+                  };
+                  uint;
+                  uchar;
+                  enum {
+                    "MESSAGE_PACKING_SINGLE" = 0,
+                    "MESSAGE_PACKING_MULTIPLE" = 1,
+                    "MESSAGE_PACKING_STREAMING" = 2
+                  };
+                  enum {
+                    "ALIGNMENT_8_BIT" = 0,
+                    "ALIGNMENT_16_BIT" = 1,
+                    "ALIGNMENT_32_BIT" = 2,
+                    "ALIGNMENT_64_BIT" = 3
+                  };
+                  taggedstruct {
+                    "RECOMMENDED_HOST_BUFSIZE" uint;
+                  };
+                })*;
+                (block "IN_EP_ONLY_DAQ" struct {
+                  uchar;
+                  enum {
+                    "BULK_TRANSFER" = 2,
+                    "INTERRUPT_TRANSFER" = 3
+                  };
+                  uint;
+                  uchar;
+                  enum {
+                    "MESSAGE_PACKING_SINGLE" = 0,
+                    "MESSAGE_PACKING_MULTIPLE" = 1,
+                    "MESSAGE_PACKING_STREAMING" = 2
+                  };
+                  enum {
+                    "ALIGNMENT_8_BIT" = 0,
+                    "ALIGNMENT_16_BIT" = 1,
+                    "ALIGNMENT_32_BIT" = 2,
+                    "ALIGNMENT_64_BIT" = 3
+                  };
+                  taggedstruct {
+                    "RECOMMENDED_HOST_BUFSIZE" uint;
+                  };
+                })*;
+                block "IN_EP_ONLY_EVSERV" struct {
+                  uchar;
+                  enum {
+                    "BULK_TRANSFER" = 2,
+                    "INTERRUPT_TRANSFER" = 3
+                  };
+                  uint;
+                  uchar;
+                  enum {
+                    "MESSAGE_PACKING_SINGLE" = 0,
+                    "MESSAGE_PACKING_MULTIPLE" = 1,
+                    "MESSAGE_PACKING_STREAMING" = 2
+                  };
+                  enum {
+                    "ALIGNMENT_8_BIT" = 0,
+                    "ALIGNMENT_16_BIT" = 1,
+                    "ALIGNMENT_32_BIT" = 2,
+                    "ALIGNMENT_64_BIT" = 3
+                  };
+                  taggedstruct {
+                    "RECOMMENDED_HOST_BUFSIZE" uint;
+                  };
+                };
+                (block "DAQ_LIST_USB_ENDPOINT" struct {
+                  uint;
+                  taggedstruct {
+                    "FIXED_IN" uchar;
+                    "FIXED_OUT" uchar;
+                  };
+                })*;
+                block "PROTOCOL_LAYER" struct {
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uint;
+                  uchar;
+                  uint;
+                  enum {
+                    "BYTE_ORDER_MSB_LAST" = 0,
+                    "BYTE_ORDER_MSB_FIRST" = 1
+                  };
+                  enum {
+                    "ADDRESS_GRANULARITY_BYTE" = 1,
+                    "ADDRESS_GRANULARITY_WORD" = 2,
+                    "ADDRESS_GRANULARITY_DWORD" = 4
+                  };
+                  taggedstruct {
+                    ("OPTIONAL_CMD" enum {
+                      "GET_COMM_MODE_INFO" = 251,
+                      "GET_ID" = 250,
+                      "SET_REQUEST" = 249,
+                      "GET_SEED" = 248,
+                      "UNLOCK" = 247,
+                      "SET_MTA" = 246,
+                      "UPLOAD" = 245,
+                      "SHORT_UPLOAD" = 244,
+                      "BUILD_CHECKSUM" = 243,
+                      "TRANSPORT_LAYER_CMD" = 242,
+                      "USER_CMD" = 241,
+                      "DOWNLOAD" = 240,
+                      "DOWNLOAD_NEXT" = 239,
+                      "DOWNLOAD_MAX" = 238,
+                      "SHORT_DOWNLOAD" = 237,
+                      "MODIFY_BITS" = 236,
+                      "SET_CAL_PAGE" = 235,
+                      "GET_CAL_PAGE" = 234,
+                      "GET_PAG_PROCESSOR_INFO" = 233,
+                      "GET_SEGMENT_INFO" = 232,
+                      "GET_PAGE_INFO" = 231,
+                      "SET_SEGMENT_MODE" = 230,
+                      "GET_SEGMENT_MODE" = 229,
+                      "COPY_CAL_PAGE" = 228,
+                      "CLEAR_DAQ_LIST" = 227,
+                      "SET_DAQ_PTR" = 226,
+                      "WRITE_DAQ" = 225,
+                      "SET_DAQ_LIST_MODE" = 224,
+                      "GET_DAQ_LIST_MODE" = 223,
+                      "START_STOP_DAQ_LIST" = 222,
+                      "START_STOP_SYNCH" = 221,
+                      "GET_DAQ_CLOCK" = 220,
+                      "READ_DAQ" = 219,
+                      "GET_DAQ_PROCESSOR_INFO" = 218,
+                      "GET_DAQ_RESOLUTION_INFO" = 217,
+                      "GET_DAQ_LIST_INFO" = 216,
+                      "GET_DAQ_EVENT_INFO" = 215,
+                      "FREE_DAQ" = 214,
+                      "ALLOC_DAQ" = 213,
+                      "ALLOC_ODT" = 212,
+                      "ALLOC_ODT_ENTRY" = 211,
+                      "PROGRAM_START" = 210,
+                      "PROGRAM_CLEAR" = 209,
+                      "PROGRAM" = 208,
+                      "PROGRAM_RESET" = 207,
+                      "GET_PGM_PROCESSOR_INFO" = 206,
+                      "GET_SECTOR_INFO" = 205,
+                      "PROGRAM_PREPARE" = 204,
+                      "PROGRAM_FORMAT" = 203,
+                      "PROGRAM_NEXT" = 202,
+                      "PROGRAM_MAX" = 201,
+                      "PROGRAM_VERIFY" = 200
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                    "SEED_AND_KEY_EXTERNAL_FUNCTION" char[256];
+                  };
+                };
+                block "SEGMENT" struct {
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    block "CHECKSUM" struct {
+                      enum {
+                        "XCP_ADD_11" = 1,
+                        "XCP_ADD_12" = 2,
+                        "XCP_ADD_14" = 3,
+                        "XCP_ADD_22" = 4,
+                        "XCP_ADD_24" = 5,
+                        "XCP_ADD_44" = 6,
+                        "XCP_CRC_16" = 7,
+                        "XCP_CRC_16_CITT" = 8,
+                        "XCP_CRC_32" = 9,
+                        "XCP_USER_DEFINED" = 255
+                      };
+                      taggedstruct {
+                        "MAX_BLOCK_SIZE" ulong;
+                        "EXTERNAL_FUNCTION" char[256];
+                      };
+                    };
+                    (block "PAGE" struct {
+                      uchar;
+                      enum {
+                        "ECU_ACCESS_NOT_ALLOWED" = 0,
+                        "ECU_ACCESS_WITHOUT_XCP_ONLY" = 1,
+                        "ECU_ACCESS_WITH_XCP_ONLY" = 2,
+                        "ECU_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_READ_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_READ_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_READ_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_READ_ACCESS_DONT_CARE" = 3
+                      };
+                      enum {
+                        "XCP_WRITE_ACCESS_NOT_ALLOWED" = 0,
+                        "XCP_WRITE_ACCESS_WITHOUT_ECU_ONLY" = 1,
+                        "XCP_WRITE_ACCESS_WITH_ECU_ONLY" = 2,
+                        "XCP_WRITE_ACCESS_DONT_CARE" = 3
+                      };
+                      taggedstruct {
+                        "INIT_SEGMENT" uchar;
+                      };
+                    })*;
+                    (block "ADDRESS_MAPPING" struct {
+                      ulong;
+                      ulong;
+                      ulong;
+                    })*;
+                    "PGM_VERIFY" ulong;
+                  };
+                };
+                block "DAQ" struct {
+                  enum {
+                    "STATIC" = 0,
+                    "DYNAMIC" = 1
+                  };
+                  uint;
+                  uint;
+                  uchar;
+                  enum {
+                    "OPTIMISATION_TYPE_DEFAULT" = 0,
+                    "OPTIMISATION_TYPE_ODT_TYPE_16" = 1,
+                    "OPTIMISATION_TYPE_ODT_TYPE_32" = 2,
+                    "OPTIMISATION_TYPE_ODT_TYPE_64" = 3,
+                    "OPTIMISATION_TYPE_ODT_TYPE_ALIGNMENT" = 4,
+                    "OPTIMISATION_TYPE_MAX_ENTRY_SIZE" = 5
+                  };
+                  enum {
+                    "ADDRESS_EXTENSION_FREE" = 0,
+                    "ADDRESS_EXTENSION_ODT" = 1,
+                    "ADDRESS_EXTENSION_DAQ" = 3
+                  };
+                  enum {
+                    "IDENTIFICATION_FIELD_TYPE_ABSOLUTE" = 0,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_BYTE" = 1,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD" = 2,
+                    "IDENTIFICATION_FIELD_TYPE_RELATIVE_WORD_ALIGNED" = 3
+                  };
+                  enum {
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE" = 1,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_WORD" = 2,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DWORD" = 4,
+                    "GRANULARITY_ODT_ENTRY_SIZE_DAQ_DLONG" = 8
+                  };
+                  uchar;
+                  enum {
+                    "NO_OVERLOAD_INDICATION" = 0,
+                    "OVERLOAD_INDICATION_PID" = 1,
+                    "OVERLOAD_INDICATION_EVENT" = 2
+                  };
+                  taggedstruct {
+                    "PRESCALER_SUPPORTED" ;
+                    "RESUME_SUPPORTED" ;
+                    block "STIM" struct {
+                      enum {
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_BYTE" = 1,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_WORD" = 2,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DWORD" = 4,
+                        "GRANULARITY_ODT_ENTRY_SIZE_STIM_DLONG" = 8
+                      };
+                      uchar;
+                      taggedstruct {
+                        "BIT_STIM_SUPPORTED" ;
+                      };
+                    };
+                    block "TIMESTAMP_SUPPORTED" struct {
+                      uint;
+                      enum {
+                        "NO_TIME_STAMP" = 0,
+                        "SIZE_BYTE" = 1,
+                        "SIZE_WORD" = 2,
+                        "SIZE_DWORD" = 4
+                      };
+                      enum {
+                        "UNIT_1NS" = 0,
+                        "UNIT_10NS" = 1,
+                        "UNIT_100NS" = 2,
+                        "UNIT_1US" = 3,
+                        "UNIT_10US" = 4,
+                        "UNIT_100US" = 5,
+                        "UNIT_1MS" = 6,
+                        "UNIT_10MS" = 7,
+                        "UNIT_100MS" = 8,
+                        "UNIT_1S" = 9
+                      };
+                      taggedstruct {
+                        "TIMESTAMP_FIXED" ;
+                      };
+                    };
+                    "PID_OFF_SUPPORTED" ;
+                    (block "DAQ_LIST" struct {
+                      uint;
+                      taggedstruct {
+                        "DAQ_LIST_TYPE" enum {
+                          "DAQ" = 1,
+                          "STIM" = 2,
+                          "DAQ_STIM" = 3
+                        };
+                        "MAX_ODT" uchar;
+                        "MAX_ODT_ENTRIES" uchar;
+                        "FIRST_PID" uchar;
+                        "EVENT_FIXED" uint;
+                        block "PREDEFINED" taggedstruct {
+                          (block "ODT" struct {
+                            uchar;
+                            taggedstruct {
+                              ("ODT_ENTRY" struct {
+                                uchar;
+                                ulong;
+                                uchar;
+                                uchar;
+                                uchar;
+                              })*;
+                            };
+                          })*;
+                        };
+                      };
+                    })*;
+                    (block "EVENT" struct {
+                      char[101];
+                      char[9];
+                      uint;
+                      enum {
+                        "DAQ" = 1,
+                        "STIM" = 2,
+                        "DAQ_STIM" = 3
+                      };
+                      uchar;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                  };
+                };
+                block "PAG" struct {
+                  uchar;
+                  taggedstruct {
+                    "FREEZE_SUPPORTED" ;
+                  };
+                };
+                block "PGM" struct {
+                  enum {
+                    "PGM_MODE_ABSOLUTE" = 1,
+                    "PGM_MODE_FUNCTIONAL" = 2,
+                    "PGM_MODE_ABSOLUTE_AND_FUNCTIONAL" = 3
+                  };
+                  uchar;
+                  uchar;
+                  taggedstruct {
+                    (block "SECTOR" struct {
+                      char[101];
+                      uchar;
+                      ulong;
+                      ulong;
+                      uchar;
+                      uchar;
+                      uchar;
+                    })*;
+                    "COMMUNICATION_MODE_SUPPORTED" taggedunion {
+                      "BLOCK" taggedstruct {
+                        "SLAVE" ;
+                        "MASTER" struct {
+                          uchar;
+                          uchar;
+                        };
+                      };
+                      "INTERLEAVED" uchar;
+                    };
+                  };
+                };
+                block "DAQ_EVENT" taggedunion {
+                  "FIXED_EVENT_LIST" taggedstruct {
+                    ("EVENT" uint)*;
+                  };
+                  "VARIABLE" taggedstruct {
+                    block "AVAILABLE_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                    block "DEFAULT_EVENT_LIST" taggedstruct {
+                      ("EVENT" uint)*;
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+
+
+      };</A2ML>
+			<MOD_COMMON>
+				<Comment>""</Comment>
+				<ALIGNMENT_BYTE>1</ALIGNMENT_BYTE>
+				<ALIGNMENT_FLOAT32_IEEE>4</ALIGNMENT_FLOAT32_IEEE>
+				<ALIGNMENT_FLOAT64_IEEE>4</ALIGNMENT_FLOAT64_IEEE>
+				<ALIGNMENT_LONG>4</ALIGNMENT_LONG>
+				<ALIGNMENT_WORD>2</ALIGNMENT_WORD>
+				<BYTE_ORDER>MSB_LAST</BYTE_ORDER>
+				<DEPOSIT>ABSOLUTE</DEPOSIT>
+			</MOD_COMMON>
+			<MOD_PAR>
+				<Comment>""</Comment>
+				<NO_OF_INTERFACES>1</NO_OF_INTERFACES>
+				<MEMORY_SEGMENT>
+					<Name>ECU_Code</Name>
+					<LongIdentifier>"Memory segment for code part of the ECU"</LongIdentifier>
+					<PrgType>DATA</PrgType>
+					<MemoryType>FLASH</MemoryType>
+					<Attribute>EXTERN</Attribute>
+					<Address>0x16000</Address>
+					<Size>0x86C</Size>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<IF_DATA>
+						<Name>XCP</Name>
+						<SEGMENT>
+							<Name>SEGMENT</Name>
+							<DataParams>0x0</DataParams>
+							<DataParams>0x2</DataParams>
+							<DataParams>0x0</DataParams>
+							<DataParams>0x0</DataParams>
+							<DataParams>0x0</DataParams>
+							<PAGE>
+								<Name>PAGE</Name>
+								<DataParams>0x0</DataParams>
+								<DataParams>ECU_ACCESS_DONT_CARE</DataParams>
+								<DataParams>XCP_READ_ACCESS_WITH_ECU_ONLY</DataParams>
+								<DataParams>XCP_WRITE_ACCESS_NOT_ALLOWED</DataParams>
+							</PAGE>
+							<PAGE>
+								<Name>PAGE</Name>
+								<DataParams>0x1</DataParams>
+								<DataParams>ECU_ACCESS_DONT_CARE</DataParams>
+								<DataParams>XCP_READ_ACCESS_WITH_ECU_ONLY</DataParams>
+								<DataParams>XCP_WRITE_ACCESS_WITH_ECU_ONLY</DataParams>
+							</PAGE>
+						</SEGMENT>
+					</IF_DATA>
+				</MEMORY_SEGMENT>
+				<MEMORY_SEGMENT>
+					<Name>ECU_Data</Name>
+					<LongIdentifier>"Memory segment for parameters"</LongIdentifier>
+					<PrgType>DATA</PrgType>
+					<MemoryType>FLASH</MemoryType>
+					<Attribute>EXTERN</Attribute>
+					<Address>0x810000</Address>
+					<Size>0x10000</Size>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+					<Offset>-1</Offset>
+				</MEMORY_SEGMENT>
+				<SYSTEM_CONSTANT>
+					<Name>"System_Constant_1"</Name>
+					<VALUE>"-3.45"</VALUE>
+				</SYSTEM_CONSTANT>
+				<SYSTEM_CONSTANT>
+					<Name>"System_Constant_2"</Name>
+					<VALUE>"5.67"</VALUE>
+				</SYSTEM_CONSTANT>
+				<SYSTEM_CONSTANT>
+					<Name>"System_Constant_3"</Name>
+					<VALUE>"Text in System Constant"</VALUE>
+				</SYSTEM_CONSTANT>
+			</MOD_PAR>
+			<AXIS_PTS>
+				<Name>ASAM.C.AXIS_PTS.UBYTE_8</Name>
+				<LongIdentifier>"Common axis for "</LongIdentifier>
+				<Address>0x810340</Address>
+				<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+				<Deposit_Ref>RL.AXIS_PTS.SBYTE.DECR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<MaxAxisPoints>8</MaxAxisPoints>
+				<LowerLimit>-128</LowerLimit>
+				<UpperLimit>127</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.AXIS_PTS.UBYTE_8</DISPLAY_IDENTIFIER>
+			</AXIS_PTS>
+			<AXIS_PTS>
+				<Name>ASAM.C.AXIS_PTS.RESCALE</Name>
+				<LongIdentifier>"Rescale Axis"</LongIdentifier>
+				<Address>0x8103B0</Address>
+				<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+				<Deposit_Ref>RL.AXIS_PTS.RES_AXIS</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<MaxAxisPoints>5</MaxAxisPoints>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI_0x83BA20.VTAB.RE_AXIS.X_RE_AXIS_xU8</DISPLAY_IDENTIFIER>
+			</AXIS_PTS>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.UBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar FW U16 and CDF20 as name"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810000</Address>
+				<Deposit_Ref>RL.FNC.UBYTE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>10</LowerLimit>
+				<UpperLimit>200</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.UBYTE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>256</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar SBYTE"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810001</Address>
+				<Deposit_Ref>RL.FNC.SBYTE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-100</LowerLimit>
+				<UpperLimit>100</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SBYTE.IDENTICAL</DISPLAY_IDENTIFIER>
+				<FORMAT>"%6.1"</FORMAT>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.UWORD.IDENTICAL</Name>
+				<LongIdentifier>"Scalar UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810002</Address>
+				<Deposit_Ref>RL.FNC.UWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>65535</UpperLimit>
+				<BIT_MASK>0xFFFF</BIT_MASK>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.UWORD.IDENTICAL</DISPLAY_IDENTIFIER>
+				<FORMAT>"%5.0"</FORMAT>
+				<EXTENDED_LIMITS>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>65535</UpperLimit>
+				</EXTENDED_LIMITS>
+				<ANNOTATION>
+					<ANNOTATION_LABEL>"ASAM Workinggroup"</ANNOTATION_LABEL>
+					<ANNOTATION_ORIGIN>""</ANNOTATION_ORIGIN>
+					<ANNOTATION_TEXT>"Test the A2L annotation"</ANNOTATION_TEXT>
+				</ANNOTATION>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Name>
+				<LongIdentifier>"Scalar UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810002</Address>
+				<Deposit_Ref>RL.FNC.UWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<BIT_MASK>0x0FF0</BIT_MASK>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</DISPLAY_IDENTIFIER>
+				<FORMAT>"%5.0"</FORMAT>
+				<EXTENDED_LIMITS>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>65535</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001</Name>
+				<LongIdentifier>"Scalar UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810002</Address>
+				<Deposit_Ref>RL.FNC.UWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>1</UpperLimit>
+				<BIT_MASK>0x0001</BIT_MASK>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001</DISPLAY_IDENTIFIER>
+				<FORMAT>"%5.0"</FORMAT>
+				<EXTENDED_LIMITS>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>65535</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010</Name>
+				<LongIdentifier>"Scalar UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810002</Address>
+				<Deposit_Ref>RL.FNC.UWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>1</UpperLimit>
+				<BIT_MASK>0x0010</BIT_MASK>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010</DISPLAY_IDENTIFIER>
+				<FORMAT>"%5.0"</FORMAT>
+				<EXTENDED_LIMITS>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>65535</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.IDENTICAL</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.IDENTICAL</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.LINEAR_MUL_2</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.LINEAR.MUL_2</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.LINEAR_MUL_2</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_10</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.RAT_FUNC.DIV_10</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_10</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.FORM_X_PLUS_4</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.FORM.X_PLUS_4</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.FORM_X_PLUS_4</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.TAB_INTP_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.TAB_INTP.DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.TAB_INTP_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.TAB_INTP_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.TAB_INTP.NO_DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.TAB_INTP_NO_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.TAB_NOINTP_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.TAB_NOINTP.DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.TAB_NOINTP_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.TAB_NOINTP_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.TAB_NOINTP.NO_DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.TAB_NOINTP_NO_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.TAB_VERB_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.TAB_VERB.DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.TAB_VERB_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.TAB_VERB_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.TAB_VERB.NO_DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.TAB_VERB_NO_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.VTAB_RANGE_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.VTAB_RANGE.DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.VTAB_RANGE_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.VTAB_RANGE_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.VTAB_RANGE.NO_DEFAULT_VALUE</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD.VTAB_RANGE_NO_DEFAULT_VALUE</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_81_9175</Name>
+				<LongIdentifier>"Scalar SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810004</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.RAT_FUNC.DIV_81_9175</CONVERSION>
+				<LowerLimit>-10000</LowerLimit>
+				<UpperLimit>20000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SWORD</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-32268</LowerLimit>
+					<UpperLimit>32267</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.ULONG.IDENTICAL</Name>
+				<LongIdentifier>"Scalar ULONG"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810008</Address>
+				<Deposit_Ref>RL.FNC.ULONG.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-1000000</LowerLimit>
+				<UpperLimit>2000000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.ULONG.IDENTICAL</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-10000000</LowerLimit>
+					<UpperLimit>20000000</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.SLONG.IDENTICAL</Name>
+				<LongIdentifier>"Scalar SLONG"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x81000C</Address>
+				<Deposit_Ref>RL.FNC.SLONG.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-1000000</LowerLimit>
+				<UpperLimit>2000000</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.SLONG.IDENTICAL</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-10000000</LowerLimit>
+					<UpperLimit>20000000</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.FLOAT32_IEEE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar FLOAT32_IEEE"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810010</Address>
+				<Deposit_Ref>RL.FNC.FLOAT32_IEEE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>10</LowerLimit>
+				<UpperLimit>200</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.FLOAT32_IEEE.IDENTICAL</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>256</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.SCALAR.FLOAT64_IEEE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar FLOAT64_IEEE"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810010</Address>
+				<Deposit_Ref>RL.FNC.FLOAT64_IEEE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-100</LowerLimit>
+				<UpperLimit>200</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.SCALAR.FLOAT64_IEEE.IDENTICAL</DISPLAY_IDENTIFIER>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-10000.0</LowerLimit>
+					<UpperLimit>20000.0</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.ROW_DIR</Name>
+				<LongIdentifier>"Array 3x4 of SWORD"</LongIdentifier>
+				<Type>VAL_BLK</Type>
+				<Address>0x810100</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-400</LowerLimit>
+				<UpperLimit>400</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.ROW_DIR</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.4"</FORMAT>
+				<MATRIX_DIM>3</MATRIX_DIM>
+				<MATRIX_DIM>4</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-1000</LowerLimit>
+					<UpperLimit>1000</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.COLUMN_DIR</Name>
+				<LongIdentifier>"Array 3x4 of SWORD"</LongIdentifier>
+				<Type>VAL_BLK</Type>
+				<Address>0x810120</Address>
+				<Deposit_Ref>RL.FNC.SWORD.COLUMN_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-400</LowerLimit>
+				<UpperLimit>400</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.COLUMN_DIR</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.4"</FORMAT>
+				<MATRIX_DIM>3</MATRIX_DIM>
+				<MATRIX_DIM>4</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-1000</LowerLimit>
+					<UpperLimit>1000</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.ARRAY.SWORD.MATRIX_DIM_6.ROW_DIR</Name>
+				<LongIdentifier>"Array 6 of SWORD"</LongIdentifier>
+				<Type>VAL_BLK</Type>
+				<Address>0x810140</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-400</LowerLimit>
+				<UpperLimit>400</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.ARRAY.SWORD.MATRIX_DIM_6.ROW_DIR</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.4"</FORMAT>
+				<MATRIX_DIM>6</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+				<EXTENDED_LIMITS>
+					<LowerLimit>-1000</LowerLimit>
+					<UpperLimit>1000</UpperLimit>
+				</EXTENDED_LIMITS>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.ASCII.UBYTE.NUMBER_42</Name>
+				<LongIdentifier>"ASCII string"</LongIdentifier>
+				<Type>ASCII</Type>
+				<Address>0x810200</Address>
+				<Deposit_Ref>RL.FNC.UBYTE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.ASCII.UBYTE.NUMBER_42</DISPLAY_IDENTIFIER>
+				<NUMBER>42</NUMBER>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.STD_AXIS</Name>
+				<LongIdentifier>"Curve with standard axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810300</Address>
+				<Deposit_Ref>RL.CURVE.SWORD.SBYTE.DECR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.STD_AXIS</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.3"</FORMAT>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.COM_AXIS</Name>
+				<LongIdentifier>"Curve with common axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810320</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.COM_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>COM_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<AXIS_PTS_REF>ASAM.C.AXIS_PTS.UBYTE_8</AXIS_PTS_REF>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.FIX_AXIS.PAR_DIST</Name>
+				<LongIdentifier>"Curve with fix axis and FIX_AXIS_PAR_DIST"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810350</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.FIX_AXIS.PAR_DIST</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>FIX_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>6</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<FIX_AXIS_PAR_DIST>
+						<Offset>1</Offset>
+						<Distance>1</Distance>
+						<Numberapo>6</Numberapo>
+					</FIX_AXIS_PAR_DIST>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.FIX_AXIS.PAR</Name>
+				<LongIdentifier>"Curve with fix axis and FIX_AXIS_PAR"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810360</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.FIX_AXIS.PAR</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>FIX_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>6</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<FIX_AXIS_PAR_DIST>
+						<Offset>0</Offset>
+						<Distance>4</Distance>
+						<Numberapo>6</Numberapo>
+					</FIX_AXIS_PAR_DIST>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.FIX_AXIS.PAR_LIST</Name>
+				<LongIdentifier>"Curve with fix axis and FIX_AXIS_PAR_LIST"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810370</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.FIX_AXIS.PAR_LIST</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>FIX_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>6</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<FIX_AXIS_PAR_LIST>
+						<AxisPts_Value>-1</AxisPts_Value>
+						<AxisPts_Value>4</AxisPts_Value>
+						<AxisPts_Value>6</AxisPts_Value>
+						<AxisPts_Value>8</AxisPts_Value>
+						<AxisPts_Value>9</AxisPts_Value>
+						<AxisPts_Value>10</AxisPts_Value>
+					</FIX_AXIS_PAR_LIST>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.CURVE_AXIS</Name>
+				<LongIdentifier>"Curve with curve axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810380</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.COM_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>CURVE_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>NO_COMPU_METHOD</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<CURVE_AXIS_REF>ASAM.C.CURVE_AXIS</CURVE_AXIS_REF>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE_AXIS</Name>
+				<LongIdentifier>"Curve used as axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810390</Address>
+				<Deposit_Ref>RL.CURVE.SWORD.SBYTE.INCR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.RES_AXIS</Name>
+				<LongIdentifier>"Curve with rescale axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x8103A0</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.RES_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>RES_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>9</MaxAxisPoints>
+					<LowerLimit>0</LowerLimit>
+					<UpperLimit>255</UpperLimit>
+					<AXIS_PTS_REF>ASAM.C.AXIS_PTS.RESCALE</AXIS_PTS_REF>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.STD_AXIS.MONOTONY_STRICT_INCREASE</Name>
+				<LongIdentifier>"Curve with standard axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810800</Address>
+				<Deposit_Ref>RL.CURVE.SWORD.SBYTE.DECR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.STD_AXIS.MONOTONY_STRICT_INCREASE</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.3"</FORMAT>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<MONOTONY>STRICT_INCREASE</MONOTONY>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CURVE.STD_AXIS.MONOTONY_STRICT_DECREASE</Name>
+				<LongIdentifier>"Curve with standard axis"</LongIdentifier>
+				<Type>CURVE</Type>
+				<Address>0x810820</Address>
+				<Deposit_Ref>RL.CURVE.SWORD.SBYTE.DECR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CURVE.STD_AXIS.MONOTONY_STRICT_DECREASE</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.3"</FORMAT>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<MONOTONY>STRICT_DECREASE</MONOTONY>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.MAP.STD_AXIS.STD_AXIS</Name>
+				<LongIdentifier>"Map with 2x standard axis"</LongIdentifier>
+				<Type>MAP</Type>
+				<Address>0x810400</Address>
+				<Deposit_Ref>RL.MAP.SWORD.SBYTE.SBYTE.INCR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.MAP.STD_AXIS.STD_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>4</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+				</AXIS_DESCR>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.UBYTE.TAB_VERB_NO_DEFAULT_VALUE</InputQuantity>
+					<CONVERSION>CM.TAB_VERB.NO_DEFAULT_VALUE</CONVERSION>
+					<MaxAxisPoints>5</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.MAP.COM_AXIS.FIX_AXIS</Name>
+				<LongIdentifier>"Map with 2x standard axis"</LongIdentifier>
+				<Type>MAP</Type>
+				<Address>0x810440</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.MAP.COM_AXIS.FIX_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>COM_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<AXIS_PTS_REF>ASAM.C.AXIS_PTS.UBYTE_8</AXIS_PTS_REF>
+				</AXIS_DESCR>
+				<AXIS_DESCR>
+					<Attribute>FIX_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>3</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<FIX_AXIS_PAR_DIST>
+						<Offset>1</Offset>
+						<Distance>1</Distance>
+						<Numberapo>3</Numberapo>
+					</FIX_AXIS_PAR_DIST>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.CUBOID.COM_AXIS.FIX_AXIS.STD_AXIS</Name>
+				<LongIdentifier>"Map with 2x standard axis"</LongIdentifier>
+				<Type>CUBOID</Type>
+				<Address>0x810470</Address>
+				<Deposit_Ref>RL.CUBOID.SWORD.SBYTE.DECR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.CUBOID.COM_AXIS.FIX_AXIS.STD_AXIS</DISPLAY_IDENTIFIER>
+				<AXIS_DESCR>
+					<Attribute>COM_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>8</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<AXIS_PTS_REF>ASAM.C.AXIS_PTS.UBYTE_8</AXIS_PTS_REF>
+				</AXIS_DESCR>
+				<AXIS_DESCR>
+					<Attribute>FIX_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>3</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+					<FIX_AXIS_PAR_DIST>
+						<Offset>1</Offset>
+						<Distance>1</Distance>
+						<Numberapo>3</Numberapo>
+					</FIX_AXIS_PAR_DIST>
+				</AXIS_DESCR>
+				<AXIS_DESCR>
+					<Attribute>STD_AXIS</Attribute>
+					<InputQuantity>ASAM.M.SCALAR.SBYTE.IDENTICAL</InputQuantity>
+					<CONVERSION>CM.IDENTICAL</CONVERSION>
+					<MaxAxisPoints>4</MaxAxisPoints>
+					<LowerLimit>-128</LowerLimit>
+					<UpperLimit>127</UpperLimit>
+				</AXIS_DESCR>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.DEPENDENT.REF_1.SWORD</Name>
+				<LongIdentifier>"Dependent SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810600</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.DEPENDENT.REF_1.SWORD</DISPLAY_IDENTIFIER>
+				<DEPENDENT_CHARACTERISTIC>
+					<FORMULA>"X1 + 5"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.SCALAR.SBYTE.IDENTICAL</CHARACTERISTIC>
+				</DEPENDENT_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.DEPENDENT.REF_2.UWORD</Name>
+				<LongIdentifier>"Dependent UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810602</Address>
+				<Deposit_Ref>RL.FNC.UWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0.0</LowerLimit>
+				<UpperLimit>65535.0</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.DEPENDENT.REF_2.UWORD</DISPLAY_IDENTIFIER>
+				<DEPENDENT_CHARACTERISTIC>
+					<FORMULA>"X1 + 25"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.SCALAR.UBYTE.IDENTICAL</CHARACTERISTIC>
+				</DEPENDENT_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.DEPENDENT.REF_3.SWORD</Name>
+				<LongIdentifier>"Dependent UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810604</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.DEPENDENT.REF_3.SWORD</DISPLAY_IDENTIFIER>
+				<DEPENDENT_CHARACTERISTIC>
+					<FORMULA>"X1 + X2"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.DEPENDENT.REF_1.SWORD</CHARACTERISTIC>
+					<CHARACTERISTIC>ASAM.C.DEPENDENT.REF_2.UWORD</CHARACTERISTIC>
+				</DEPENDENT_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.DEPENDENT.REF_4.FLOAT64_IEEE</Name>
+				<LongIdentifier>"Dependent UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810610</Address>
+				<Deposit_Ref>RL.FNC.FLOAT64_IEEE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.DEPENDENT.REF_4.FLOAT64_IEEE</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.2"</FORMAT>
+				<DEPENDENT_CHARACTERISTIC>
+					<FORMULA>"X1 + sysc(System_Constant_1)"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.DEPENDENT.REF_1.SWORD</CHARACTERISTIC>
+				</DEPENDENT_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.DEPENDENT.REF_5.FLOAT64_IEEE</Name>
+				<LongIdentifier>"Dependent UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x810608</Address>
+				<Deposit_Ref>RL.FNC.FLOAT64_IEEE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>-10000.0</LowerLimit>
+				<UpperLimit>10000.0</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.DEPENDENT.REF_5.FLOAT64_IEEE</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.2"</FORMAT>
+				<DEPENDENT_CHARACTERISTIC>
+					<FORMULA>"X1 * 2"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.VIRTUAL.SYSTEM_CONSTANT_1</CHARACTERISTIC>
+				</DEPENDENT_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.VIRTUAL.REF_1.SWORD</Name>
+				<LongIdentifier>"Virtual SWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x0</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.VIRTUAL.REF_1.SWORD</DISPLAY_IDENTIFIER>
+				<VIRTUAL_CHARACTERISTIC>
+					<FORMULA>"X1 - 9"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.SCALAR.SBYTE.IDENTICAL</CHARACTERISTIC>
+				</VIRTUAL_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.VIRTUAL.REF_2.UWORD</Name>
+				<LongIdentifier>"Virtual UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x0</Address>
+				<Deposit_Ref>RL.FNC.UWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0.0</LowerLimit>
+				<UpperLimit>255.0</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.VIRTUAL.REF_2.UWORD</DISPLAY_IDENTIFIER>
+				<VIRTUAL_CHARACTERISTIC>
+					<FORMULA>"X1 + 19"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.SCALAR.UBYTE.IDENTICAL</CHARACTERISTIC>
+				</VIRTUAL_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.VIRTUAL.REF_3.SWORD</Name>
+				<LongIdentifier>"Virtual UWORD"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x0</Address>
+				<Deposit_Ref>RL.FNC.SWORD.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0.0</LowerLimit>
+				<UpperLimit>255.0</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.VIRTUAL.REF_3.SWORD</DISPLAY_IDENTIFIER>
+				<VIRTUAL_CHARACTERISTIC>
+					<FORMULA>"X1 + X2"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.VIRTUAL.REF_1.SWORD</CHARACTERISTIC>
+					<CHARACTERISTIC>ASAM.C.VIRTUAL.REF_2.UWORD</CHARACTERISTIC>
+				</VIRTUAL_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.VIRTUAL.SYSTEM_CONSTANT_1</Name>
+				<LongIdentifier>"Virtual value including a system constant in the calculation formula"</LongIdentifier>
+				<Type>VALUE</Type>
+				<Address>0x0</Address>
+				<Deposit_Ref>RL.FNC.FLOAT64_IEEE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0.0</LowerLimit>
+				<UpperLimit>255.0</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.VIRTUAL.SYSTEM_CONSTANT_1</DISPLAY_IDENTIFIER>
+				<FORMAT>"%8.2"</FORMAT>
+				<VIRTUAL_CHARACTERISTIC>
+					<FORMULA>"X1 + sysc(System_Constant_1)"</FORMULA>
+					<CHARACTERISTIC>ASAM.C.SCALAR.UBYTE.IDENTICAL</CHARACTERISTIC>
+				</VIRTUAL_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<CHARACTERISTIC>
+				<Name>ASAM.C.VIRTUAL.ASCII</Name>
+				<LongIdentifier>"Virtual ASCII string"</LongIdentifier>
+				<Type>ASCII</Type>
+				<Address>0x0</Address>
+				<Deposit_Ref>RL.FNC.UBYTE.ROW_DIR</Deposit_Ref>
+				<MaxDiff>0</MaxDiff>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<LowerLimit>0.0</LowerLimit>
+				<UpperLimit>255.0</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.C.VIRTUAL.SYSTEM_CONSTANT_1</DISPLAY_IDENTIFIER>
+				<NUMBER>100</NUMBER>
+				<VIRTUAL_CHARACTERISTIC>
+					<FORMULA>"sysc(System_Constant_3)"</FORMULA>
+				</VIRTUAL_CHARACTERISTIC>
+			</CHARACTERISTIC>
+			<COMPU_METHOD>
+				<Name>CM.IDENTICAL</Name>
+				<LongIdentifier>"conversion that delivers always phys = int"</LongIdentifier>
+				<ConversionType>IDENTICAL</ConversionType>
+				<FORMAT>"%3.0"</FORMAT>
+				<UNIT>"hours"</UNIT>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.LINEAR.IDENT</Name>
+				<LongIdentifier>"Linear function with parameter set for phys = f(int) = 1*int + 0"</LongIdentifier>
+				<ConversionType>LINEAR</ConversionType>
+				<FORMAT>"%3.1"</FORMAT>
+				<UNIT>"m/s"</UNIT>
+				<COEFFS_LINEAR>
+					<a>1</a>
+					<b>0</b>
+				</COEFFS_LINEAR>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.LINEAR.MUL_2</Name>
+				<LongIdentifier>"Linear function with parameter set for phys = f(int) = 2*int + 0"</LongIdentifier>
+				<ConversionType>LINEAR</ConversionType>
+				<FORMAT>"%3.1"</FORMAT>
+				<UNIT>"m/s"</UNIT>
+				<COEFFS_LINEAR>
+					<a>2</a>
+					<b>0</b>
+				</COEFFS_LINEAR>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.RAT_FUNC.IDENT</Name>
+				<LongIdentifier>"rational function with parameter set for int = f(phys) = phys"</LongIdentifier>
+				<ConversionType>RAT_FUNC</ConversionType>
+				<FORMAT>"%3.1"</FORMAT>
+				<UNIT>"m/s"</UNIT>
+				<COEFFS>
+					<a>0</a>
+					<b>1</b>
+					<c>0</c>
+					<d>0</d>
+					<e>0</e>
+					<f>1</f>
+				</COEFFS>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.RAT_FUNC.DIV_10</Name>
+				<LongIdentifier>"rational function with parameter set for impl = f(phys) = phys * 10"</LongIdentifier>
+				<ConversionType>RAT_FUNC</ConversionType>
+				<FORMAT>"%3.1"</FORMAT>
+				<UNIT>"km/h"</UNIT>
+				<COEFFS>
+					<a>0</a>
+					<b>10</b>
+					<c>0</c>
+					<d>0</d>
+					<e>0</e>
+					<f>1</f>
+				</COEFFS>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.RAT_FUNC.DIV_81_9175</Name>
+				<LongIdentifier>"rational function with parameter set for impl = f(phys) = phys * 81.9175"</LongIdentifier>
+				<ConversionType>RAT_FUNC</ConversionType>
+				<FORMAT>"%8.4"</FORMAT>
+				<UNIT>"grad C"</UNIT>
+				<COEFFS>
+					<a>0</a>
+					<b>81.9175</b>
+					<c>0</c>
+					<d>0</d>
+					<e>0</e>
+					<f>1</f>
+				</COEFFS>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.FORM.X_PLUS_4</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>FORM</ConversionType>
+				<FORMAT>"%6.1"</FORMAT>
+				<UNIT>"rpm"</UNIT>
+				<FORMULA>
+					<f_x>"X1+4"</f_x>
+					<FORMULA_INV>
+						<g_x>"X1-4"</g_x>
+					</FORMULA_INV>
+				</FORMULA>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.VIRTUAL.EXTERNAL_VALUE</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>FORM</ConversionType>
+				<FORMAT>"%6.1"</FORMAT>
+				<UNIT>"rpm"</UNIT>
+				<FORMULA>
+					<f_x>"4*X1"</f_x>
+				</FORMULA>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.TAB_INTP.DEFAULT_VALUE</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_INTP</ConversionType>
+				<FORMAT>"%8.4"</FORMAT>
+				<UNIT>"U/  min  "</UNIT>
+				<COMPU_TAB_REF>CM.TAB_INTP.DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.TAB_INTP.NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_INTP</ConversionType>
+				<FORMAT>"%8.4"</FORMAT>
+				<UNIT>"U/  min  "</UNIT>
+				<COMPU_TAB_REF>CM.TAB_INTP.NO_DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.TAB_NOINTP.DEFAULT_VALUE</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_INTP</ConversionType>
+				<FORMAT>"%8.4"</FORMAT>
+				<UNIT>"U/  min  "</UNIT>
+				<COMPU_TAB_REF>CM.TAB_NOINTP.DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.TAB_NOINTP.NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_INTP</ConversionType>
+				<FORMAT>"%8.4"</FORMAT>
+				<UNIT>"U/  min  "</UNIT>
+				<COMPU_TAB_REF>CM.TAB_NOINTP.NO_DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.TAB_VERB.DEFAULT_VALUE</Name>
+				<LongIdentifier>"Verbal conversion with default value"</LongIdentifier>
+				<ConversionType>TAB_VERB</ConversionType>
+				<FORMAT>"%12.0"</FORMAT>
+				<UNIT>""</UNIT>
+				<COMPU_TAB_REF>CM.TAB_VERB.DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.TAB_VERB.NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Verbal conversion without default value"</LongIdentifier>
+				<ConversionType>TAB_VERB</ConversionType>
+				<FORMAT>"%12.0"</FORMAT>
+				<UNIT>""</UNIT>
+				<COMPU_TAB_REF>CM.TAB_VERB.NO_DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.VTAB_RANGE.DEFAULT_VALUE</Name>
+				<LongIdentifier>"verbal range with default value"</LongIdentifier>
+				<ConversionType>TAB_VERB</ConversionType>
+				<FORMAT>"%4.2"</FORMAT>
+				<UNIT>""</UNIT>
+				<COMPU_TAB_REF>CM.VTAB_RANGE.DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_METHOD>
+				<Name>CM.VTAB_RANGE.NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"verbal range without default value"</LongIdentifier>
+				<ConversionType>TAB_VERB</ConversionType>
+				<FORMAT>"%4.2"</FORMAT>
+				<UNIT>""</UNIT>
+				<COMPU_TAB_REF>CM.VTAB_RANGE.NO_DEFAULT_VALUE.REF</COMPU_TAB_REF>
+			</COMPU_METHOD>
+			<COMPU_TAB>
+				<Name>CM.TAB_INTP.DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_INTP</ConversionType>
+				<NumberValuePairs>12</NumberValuePairs>
+				<Axis_Points>['-3', '98']</Axis_Points>
+				<Axis_Points>['-1', '99']</Axis_Points>
+				<Axis_Points>['0', '100']</Axis_Points>
+				<Axis_Points>['2', '102']</Axis_Points>
+				<Axis_Points>['4', '104']</Axis_Points>
+				<Axis_Points>['5', '105']</Axis_Points>
+				<Axis_Points>['6', '106']</Axis_Points>
+				<Axis_Points>['7', '107']</Axis_Points>
+				<Axis_Points>['8', '108']</Axis_Points>
+				<Axis_Points>['9', '109']</Axis_Points>
+				<Axis_Points>['10', '110']</Axis_Points>
+				<Axis_Points>['13', '111']</Axis_Points>
+				<DEFAULT_VALUE_NUMERIC>300.56</DEFAULT_VALUE_NUMERIC>
+			</COMPU_TAB>
+			<COMPU_TAB>
+				<Name>CM.TAB_INTP.NO_DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_INTP</ConversionType>
+				<NumberValuePairs>12</NumberValuePairs>
+				<Axis_Points>['-3', '98']</Axis_Points>
+				<Axis_Points>['-1', '99']</Axis_Points>
+				<Axis_Points>['0', '100']</Axis_Points>
+				<Axis_Points>['2', '102']</Axis_Points>
+				<Axis_Points>['4', '104']</Axis_Points>
+				<Axis_Points>['5', '105']</Axis_Points>
+				<Axis_Points>['6', '106']</Axis_Points>
+				<Axis_Points>['7', '107']</Axis_Points>
+				<Axis_Points>['8', '108']</Axis_Points>
+				<Axis_Points>['9', '109']</Axis_Points>
+				<Axis_Points>['10', '110']</Axis_Points>
+				<Axis_Points>['13', '111']</Axis_Points>
+			</COMPU_TAB>
+			<COMPU_TAB>
+				<Name>CM.TAB_NOINTP.DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_NOINTP</ConversionType>
+				<NumberValuePairs>12</NumberValuePairs>
+				<Axis_Points>['-3', '98']</Axis_Points>
+				<Axis_Points>['-1', '99']</Axis_Points>
+				<Axis_Points>['0', '100']</Axis_Points>
+				<Axis_Points>['2', '102']</Axis_Points>
+				<Axis_Points>['4', '104']</Axis_Points>
+				<Axis_Points>['5', '105']</Axis_Points>
+				<Axis_Points>['6', '106']</Axis_Points>
+				<Axis_Points>['7', '107']</Axis_Points>
+				<Axis_Points>['8', '108']</Axis_Points>
+				<Axis_Points>['9', '109']</Axis_Points>
+				<Axis_Points>['10', '110']</Axis_Points>
+				<Axis_Points>['13', '111']</Axis_Points>
+				<DEFAULT_VALUE_NUMERIC>300.56</DEFAULT_VALUE_NUMERIC>
+			</COMPU_TAB>
+			<COMPU_TAB>
+				<Name>CM.TAB_NOINTP.NO_DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<ConversionType>TAB_NOINTP</ConversionType>
+				<NumberValuePairs>12</NumberValuePairs>
+				<Axis_Points>['-3', '98']</Axis_Points>
+				<Axis_Points>['-1', '99']</Axis_Points>
+				<Axis_Points>['0', '100']</Axis_Points>
+				<Axis_Points>['2', '102']</Axis_Points>
+				<Axis_Points>['4', '104']</Axis_Points>
+				<Axis_Points>['5', '105']</Axis_Points>
+				<Axis_Points>['6', '106']</Axis_Points>
+				<Axis_Points>['7', '107']</Axis_Points>
+				<Axis_Points>['8', '108']</Axis_Points>
+				<Axis_Points>['9', '109']</Axis_Points>
+				<Axis_Points>['10', '110']</Axis_Points>
+				<Axis_Points>['13', '111']</Axis_Points>
+			</COMPU_TAB>
+			<COMPU_VTAB>
+				<Name>CM.TAB_VERB.DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>"List of text strings and relation to impl value"</LongIdentifier>
+				<ConversionType>TAB_VERB</ConversionType>
+				<NumberValuePairs>3</NumberValuePairs>
+				<InVal_OutVal>['1', '"SawTooth"']</InVal_OutVal>
+				<InVal_OutVal>['2', '"Square"']</InVal_OutVal>
+				<InVal_OutVal>['3', '"Sinus"']</InVal_OutVal>
+				<DEFAULT_VALUE>"unknown signal type"</DEFAULT_VALUE>
+			</COMPU_VTAB>
+			<COMPU_VTAB>
+				<Name>CM.TAB_VERB.NO_DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>"List of text strings and relation to impl value"</LongIdentifier>
+				<ConversionType>TAB_VERB</ConversionType>
+				<NumberValuePairs>6</NumberValuePairs>
+				<InVal_OutVal>['2', '"red"']</InVal_OutVal>
+				<InVal_OutVal>['3', '"orange"']</InVal_OutVal>
+				<InVal_OutVal>['4', '"yellow"']</InVal_OutVal>
+				<InVal_OutVal>['5', '"green"']</InVal_OutVal>
+				<InVal_OutVal>['6', '"blue"']</InVal_OutVal>
+				<InVal_OutVal>['7', '"violet"']</InVal_OutVal>
+			</COMPU_VTAB>
+			<COMPU_VTAB_RANGE>
+				<Name>CM.VTAB_RANGE.DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<NumberValueTriples>11</NumberValueTriples>
+				<InVal_MinMax_OutVal>['0', '1', '"Zero_to_one"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['2', '3', '"two_to_three"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['4', '7', '"four_to_seven"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['14', '17', '"fourteen_to_seventeen"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['18', '99', '"eigteen_to_ninetynine"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['100', '100', '"hundred"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['101', '101', '"hundredone"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['102', '102', '"hundredtwo"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['103', '103', '"hundredthree"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['104', '104', '"hundredfour"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['105', '105', '"hundredfive"']</InVal_MinMax_OutVal>
+				<DEFAULT_VALUE>"out of range value"</DEFAULT_VALUE>
+			</COMPU_VTAB_RANGE>
+			<COMPU_VTAB_RANGE>
+				<Name>CM.VTAB_RANGE.NO_DEFAULT_VALUE.REF</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<NumberValueTriples>11</NumberValueTriples>
+				<InVal_MinMax_OutVal>['0', '1', '"Zero_to_one"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['2', '3', '"two_to_three"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['4', '7', '"four_to_seven"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['14', '17', '"fourteen_to_seventeen"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['18', '99', '"eigteen_to_ninetynine"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['100', '100', '"hundred"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['101', '101', '"hundredone"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['102', '102', '"hundredtwo"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['103', '103', '"hundredthree"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['104', '104', '"hundredfour"']</InVal_MinMax_OutVal>
+				<InVal_MinMax_OutVal>['105', '105', '"hundredfive"']</InVal_MinMax_OutVal>
+			</COMPU_VTAB_RANGE>
+			<FUNCTION>
+				<Name>FunctionScalar</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<DEF_CHARACTERISTIC>
+					<Identifier>ASAM.C.SCALAR.FLOAT32_IEEE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.FLOAT64_IEEE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SLONG.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.FORM_X_PLUS_4</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.LINEAR_MUL_2</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_10</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_81_9175</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_INTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_INTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_NOINTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_NOINTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_VERB_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_VERB_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.VTAB_RANGE_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.VTAB_RANGE_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.ULONG.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Identifier>
+				</DEF_CHARACTERISTIC>
+				<SUB_FUNCTION>
+					<Identifier>FunctionDependentParameters</Identifier>
+				</SUB_FUNCTION>
+			</FUNCTION>
+			<FUNCTION>
+				<Name>FunctionDependentParameters</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<DEF_CHARACTERISTIC>
+					<Identifier>ASAM.C.DEPENDENT.REF_1.SWORD</Identifier>
+					<Identifier>ASAM.C.DEPENDENT.REF_2.UWORD</Identifier>
+					<Identifier>ASAM.C.DEPENDENT.REF_3.SWORD</Identifier>
+				</DEF_CHARACTERISTIC>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.SCALAR.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SBYTE.IDENTICAL</Identifier>
+				</REF_CHARACTERISTIC>
+			</FUNCTION>
+			<FUNCTION>
+				<Name>FunctionCurveAxis</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<DEF_CHARACTERISTIC>
+					<Identifier>ASAM.C.CURVE_AXIS</Identifier>
+					<Identifier>ASAM.C.CURVE.CURVE_AXIS</Identifier>
+				</DEF_CHARACTERISTIC>
+				<IN_MEASUREMENT>
+					<Identifier>ASAM.M.SCALAR.SBYTE.IDENTICAL</Identifier>
+				</IN_MEASUREMENT>
+			</FUNCTION>
+			<FUNCTION>
+				<Name>FunctionVirtualMeasurements</Name>
+				<LongIdentifier>""</LongIdentifier>
+				<IN_MEASUREMENT>
+					<Identifier>ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2</Identifier>
+				</IN_MEASUREMENT>
+				<OUT_MEASUREMENT>
+					<Identifier>ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL</Identifier>
+				</OUT_MEASUREMENT>
+			</FUNCTION>
+			<GROUP>
+				<GroupName>Group_Type_All</GroupName>
+				<GroupLongIdentifier>"contains all groups with special types"</GroupLongIdentifier>
+				<ROOT>true</ROOT>
+				<SUB_GROUP>
+					<Identifier>Group_Type_Scalar</Identifier>
+					<Identifier>Group_Type_Array</Identifier>
+					<Identifier>Group_Type_Curve</Identifier>
+					<Identifier>Group_Type_Map</Identifier>
+					<Identifier>Group_Type_Cuboid</Identifier>
+					<Identifier>Group_Type_ASCII</Identifier>
+				</SUB_GROUP>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Type_Scalar</GroupName>
+				<GroupLongIdentifier>"Contains all scalar measurements and parameters"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.SCALAR.FLOAT32_IEEE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.FLOAT64_IEEE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SLONG.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.FORM_X_PLUS_4</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.LINEAR_MUL_2</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_10</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_81_9175</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_INTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_INTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_NOINTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_NOINTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_VERB_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_VERB_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.VTAB_RANGE_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.VTAB_RANGE_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.ULONG.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Identifier>
+				</REF_CHARACTERISTIC>
+				<REF_MEASUREMENT>
+					<Identifier>ASAM.M.SCALAR.FLOAT32.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.FLOAT64.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.SBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2</Identifier>
+					<Identifier>ASAM.M.SCALAR.SLONG.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.SWORD.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.FORM_X_PLUS_4</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_INTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_INTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_NOINTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_NOINTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_VERB_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_VERB_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.VTAB_RANGE_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.VTAB_RANGE_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.ULONG.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.UWORD.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0008</Identifier>
+					<Identifier>ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Identifier>
+					<Identifier>ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL</Identifier>
+				</REF_MEASUREMENT>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Type_Array</GroupName>
+				<GroupLongIdentifier>"Contains all array measurements and parameters"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.COLUMN_DIR</Identifier>
+					<Identifier>ASAM.C.ARRAY.SWORD.MATRIX_DIM_3_4.ROW_DIR</Identifier>
+					<Identifier>ASAM.C.ARRAY.SWORD.MATRIX_DIM_6.ROW_DIR</Identifier>
+				</REF_CHARACTERISTIC>
+				<REF_MEASUREMENT>
+					<Identifier>ASAM.M.ARRAY_SIZE_16.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.MATRIX_DIM_16_1_1.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.M.MATRIX_DIM_8_2_1.UBYTE.IDENTICAL</Identifier>
+				</REF_MEASUREMENT>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Type_Curve</GroupName>
+				<GroupLongIdentifier>"Contains all curve parameters"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.CURVE.COM_AXIS</Identifier>
+					<Identifier>ASAM.C.CURVE.CURVE_AXIS</Identifier>
+					<Identifier>ASAM.C.CURVE.FIX_AXIS.PAR</Identifier>
+					<Identifier>ASAM.C.CURVE.FIX_AXIS.PAR_DIST</Identifier>
+					<Identifier>ASAM.C.CURVE.FIX_AXIS.PAR_LIST</Identifier>
+					<Identifier>ASAM.C.CURVE.RES_AXIS</Identifier>
+					<Identifier>ASAM.C.CURVE.STD_AXIS</Identifier>
+					<Identifier>ASAM.C.CURVE.STD_AXIS.MONOTONY_STRICT_DECREASE</Identifier>
+					<Identifier>ASAM.C.CURVE.STD_AXIS.MONOTONY_STRICT_INCREASE</Identifier>
+					<Identifier>ASAM.C.CURVE_AXIS</Identifier>
+					<Identifier>ASAM.C.AXIS_PTS.RESCALE</Identifier>
+					<Identifier>ASAM.C.AXIS_PTS.UBYTE_8</Identifier>
+				</REF_CHARACTERISTIC>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Type_Map</GroupName>
+				<GroupLongIdentifier>"Contains all map parameters"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.MAP.COM_AXIS.FIX_AXIS</Identifier>
+					<Identifier>ASAM.C.MAP.STD_AXIS.STD_AXIS</Identifier>
+				</REF_CHARACTERISTIC>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Type_Cuboid</GroupName>
+				<GroupLongIdentifier>"Contains all cuboid parameters"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.CUBOID.COM_AXIS.FIX_AXIS.STD_AXIS</Identifier>
+				</REF_CHARACTERISTIC>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Type_ASCII</GroupName>
+				<GroupLongIdentifier>"Contains all ASCII parameters"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.ASCII.UBYTE.NUMBER_42</Identifier>
+				</REF_CHARACTERISTIC>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Function_All</GroupName>
+				<GroupLongIdentifier>"contains all groups with special functions"</GroupLongIdentifier>
+				<ROOT>true</ROOT>
+				<SUB_GROUP>
+					<Identifier>Group_Function_Virtual</Identifier>
+					<Identifier>Group_Function_Monotony</Identifier>
+					<Identifier>Group_Function_Computation</Identifier>
+					<Identifier>Group_Function_Bitmask</Identifier>
+				</SUB_GROUP>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Function_Virtual</GroupName>
+				<GroupLongIdentifier>"Contains all functions, measurements and parameters used for virtual"</GroupLongIdentifier>
+				<FUNCTION_LIST>
+					<Name>FunctionVirtualMeasurements</Name>
+				</FUNCTION_LIST>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.SCALAR.SBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.SCALAR.UBYTE.IDENTICAL</Identifier>
+					<Identifier>ASAM.C.VIRTUAL.ASCII</Identifier>
+					<Identifier>ASAM.C.VIRTUAL.REF_1.SWORD</Identifier>
+					<Identifier>ASAM.C.VIRTUAL.REF_2.UWORD</Identifier>
+					<Identifier>ASAM.C.VIRTUAL.REF_3.SWORD</Identifier>
+					<Identifier>ASAM.C.VIRTUAL.SYSTEM_CONSTANT_1</Identifier>
+				</REF_CHARACTERISTIC>
+				<REF_MEASUREMENT>
+					<Identifier>ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2</Identifier>
+					<Identifier>ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL</Identifier>
+				</REF_MEASUREMENT>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Function_Monotony</GroupName>
+				<GroupLongIdentifier>"Contains all functions, measurements and parameters used for monotony"</GroupLongIdentifier>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Function_Computation</GroupName>
+				<GroupLongIdentifier>"Contains all measurements and parameters that have a computation method different to identical"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.SCALAR.SWORD.FORM_X_PLUS_4</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.LINEAR_MUL_2</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_10</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.RAT_FUNC_DIV_81_9175</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_INTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_INTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_NOINTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_NOINTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_VERB_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.TAB_VERB_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.VTAB_RANGE_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.SWORD.VTAB_RANGE_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Identifier>
+				</REF_CHARACTERISTIC>
+				<REF_MEASUREMENT>
+					<Identifier>ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.FORM_X_PLUS_4</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_INTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_INTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_NOINTP_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_NOINTP_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_VERB_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.TAB_VERB_NO_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.VTAB_RANGE_DEFAULT_VALUE</Identifier>
+					<Identifier>ASAM.M.SCALAR.UBYTE.VTAB_RANGE_NO_DEFAULT_VALUE</Identifier>
+				</REF_MEASUREMENT>
+			</GROUP>
+			<GROUP>
+				<GroupName>Group_Function_Bitmask</GroupName>
+				<GroupLongIdentifier>"Contains all measurements and parameters that have a bitmask"</GroupLongIdentifier>
+				<REF_CHARACTERISTIC>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0001</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0010</Identifier>
+					<Identifier>ASAM.C.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Identifier>
+				</REF_CHARACTERISTIC>
+				<REF_MEASUREMENT>
+					<Identifier>ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0008</Identifier>
+					<Identifier>ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Identifier>
+				</REF_MEASUREMENT>
+			</GROUP>
+			<IF_DATA>
+				<Name>XCP</Name>
+				<PROTOCOL_LAYER>
+					<Name>PROTOCOL_LAYER</Name>
+					<DataParams>0x100</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x20</DataParams>
+					<DataParams>0x8</DataParams>
+					<DataParams>0x8</DataParams>
+					<DataParams>BYTE_ORDER_MSB_LAST</DataParams>
+					<DataParams>ADDRESS_GRANULARITY_BYTE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SET_REQUEST</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_SEED</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>UNLOCK</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SET_MTA</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SHORT_DOWNLOAD</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_START</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_CLEAR</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_RESET</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_PGM_PROCESSOR_INFO</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_SECTOR_INFO</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_PREPARE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_NEXT</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_MAX</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>PROGRAM_VERIFY</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>TRANSPORT_LAYER_CMD</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_ID</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>UPLOAD</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SHORT_UPLOAD</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>BUILD_CHECKSUM</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>DOWNLOAD_NEXT</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SET_CAL_PAGE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_CAL_PAGE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>CLEAR_DAQ_LIST</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SET_DAQ_PTR</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>WRITE_DAQ</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SET_DAQ_LIST_MODE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_DAQ_LIST_MODE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>START_STOP_DAQ_LIST</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>FREE_DAQ</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>ALLOC_DAQ</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>ALLOC_ODT</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>ALLOC_ODT_ENTRY</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>START_STOP_SYNCH</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>DOWNLOAD</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>MODIFY_BITS</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_PAG_PROCESSOR_INFO</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_SEGMENT_INFO</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_PAGE_INFO</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>SET_SEGMENT_MODE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_SEGMENT_MODE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>COPY_CAL_PAGE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_DAQ_CLOCK</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>READ_DAQ</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>GET_DAQ_LIST_MODE</DataParams>
+					<DataParams>OPTIONAL_CMD</DataParams>
+					<DataParams>DOWNLOAD_MAX</DataParams>
+					<DataParams>COMMUNICATION_MODE_SUPPORTED</DataParams>
+					<DataParams>BLOCK</DataParams>
+					<DataParams>SLAVE</DataParams>
+					<DataParams>MASTER</DataParams>
+					<DataParams>0x14</DataParams>
+					<DataParams>0x5</DataParams>
+				</PROTOCOL_LAYER>
+				<DAQ>
+					<Name>DAQ</Name>
+					<DataParams>STATIC</DataParams>
+					<DataParams>0x3</DataParams>
+					<DataParams>0x2</DataParams>
+					<DataParams>0x0</DataParams>
+					<DataParams>OPTIMISATION_TYPE_DEFAULT</DataParams>
+					<DataParams>ADDRESS_EXTENSION_DAQ</DataParams>
+					<DataParams>IDENTIFICATION_FIELD_TYPE_ABSOLUTE</DataParams>
+					<DataParams>GRANULARITY_ODT_ENTRY_SIZE_DAQ_BYTE</DataParams>
+					<DataParams>0x4</DataParams>
+					<DataParams>OVERLOAD_INDICATION_EVENT</DataParams>
+					<DataParams>PRESCALER_SUPPORTED</DataParams>
+					<TIMESTAMP_SUPPORTED>
+						<Name>TIMESTAMP_SUPPORTED</Name>
+						<DataParams>0x1</DataParams>
+						<DataParams>SIZE_DWORD</DataParams>
+						<DataParams>UNIT_1US</DataParams>
+					</TIMESTAMP_SUPPORTED>
+					<DAQ_LIST>
+						<Name>DAQ_LIST</Name>
+						<DataParams>0x0</DataParams>
+						<DataParams>DAQ_LIST_TYPE</DataParams>
+						<DataParams>DAQ</DataParams>
+						<DataParams>MAX_ODT</DataParams>
+						<DataParams>0x5</DataParams>
+						<DataParams>MAX_ODT_ENTRIES</DataParams>
+						<DataParams>0x7</DataParams>
+					</DAQ_LIST>
+					<DAQ_LIST>
+						<Name>DAQ_LIST</Name>
+						<DataParams>0x1</DataParams>
+						<DataParams>DAQ_LIST_TYPE</DataParams>
+						<DataParams>DAQ</DataParams>
+						<DataParams>MAX_ODT</DataParams>
+						<DataParams>0x4</DataParams>
+						<DataParams>MAX_ODT_ENTRIES</DataParams>
+						<DataParams>0x7</DataParams>
+					</DAQ_LIST>
+					<DAQ_LIST>
+						<Name>DAQ_LIST</Name>
+						<DataParams>0x2</DataParams>
+						<DataParams>DAQ_LIST_TYPE</DataParams>
+						<DataParams>DAQ</DataParams>
+						<DataParams>MAX_ODT</DataParams>
+						<DataParams>0x3</DataParams>
+						<DataParams>MAX_ODT_ENTRIES</DataParams>
+						<DataParams>0x7</DataParams>
+					</DAQ_LIST>
+					<EVENT>
+						<Name>EVENT</Name>
+						<DataParams>"5ms"</DataParams>
+						<DataParams>"5ms"</DataParams>
+						<DataParams>0x0</DataParams>
+						<DataParams>DAQ</DataParams>
+						<DataParams>0xFF</DataParams>
+						<DataParams>0x5</DataParams>
+						<DataParams>0x6</DataParams>
+						<DataParams>0xFF</DataParams>
+					</EVENT>
+					<EVENT>
+						<Name>EVENT</Name>
+						<DataParams>"extEvent"</DataParams>
+						<DataParams>"extEvent"</DataParams>
+						<DataParams>0x1</DataParams>
+						<DataParams>DAQ</DataParams>
+						<DataParams>0xFF</DataParams>
+						<DataParams>0x1</DataParams>
+						<DataParams>0x9</DataParams>
+						<DataParams>0xFF</DataParams>
+					</EVENT>
+				</DAQ>
+				<XCP_ON_CAN>
+					<Name>XCP_ON_CAN</Name>
+					<DataParams>0x100</DataParams>
+					<DataParams>CAN_ID_BROADCAST</DataParams>
+					<DataParams>0x52</DataParams>
+					<DataParams>CAN_ID_MASTER</DataParams>
+					<DataParams>0x51</DataParams>
+					<DataParams>CAN_ID_SLAVE</DataParams>
+					<DataParams>0x50</DataParams>
+					<DataParams>BAUDRATE</DataParams>
+					<DataParams>0x7A120</DataParams>
+				</XCP_ON_CAN>
+			</IF_DATA>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<DISPLAY_IDENTIFIER>DI.ASAM.M.SCALAR.UBYTE.IDENTICAL</DISPLAY_IDENTIFIER>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.TAB_VERB_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.TAB_VERB.DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.TAB_VERB_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.TAB_VERB.NO_DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.VTAB_RANGE_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.VTAB_RANGE.DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.VTAB_RANGE_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.VTAB_RANGE.NO_DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>101</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.TAB_INTP_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.TAB_INTP.DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.TAB_INTP_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.TAB_INTP.NO_DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>13</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.TAB_NOINTP_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.TAB_NOINTP.DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.TAB_NOINTP_NO_DEFAULT_VALUE</Name>
+				<LongIdentifier>"Scalar measurement with verbal conversion and default value"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.TAB_NOINTP.NO_DEFAULT_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>13</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UBYTE.FORM_X_PLUS_4</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.FORM.X_PLUS_4</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>4</LowerLimit>
+				<UpperLimit>259</UpperLimit>
+				<ECU_ADDRESS>0x13A00</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.SBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>SBYTE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-128</LowerLimit>
+				<UpperLimit>127</UpperLimit>
+				<ECU_ADDRESS>0x13A01</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>SBYTE</Datatype>
+				<CONVERSION>CM.LINEAR.MUL_2</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-256</LowerLimit>
+				<UpperLimit>254</UpperLimit>
+				<ECU_ADDRESS>0x13A01</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UWORD.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UWORD</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>65535</UpperLimit>
+				<ECU_ADDRESS>0x13A02</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.SWORD.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>SWORD</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-32268</LowerLimit>
+				<UpperLimit>32267</UpperLimit>
+				<ECU_ADDRESS>0x13A04</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.ULONG.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>ULONG</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>4294967295</UpperLimit>
+				<ECU_ADDRESS>0x13A08</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.SLONG.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>SLONG</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-2147483648</LowerLimit>
+				<UpperLimit>2147483647</UpperLimit>
+				<ECU_ADDRESS>0x13A0C</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.FLOAT32.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>FLOAT32_IEEE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-1e24</LowerLimit>
+				<UpperLimit>1e24</UpperLimit>
+				<ECU_ADDRESS>0x13A10</ECU_ADDRESS>
+				<FORMAT>"%8.4"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.FLOAT64.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>FLOAT64_IEEE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-1e308</LowerLimit>
+				<UpperLimit>1e308</UpperLimit>
+				<ECU_ADDRESS>0x13A14</ECU_ADDRESS>
+				<FORMAT>"%8.4"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0FF0</Name>
+				<LongIdentifier>"Scalar measurement with Bitmask for a bit-area"</LongIdentifier>
+				<Datatype>UWORD</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<BIT_MASK>0x0FF0</BIT_MASK>
+				<ECU_ADDRESS>0x13A20</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.SCALAR.UWORD.IDENTICAL.BITMASK_0008</Name>
+				<LongIdentifier>"Scalar measurement with Bitmask for a single bit"</LongIdentifier>
+				<Datatype>UWORD</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>1</UpperLimit>
+				<BIT_MASK>0x0008</BIT_MASK>
+				<ECU_ADDRESS>0x13A20</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.ARRAY_SIZE_16.UBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ARRAY_SIZE>16</ARRAY_SIZE>
+				<ECU_ADDRESS>0x13A30</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.MATRIX_DIM_16_1_1.UBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A30</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+				<MATRIX_DIM>16</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.MATRIX_DIM_8_2_1.UBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A30</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+				<MATRIX_DIM>8</MATRIX_DIM>
+				<MATRIX_DIM>2</MATRIX_DIM>
+				<MATRIX_DIM>1</MATRIX_DIM>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.MATRIX_DIM_8_4_2.UBYTE.IDENTICAL</Name>
+				<LongIdentifier>"Scalar measurement"</LongIdentifier>
+				<Datatype>UBYTE</Datatype>
+				<CONVERSION>CM.IDENTICAL</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>0</LowerLimit>
+				<UpperLimit>255</UpperLimit>
+				<ECU_ADDRESS>0x13A30</ECU_ADDRESS>
+				<FORMAT>"%5.0"</FORMAT>
+				<MATRIX_DIM>8</MATRIX_DIM>
+				<MATRIX_DIM>4</MATRIX_DIM>
+				<MATRIX_DIM>2</MATRIX_DIM>
+			</MEASUREMENT>
+			<MEASUREMENT>
+				<Name>ASAM.M.VIRTUAL.SCALAR.SWORD.PHYSICAL</Name>
+				<LongIdentifier>"Virtual measurement with 2 * ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2 as input (based on the phys value of ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2"</LongIdentifier>
+				<Datatype>SWORD</Datatype>
+				<CONVERSION>CM.VIRTUAL.EXTERNAL_VALUE</CONVERSION>
+				<Resolution>0</Resolution>
+				<Accuracy>0</Accuracy>
+				<LowerLimit>-32768</LowerLimit>
+				<UpperLimit>32767</UpperLimit>
+				<ECU_ADDRESS>0x0</ECU_ADDRESS>
+				<VIRTUAL>
+					<MeasuringChannel>ASAM.M.SCALAR.SBYTE.LINEAR_MUL_2</MeasuringChannel>
+				</VIRTUAL>
+			</MEASUREMENT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.UBYTE.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.SBYTE.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.UWORD.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>UWORD</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.SWORD.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>SWORD</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.ULONG.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>ULONG</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.SLONG.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>SLONG</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.FLOAT32_IEEE.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>FLOAT32_IEEE</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.FLOAT64_IEEE.ROW_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>FLOAT64_IEEE</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.UBYTE.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.SBYTE.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.UWORD.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>UWORD</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.SWORD.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>SWORD</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.ULONG.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>ULONG</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.SLONG.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>SLONG</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.FLOAT32_IEEE.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>FLOAT32_IEEE</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.FNC.FLOAT64_IEEE.COLUMN_DIR</Name>
+				<FNC_VALUES>
+					<Position>1</Position>
+					<Datatype>FLOAT64_IEEE</Datatype>
+					<IndexMode>COLUMN_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.AXIS.UBYTE</Name>
+				<AXIS_PTS_X>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+					<IndexIncr>INDEX_INCR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_X>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.AXIS.UWORD</Name>
+				<AXIS_PTS_X>
+					<Position>1</Position>
+					<Datatype>UWORD</Datatype>
+					<IndexIncr>INDEX_INCR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_X>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.CURVE.SWORD.SBYTE.DECR</Name>
+				<AXIS_PTS_X>
+					<Position>2</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexIncr>INDEX_DECR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_X>
+				<FNC_VALUES>
+					<Position>3</Position>
+					<Datatype>SWORD</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+				<NO_AXIS_PTS_X>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_AXIS_PTS_X>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.CURVE.SWORD.SBYTE.INCR</Name>
+				<AXIS_PTS_X>
+					<Position>2</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexIncr>INDEX_INCR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_X>
+				<FNC_VALUES>
+					<Position>3</Position>
+					<Datatype>SWORD</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+				<NO_AXIS_PTS_X>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_AXIS_PTS_X>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.AXIS_PTS.SBYTE.DECR</Name>
+				<AXIS_PTS_X>
+					<Position>2</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexIncr>INDEX_DECR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_X>
+				<NO_AXIS_PTS_X>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_AXIS_PTS_X>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.AXIS_PTS.RES_AXIS</Name>
+				<AXIS_RESCALE_X>
+					<Position>3</Position>
+					<Datatype>UBYTE</Datatype>
+					<MaxNumberOfRescalePairs>5</MaxNumberOfRescalePairs>
+					<IndexIncr>INDEX_INCR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_RESCALE_X>
+				<NO_RESCALE_X>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_RESCALE_X>
+				<RESERVED>
+					<Position>2</Position>
+					<DataSize>BYTE</DataSize>
+				</RESERVED>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.MAP.SWORD.SBYTE.SBYTE.INCR</Name>
+				<AXIS_PTS_X>
+					<Position>3</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexIncr>INDEX_INCR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_X>
+				<AXIS_PTS_Y>
+					<Position>4</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexIncr>INDEX_INCR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_Y>
+				<FNC_VALUES>
+					<Position>5</Position>
+					<Datatype>SWORD</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+				<NO_AXIS_PTS_X>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_AXIS_PTS_X>
+				<NO_AXIS_PTS_Y>
+					<Position>2</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_AXIS_PTS_Y>
+			</RECORD_LAYOUT>
+			<RECORD_LAYOUT>
+				<Name>RL.CUBOID.SWORD.SBYTE.DECR</Name>
+				<AXIS_PTS_Z>
+					<Position>2</Position>
+					<Datatype>SBYTE</Datatype>
+					<IndexIncr>INDEX_DECR</IndexIncr>
+					<Addressing>DIRECT</Addressing>
+				</AXIS_PTS_Z>
+				<FNC_VALUES>
+					<Position>3</Position>
+					<Datatype>SWORD</Datatype>
+					<IndexMode>ROW_DIR</IndexMode>
+					<Addresstype>DIRECT</Addresstype>
+				</FNC_VALUES>
+				<NO_AXIS_PTS_Z>
+					<Position>1</Position>
+					<Datatype>UBYTE</Datatype>
+				</NO_AXIS_PTS_Z>
+			</RECORD_LAYOUT>
+		</MODULE>
+	</PROJECT>
+</A2L-File>

@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License                   #
 # along with a2lparser. If not, see <https://www.gnu.org/licenses/>.                  #
 #######################################################################################
-# @TODO Ignore lines that start with a comment
 
 
 import re
@@ -47,8 +46,15 @@ class A2LValidator:
             error_messages = "\n".join([f"{i+1}: {error}" for i, error in enumerate(self.errors)])
             return f"A2L validation failed with the following errors:\n{error_messages}"
 
-    @staticmethod
-    def validate(a2l_content: str) -> None:
+    def __init__(self):
+        self.skip_tokens = False
+        self.accept_tokens = False
+        self.string_literal_started = False
+        self.section_pattern = re.compile(r"""
+            /(?:begin|end)\s+(\w+)  # Match /begin or /end followed by a keyword
+        """, re.VERBOSE | re.IGNORECASE)
+
+    def validate(self, a2l_content: str) -> None:
         """
         Validates the syntax of the A2L content.
 
@@ -59,50 +65,68 @@ class A2LValidator:
             - A2LValidationError: Raises if the content fails the syntax validation.
         """
         errors = []
-        lines = a2l_content.splitlines()
-        re_pattern = r"/\s*(begin|BEGIN)|/\s*(end|END)"
-        open_stack = []
-        open_keyword_stack = []
-
-        # Check for missing opening/closing statements
-        for i, line in enumerate(lines, 1):
-            for match in re.finditer(re_pattern, line):
-                tag = match.group().lower().strip()
-                if tag == "/begin":
-                    if keyword_match := re.search(
-                        r"^\s*/begin\s+(\S+)", line, re.IGNORECASE
-                    ):
-                        keyword = keyword_match[1].lower()
-                        open_stack.append((i, match.start()))
-                        open_keyword_stack.append(keyword)
+        sections_stack = []
+        for i, line in enumerate(a2l_content.splitlines(), start=1):
+            line = self._remove_comments(line)
+            for match in self.section_pattern.finditer(line):
+                section = match.group(1)
+                if match.group().lower().startswith('/begin'):
+                    sections_stack.append((i, section))
+                elif match.group().lower().startswith('/end'):
+                    last_line, last_section = sections_stack[-1]
+                    if last_section != section:
+                        errors.append(
+                            f"Invalid \"/end {section}\" found at line {i}. "
+                            f"Last found section {last_section} at line {last_line}."
+                        )
                     else:
-                        errors.append(f"Invalid /begin tag at line {i}, column {match.start()+1}.")
-                elif tag == "/end":
-                    if not open_stack:
-                        errors.append(f"Found /end tag without matching /begin tag at line {i}, column {match.start()+1}.")
-                    else:
-                        _, start = open_stack.pop()
-                        open_keyword = open_keyword_stack.pop()
-                        if end_keyword_match := re.search(
-                            r"^\s*/end\s+(\S+)", line, re.IGNORECASE
-                        ):
-                            end_keyword = end_keyword_match[1].lower()
-                            if end_keyword != open_keyword:
-                                errors.append(
-                                    f"Found /end {end_keyword} tag without matching /begin {open_keyword} "
-                                    f"tag at line {i}, column {match.start()+1}."
-                                )
-                        else:
-                            errors.append(f"Invalid /end tag at line {i}, column {match.start()+1}.")
-        if open_stack:
-            i, start = open_stack.pop()
-            open_keyword = open_keyword_stack.pop()
-            errors.append(f"Found /begin {open_keyword} tag without matching /end tag at line {i}, column {start+1}.")
+                        sections_stack.pop()
 
-        # Check for invalid characters
-        for i, line in enumerate(lines, 1):
-            if match := re.search(r"[^\x20-\x7E]", line):
-                errors.append(f"Invalid character '{match.group()}' found at line {i}, column {match.start()+1}.")
-
+        for open_section in sections_stack:
+            i, section = open_section
+            errors.append(f"Found \"/begin {section}\" tag without matching /end tag at line {i}.")
         if errors:
-            raise A2LValidator.A2LValidationError(errors)
+            raise self.A2LValidationError(errors)
+
+    def _remove_comments(self, line: str) -> str:
+        # Initialize list to store processed words
+        words = []
+
+        # Iterate through each word in the line
+        for word in line.split():
+            # Check if the word starts a string literal and is not part of a comment.
+            if (word.startswith('"') or word.startswith("'")) and not self.skip_tokens:
+                # Mark beginning or end of the string literal
+                self.string_literal_started = not self.string_literal_started
+
+                # Inside a string literal we accept all incoming tokens
+                # So if it's the start of a string literal we accept even comment tags like "//" or "/*", "*/".
+                self.accept_tokens = self.string_literal_started
+
+                # Add last word to the list
+                if not self.accept_tokens:
+                    words.append(word)
+                    continue
+
+            if self.accept_tokens:
+                words.append(word)
+                continue
+
+            # Check if the word is a comment
+            if "/*" in word:
+                if (comment := word.split("/*", 1)) and comment[0]:
+                    words.append(comment[0])
+                self.skip_tokens = True
+            elif "*/" in word:
+                if (comment := word.split("*/", 1)) and comment[1]:
+                    words.append(comment[1])
+                self.skip_tokens = False
+            elif "//" in word:
+                if (comment := word.split("//", 1)) and comment[0]:
+                    words.append(comment[0])
+                break
+            else:
+                if not self.skip_tokens:
+                    words.append(word)
+
+        return " ".join(words)

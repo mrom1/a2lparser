@@ -19,46 +19,41 @@
 #######################################################################################
 
 
-import tempfile
-from pathlib import Path
-from a2lparser import A2L_PACKAGE_DIR
-from a2lparser.a2lparser import main
-from tests.fixture_utils import compare_files, check_files_exist
+from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_integration_asap2_demo_v161(monkeypatch, compare_files, check_files_exist):
+def test_rules_virtual_characteristic_minimal():
     """
-    Tests parsing and converting the ASAP2_Demo_V161.a2l file.
+    Tests parsing the VIRTUAL_CHARACTERISTIC A2L section.
     """
-    a2l_filename = "ASAP2_Demo_V161.a2l"
-    temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
-    temp_test_dir_prefix = "temp_dir_output_"
+    virtual_characeristic_section = """
+    /begin VIRTUAL_CHARACTERISTIC
+        "f(x)=x^2 + cos(x) + c"
+    /end VIRTUAL_CHARACTERISTIC
+    """
+    parser = A2LYacc()
+    ast = parser.generate_ast(virtual_characeristic_section)
+    assert ast
+    assert ast["VIRTUAL_CHARACTERISTIC"]["FORMULA"] == '"f(x)=x^2 + cos(x) + c"'
 
-    with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
-        monkeypatch.setattr("sys.argv", [
-            "a2lparser",  f"testfiles/A2L/{a2l_filename}",
-            "--json", "--xml", "--yaml", "--no-prompt",
-            "--output-dir",  f"\"{Path(tempdir).resolve().as_posix()}\"",
-        ])
-        main()
 
-        # Check if files were generated
-        check_files_exist(
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.xml",
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.json",
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.yml",
-        )
+def test_rules_virtual_characteristic_full():
+    """
+    Tests parsing the VIRTUAL_CHARACTERISTIC A2L section.
+    """
+    virtual_characeristic_section = """
+    /begin VIRTUAL_CHARACTERISTIC
+        "sin(X1)"
+        alpha
+        beta
+        gamma
+    /end VIRTUAL_CHARACTERISTIC
+    """
+    parser = A2LYacc()
+    ast = parser.generate_ast(virtual_characeristic_section)
+    assert ast
 
-        # Compare files
-        compare_files(
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.xml",
-            f"{temp_test_output_path.as_posix()}/XML/ASAP2_Demo_V161.xml",
-        )
-        compare_files(
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.json",
-            f"{temp_test_output_path.as_posix()}/JSON/ASAP2_Demo_V161.json",
-        )
-        compare_files(
-            f"{Path(tempdir)}/ASAP2_Demo_V161.yml",
-            f"{temp_test_output_path.as_posix()}/YAML/ASAP2_Demo_V161.yml",
-        )
+    virtual_characeristic = ast["VIRTUAL_CHARACTERISTIC"]
+    assert virtual_characeristic
+    assert virtual_characeristic["FORMULA"] == '"sin(X1)"'
+    assert virtual_characeristic["CHARACTERISTIC"] == ["alpha", "beta", "gamma"]

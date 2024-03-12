@@ -19,46 +19,30 @@
 #######################################################################################
 
 
-import tempfile
-from pathlib import Path
-from a2lparser import A2L_PACKAGE_DIR
-from a2lparser.a2lparser import main
-from tests.fixture_utils import compare_files, check_files_exist
+import os
+import pytest
 
 
-def test_integration_asap2_demo_v161(monkeypatch, compare_files, check_files_exist):
+@pytest.fixture
+def check_files_exist():
     """
-    Tests parsing and converting the ASAP2_Demo_V161.a2l file.
+    Fixture for checking if files exist.
     """
-    a2l_filename = "ASAP2_Demo_V161.a2l"
-    temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
-    temp_test_dir_prefix = "temp_dir_output_"
+    def _check_files_exist(*file_paths):
+        missing_files = [file_path for file_path in file_paths if not os.path.exists(file_path)]
+        assert not missing_files, f"The following files are missing: {missing_files}"
 
-    with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
-        monkeypatch.setattr("sys.argv", [
-            "a2lparser",  f"testfiles/A2L/{a2l_filename}",
-            "--json", "--xml", "--yaml", "--no-prompt",
-            "--output-dir",  f"\"{Path(tempdir).resolve().as_posix()}\"",
-        ])
-        main()
+    return _check_files_exist
 
-        # Check if files were generated
-        check_files_exist(
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.xml",
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.json",
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.yml",
-        )
 
-        # Compare files
-        compare_files(
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.xml",
-            f"{temp_test_output_path.as_posix()}/XML/ASAP2_Demo_V161.xml",
-        )
-        compare_files(
-            f"{Path(tempdir).as_posix()}/ASAP2_Demo_V161.json",
-            f"{temp_test_output_path.as_posix()}/JSON/ASAP2_Demo_V161.json",
-        )
-        compare_files(
-            f"{Path(tempdir)}/ASAP2_Demo_V161.yml",
-            f"{temp_test_output_path.as_posix()}/YAML/ASAP2_Demo_V161.yml",
-        )
+@pytest.fixture
+def compare_files():
+    """
+    Fixture for comparing two files for equality.
+    """
+
+    def _compare_files(file1, file2):
+        with open(file1, "r", encoding="utf-8") as f1, open(file2, "r", encoding="utf-8") as f2:
+            assert f1.read() == f2.read()
+
+    return _compare_files

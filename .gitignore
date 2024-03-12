@@ -111,7 +111,7 @@ env.bak/
 venv.bak/
 
 # Tests output
-tests/temp_dir_output_*/
+testfiles/temp_dir_output_*/
 
 # Spyder project settings
 .spyderproject
