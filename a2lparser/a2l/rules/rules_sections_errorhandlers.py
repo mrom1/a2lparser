@@ -23,10 +23,11 @@ class RulesSectionsErrorhandlers:
     """
     Grammar for parsing encountered A2L Section error tokens.
 
-    Current error handling strategy is to throw out all sections
-    which encounter errors, and resynchronize the parser at the next section.
+    Error handling strategy is to throw out all sections encountering an error,
+    then resynchronize the parser at the next section.
 
-    @TODO: add error resolve for optional parameters.
+    All sections must have the required parameters, otherwise it will be interpreted as an error.
+    Only optional parameters are allowed to be erroneous without throwing the whole section out.
     """
 
     def p_a2ml_version_error(self, p):
@@ -610,6 +611,18 @@ class RulesSectionsErrorhandlers:
                | BEGIN MODULE END MODULE
         """
 
+    def p_module_opt_error_pre(self, p):
+        """
+        module_opt_list : error module_opt_list
+        """
+        p[0] = p[2]
+
+    def p_module_opt_error_post(self, p):
+        """
+        module_opt_list : module_opt_list error
+        """
+        p[0] = p[1]
+
     def p_monotony_error(self, p):
         """
         monotony : MONOTONY error
@@ -707,6 +720,18 @@ class RulesSectionsErrorhandlers:
         project : BEGIN PROJECT error END PROJECT
                 | BEGIN PROJECT END PROJECT
         """
+
+    def p_project_opt_error_pre(self, p):
+        """
+        project_opt_list : error project_opt_list
+        """
+        p[0] = p[2]
+
+    def p_project_opt_error_post(self, p):
+        """
+        project_opt_list : project_opt_list error
+        """
+        p[0] = p[1]
 
     def p_project_no_error(self, p):
         """
