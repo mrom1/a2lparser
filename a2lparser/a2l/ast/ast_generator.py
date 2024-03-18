@@ -127,9 +127,9 @@ class ASTGenerator:
         Generate AST Code and writes it to file.
 
         Args:
-            - use_clean_names: Will use some encoding to generate clean names for
-                               classes, values etc. like adding underscores.
-                               It is highly recommended to use this.
+            use_clean_names: Will use some encoding to generate clean names for
+                             classes, values etc. like adding underscores.
+                             It is highly recommended to use this.
         """
         with open(self.out_filename, "w", encoding="utf-8") as file:
             file.write(Template(_FILE_COMMENT).substitute(cfg_filename=self.cfg_filename))
@@ -168,9 +168,9 @@ class NodeConfiguration:
         NodeConfiguration Constructor.
 
         Args:
-            - node_name: Name
-            - content: list of entries of a specific A2L Node
-                       e.g. UpperLimit, ECU_Address etc.
+            node_name: Name
+            content: list of entries of a specific A2L Node
+                     e.g. UpperLimit, ECU_Address etc.
         """
 
         self.node_name = node_name
@@ -195,12 +195,12 @@ class NodeConfiguration:
         Generates the source code for one node in the abstract syntax tree.
 
         Args:
-            - use_clean_names: Will use some encoding to generate clean names for
-                               classes, values etc. like adding underscores.
-                               It is highly recommended to use this.
+            use_clean_names: Will use some encoding to generate clean names for
+                             classes, values etc. like adding underscores.
+                             It is highly recommended to use this.
 
         Returns:
-            The source code of one node in the abstract syntax tree.
+            str: The source code of one node in the abstract syntax tree.
 
         Generated source example:
         class Axis_Pts_Ref(Node):

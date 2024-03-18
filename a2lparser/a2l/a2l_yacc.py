@@ -56,12 +56,12 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
         A2LYacc Constructor.
 
         Args:
-            - debug: will output debug information from ply
-            - optimize: optimize flag for the ply parser
-            - write_tables: whether to generate table files or not
-            - yacc_table_file: the name of the yacc table file
-            - lex_table_file: the name of the lex table file
-            - generated_files_dir: the directory to write the generated files to
+            debug: will output debug information from ply
+            optimize: optimize flag for the ply parser
+            write_tables: whether to generate table files or not
+            yacc_table_file: the name of the yacc table file
+            lex_table_file: the name of the lex table file
+            generated_files_dir: the directory to write the generated files to
         """
         super().__init__()
         self.a2l_lex = A2LLex(

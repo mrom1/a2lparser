@@ -29,7 +29,7 @@ class A2LValidator:
 
     Usage:
         >>> try:
-        >>>     A2LValidator.validate("/begin MEASUREMENT /end")
+        >>>     A2LValidator().validate("/begin MEASUREMENT /end")
         >>> expect A2LValidator.A2LValidationError as ex:
         >>>     print(e)
     """
@@ -59,10 +59,10 @@ class A2LValidator:
         Validates the syntax of the A2L content.
 
         Args:
-            - a2l_content: A string containing the A2L content.
+            a2l_content: A string containing the A2L content.
 
         Raises:
-            - A2LValidationError: Raises if the content fails the syntax validation.
+            A2LValidationError: Raises if the content fails the syntax validation.
         """
         errors = []
         sections_stack = []

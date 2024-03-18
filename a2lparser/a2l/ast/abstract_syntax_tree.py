@@ -46,8 +46,8 @@ class AbstractSyntaxTree:
         AbstractSyntaxTree Constructor.
 
         Args:
-            - abstract_syntax_tree: A generated abstract syntax tree from YACC.
-            - dictionary: If a dictionary is passed the AST will be populated from the dictionary.
+            abstract_syntax_tree: A generated abstract syntax tree from YACC.
+            dictionary: If a dictionary is passed the AST will be populated from the dictionary.
         """
         if dictionary is None:
             dictionary = {}
@@ -167,9 +167,9 @@ class AbstractSyntaxTree:
         { "<search_value>": {found_dictionaries} }
 
         Args:
-            - search_value: The search value to search for.
-            - case_sensitive: Whether or not the value should be matched case-sensitive.
-            - exact_match: Whether or not the value should be exactly matched.
+            search_value: The search value to search for.
+            case_sensitive: Whether or not the value should be matched case-sensitive.
+            exact_match: Whether or not the value should be exactly matched.
         """
         return AbstractSyntaxTree(self._ast, self._find_value(search_value, self._dict, case_sensitive, exact_match))
 
@@ -180,10 +180,10 @@ class AbstractSyntaxTree:
         Searches recursively for a search expression under the values of the given dictionary.
 
         Args:
-            - search_value: The search value to search for.
-            - dictionary: Expects a dctionary to be passed.
-            - case_sensitive: Whether or not the value should be matched case-sensitive.
-            - exact_match: Whether or not the value should be exactly matched.
+            search_value: The search value to search for.
+            dictionary: Expects a dctionary to be passed.
+            case_sensitive: Whether or not the value should be matched case-sensitive.
+            exact_match: Whether or not the value should be exactly matched.
         """
         result = {}
         if isinstance(dictionary, dict):

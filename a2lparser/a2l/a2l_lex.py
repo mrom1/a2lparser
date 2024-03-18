@@ -76,10 +76,10 @@ class A2LLex:
         Builds an instance of the ply lex object with an A2L configuration.
 
         Args:
-            - debug: will output debug information from ply
-            - optimize: optimize flag for the ply lexer
-            - lex_table_file: the name of the lex table file
-            - generated_files_dir: the directory to write the generated files to
+            debug: will output debug information from ply
+            optimize: optimize flag for the ply lexer
+            lex_table_file: the name of the lex table file
+            generated_files_dir: the directory to write the generated files to
         """
         self.last_token: LexToken = None
         self.current_section: str = None

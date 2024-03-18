@@ -47,9 +47,9 @@ class Parser:
         Parser Constructor.
 
         Args:
-            - debug: Will print detailed parsing debug information.
-            - optimize: Will optimize the lex and yacc parsing process.
-            - validation: Will validate the A2L content before parsing.
+            debug: Will print detailed parsing debug information.
+            optimize: Will optimize the lex and yacc parsing process.
+            validation: Will validate the A2L content before parsing.
         """
         self.validation = validation
         self.parser = A2LYacc(debug=debug, optimize=optimize)
