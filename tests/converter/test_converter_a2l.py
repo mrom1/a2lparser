@@ -19,7 +19,7 @@
 #######################################################################################
 
 
-from a2lparser.a2l.converter.a2l_converter import A2LConverter
+from a2lparser.converter.a2l_converter import A2LConverter
 
 
 def valid_ast_dict_multiple_files() -> dict:

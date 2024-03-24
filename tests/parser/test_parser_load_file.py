@@ -51,13 +51,13 @@ def a2l_content_sections_tuple() -> tuple:
     project = '''
     /begin PROJECT My_Project ""
         /include My_Header.a2l
-        /include "my_modules/My_Module.A2L"
+        /include "my_modules/My_Module.a2l"
     /end PROJECT
     '''
     module = '''
     /begin MODULE
         /include "my_characteristics/My_Characteristic.a2l"
-        /include "my_measurements/My_Measurement.A2L"
+        /include "my_measurements/My_Measurement.a2l"
     /end MODULE
     '''
     header = '/begin HEADER "Test Project for include mechanism" "T_P1" TP1 /end HEADER'
@@ -156,7 +156,7 @@ def test_parser_load_file_complex(create_file, a2l_content_sections_tuple):
 
         my_modules_dir = os.path.join(tempdir, "my_modules")
         os.makedirs(my_modules_dir)
-        module_file = create_file(my_modules_dir, "My_Module.A2L", my_module)
+        module_file = create_file(my_modules_dir, "My_Module.a2l", my_module)
         assert os.path.exists(module_file)
 
         my_characteristics_dir = os.path.join(my_modules_dir, "my_characteristics")

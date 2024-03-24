@@ -21,7 +21,7 @@
 
 import xmltodict
 from a2lparser.a2l.a2l_yacc import A2LYacc
-from a2lparser.a2l.converter.xml_converter import XMLConverter
+from a2lparser.converter.xml_converter import XMLConverter
 
 
 def test_converter_xml_multiple_root_entries():

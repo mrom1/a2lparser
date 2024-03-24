@@ -19,69 +19,65 @@
 #######################################################################################
 
 
-import xmltodict
-from a2lparser.a2l.converter.a2l_converter import A2LConverter
+import json
+from a2lparser.converter.a2l_converter import A2LConverter
 
 
-class XMLConverter(A2LConverter):
+class JSONConverter(A2LConverter):
     """
-    Converter class for converting an A2L abstract syntax tree to an XML file.
+    Converter class for converting an A2L abstract syntax tree to an JSON file.
 
     Usage Example:
-        >>> XMLConverter().convert(ast_dict, output_dir="./xml_files/")
+        >>> JSONConverter().convert(ast_dict, output_dir="./json_files/")
     """
 
-    class XMLConverterException(Exception):
+    class JSONConverterException(Exception):
         """
-        Exception raised when an error occurs while converting an AST to a XML file.
+        Exception raised when an error occurs while converting an AST to a JSON file.
         """
 
     def convert(self, ast: dict,
                 output_dir: str = ".",
                 output_filename: str = None,
-                encoding: str = "utf-8",
                 pretty: bool = True) -> None:
         """
-        Convert the given AST dictionary to XML and write it to a file.
+        Convert the given AST dictionary to JSON and write it to a file.
 
         Args:
-            ast (dict): The AST dictionary to be converted to XML.
-            output_dir (str, optional): The directory to write the XML file.
-            output_filename (str, optional): The filename of the XML file.
-            encoding (str, optional): The encoding to be used for the XML file.
-            pretty (bool, optional): Whether to format the XML file with indentation and newlines.
+            ast (dict): The AST dictionary to be converted to JSON.
+            output_dir (str, optional): The directory to write the JSON file.
+            output_filename (str, optional): The filename of the JSON file.
+            pretty (bool, optional): Whether to format the JSON file with indentation and newlines.
         """
         try:
-            converted_tuples = self.convert_to_string(ast, output_filename, encoding, pretty)
+            converted_tuples = self.convert_to_string(ast, output_filename, pretty)
             for tup in converted_tuples:
-                filename, xml_string = tup
-                self.write_to_file(content=xml_string, filename=filename, output_dir=output_dir)
+                filename, json_string = tup
+                self.write_to_file(content=json_string, filename=filename, output_dir=output_dir)
         except Exception as e:
-            raise self.XMLConverterException(e) from e
+            raise self.JSONConverterException(e) from e
 
     def convert_to_string(self, ast: dict,
                           output_filename: str = None,
-                          encoding: str = "utf-8",
                           pretty: bool = True) -> list:
         """
-        Convert the given AST dictionary to a XML string.
+        Convert the given AST dictionary to a JSON string.
 
         Args:
-            ast (dict): The AST dictionary to be converted to XML.
-            output_filename (str, optional): The filename to be used for the XML string.
-            encoding (str, optional): The encoding to be used for the XML string (default is "utf-8").
-            pretty (bool, optional): Whether to format the XML string with indentation and newlines (default is True).
+            ast (dict): The AST dictionary to be converted to JSON.
+            output_filename (str, optional): The filename to be used.
+            pretty (bool, optional): Whether to format the JSON string with indentation and newlines.
 
         Returns:
-            str: List of tuples (filename, xml_string).
+            str: List of tuples (filename, json_string).
         """
         try:
             result = []
-            sliced_ast = self.slice_ast(ast, file_extension="xml", filename=output_filename)
+            sliced_ast = self.slice_ast(ast, file_extension="json", filename=output_filename)
             for tup in sliced_ast:
                 filename, root = tup
-                xml_string = xmltodict.unparse(root, encoding=encoding, pretty=pretty)
-                result.append((filename, xml_string))
+                json_string = json.dumps(root, indent=2) if pretty else json.dumps(root)
+                result.append((filename, json_string))
             return result
         except Exception as e:
-            raise self.XMLConverterException(e) from e
+            raise self.JSONConverterException(e) from e

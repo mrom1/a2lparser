@@ -22,15 +22,18 @@
 from setuptools import setup, find_packages
 import a2lparser
 
-# Read requirements.txt
-with open("requirements.txt", encoding="utf-8") as f:
-    install_requirements = f.read().strip().split("\n")
-
 setup(
     name=a2lparser.__package_name__,
     version=a2lparser.__version__,
-    packages=find_packages(),
-    install_requires=install_requirements,
+    packages=find_packages(exclude=["tests*"]),
+    install_requires=[
+        "ply",
+        "loguru",
+        "alive-progress",
+        "prompt-toolkit",
+        "pyyaml",
+        "xmltodict"
+    ],
     author=a2lparser.__author__,
     author_email=a2lparser.__author_email__,
     description=a2lparser.__description__,

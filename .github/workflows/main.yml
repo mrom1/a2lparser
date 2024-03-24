@@ -37,10 +37,15 @@ jobs:
           pip install coverage pytest pytest-timeout
           pip install -r requirements.txt
 
+      # Initialize a2lparser by importing for first time
+      - name: Initialize a2lparser
+        run: |
+          python -c "import a2lparser"
+
       # Run Testcases and generate report
       - name: Testcases
         run: | 
-          coverage run --omit="test_a2l_ast.py,a2lparser/gen/*" -m pytest -v --timeout=30
+          coverage run --omit="test_a2l_ast.py,tests/*,a2lparser/gen/*" -m pytest -v --timeout=30
           coverage report -m
           coverage xml
 

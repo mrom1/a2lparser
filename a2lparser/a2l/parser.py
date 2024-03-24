@@ -42,17 +42,16 @@ class Parser:
         >>>     print(ex)
     """
 
-    def __init__(self, debug: bool = False, optimize: bool = True, validation: bool = True) -> None:
+    def __init__(self, optimize: bool = True, validation: bool = True) -> None:
         """
         Parser Constructor.
 
         Args:
-            debug: Will print detailed parsing debug information.
             optimize: Will optimize the lex and yacc parsing process.
             validation: Will validate the A2L content before parsing.
         """
         self.validation = validation
-        self.parser = A2LYacc(debug=debug, optimize=optimize)
+        self.parser = A2LYacc(optimize=optimize)
         self._include_pattern = re.compile(r"""
             /include    # matches literal string "/include"
             \s+         # matches one or more whitespaces
@@ -68,12 +67,16 @@ class Parser:
     def parse_files(self, files: str) -> dict:
         """
         Parses the given files.
-        Returns a dictionary of AbstractSyntaxTree objects with the file name as a key.
+        Returns a dictionary of AbstractSyntaxTree objects with the file name as a key pair.
         """
         ast_objects = {}
 
         # Glob A2L input files
-        for a2l_file in glob.glob(files):
+        a2l_files = glob.glob(files)
+        if not a2l_files:
+            raise ParsingException(f"Unable to find any A2L files matching: \"{files}\"")
+
+        for a2l_file in a2l_files:
             try:
                 # Load content from file into memory
                 a2l_content = self._load_file(filename=a2l_file)
@@ -83,7 +86,7 @@ class Parser:
                     try:
                         A2LValidator().validate(a2l_content)
                     except A2LValidator.A2LValidationError as e:
-                        logger.warning(f"Validation of file \"{a2l_file}\" failed!\n{e}")
+                        logger.warning(f"WARNING: Validation of file \"{a2l_file}\" failed!\n{e}")
 
                 # Parse the content
                 filename = os.path.basename(a2l_file)

@@ -1,200 +1,63 @@
 # Python A2L Parser
 
 ![main_workflow](https://github.com/mrom1/a2lparser/actions/workflows/main.yml/badge.svg)
+![build_workflow](https://github.com/mrom1/a2lparser/actions/workflows/build.yml/badge.svg)
+![flake8_workflow](https://github.com/mrom1/a2lparser/actions/workflows/flake8.yml/badge.svg)
 [![codecov](https://codecov.io/gh/mrom1/a2lparser/branch/main/graph/badge.svg?token=CZ74J83NO2)](https://codecov.io/gh/mrom1/a2lparser)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+This A2L Parser, implemented in Python using [PLY](https://ply.readthedocs.io/en/latest/index.html), serves the purpose of reading A2L files according to the [ASAM MCD-2 MC](https://www.asam.net/standards/detail/mcd-2-mc/) Data Model for ECU Measurement and Calibration Standard. All resources utilized in developing this project are derived from publicly available information, such as the [ASAM Wiki](https://www.asam.net/standards/detail/mcd-2-mc/wiki/).
 
-An A2L file is a description file that defines the implementation of an ECU (electrical control unit).
+This Python module enables the parsing of A2L files into an Abstract Syntax Tree with dictionary access in Python. Moreover, it provides functionality to convert the parsed A2L file into simpler formats, currently supporting XML, JSON, or YAML conversions. It's important to note that this project focuses solely on parsing the A2L grammar and does not provide mapping capabilities. It has been entirely rewritten from the original codebase and now fully supports ASAM MCD-2 MC Version 1.7.1.
 
-It is a formatted text file containing measurement definitions, computation methods, events and various configuration information. An A2L file allows a XCP master to communicate with a XCP slave through a XCP connection. It is used for acquiring and stimulating data and to perform other functions.
+Released under the GPL license with no warranty, it is recommended primarily for educational purposes. For professional solutions, consider exploring specialized companies in this domain, such as the [MATLAB Vehicle Network Toolbox](https://www.mathworks.com/help/vnt/index.html) or the [Vector ASAP2 Toolset](https://www.vector.com/int/en/products/products-a-z/software/asap2-tool-set/).
 
-Oftentimes one only needs measurements from specific addresses, or specific computation methods, or a simple way to parse large datasets over multiple files.
+## Installation
 
-This parser enables the possibility to parse a A2L file into an abstract syntax tree, which can be accessed or modified in memory, or additionally export it to the simpler format XML.
-
-## How to build
 ```console
-# Clone repository
-git clone https://github.com/mrom1/a2lparser.git
-cd a2lparser
-
-# Create virtual environment
-python -m venv .venv
-
-# For Windows users
-.venv\Scripts\activate.bat
-
-# For Unix users
-source .venv/bin/activate
-
-# Install requirements
-pip install -r requirements.txt
-
-# Start using the A2L Parser! See Basic Usage below
-python a2lparser.py --help
+pip install a2lparser
 ```
 
-## Basic Usage
-To parse a A2L file and generate the corresponding XML file use this command:
+## Usage from CLI
+
 ```console
-python a2lparser.py [file.a2l] --xml
-```
+❯ a2lparser --help
+usage: a2lparser [-h] [-x] [-j] [-y] [--no-prompt] [--no-optimize] [--no-validation] [--output-dir [OUTPUT_DIR]]
+                 [--gen-ast [GEN_AST]] [--version]
+                 [filename]
 
+positional arguments:
+  filename              A2L file(s) to parse
 
-You can also glob multiple files together. For example if you have a directory ``a2l_files`` containing A2L files ending on ``*.a2l`` you can use this to convert all of them at once.
-```console
-python a2lparser.py a2l_files/*.a2l --xml
-```
+options:
+  -h, --help            show this help message and exit
+  -x, --xml             Converts an A2L file to a XML output file
+  -j, --json            Converts an A2L file to a JSON output file
+  -y, --yaml            Converts an A2L file to a YAML output file
+  --no-prompt           Disables CLI prompt after parsing
+  --no-validation       Disables possible A2L validation warnings
+  --output-dir [OUTPUT_DIR]
+                        Output directory for converted files
+  --gen-ast [GEN_AST]   Generates python file containing AST node classes
+  --version             show program's version number and exit
+  ```
 
-
-If you wish to just generate the abstract syntax tree and manipulate or read the data in memory without generating a XML file, you could do something like this:
-```python
-from a2l.parser import Parser
-from a2l.config.config import Config
-
-# Create your parsing configuration
-cfg = Config()
-
-# Parse file into abstract syntax tree
-p = Parser(config=cfg)
-ast = p.parseFile(fileName="path/to/your/file.a2l")
-if p.config.validate_abstract_syntax_tree(ast):
-	print("AST is valid!")
-```
-
-
-To run all of the unit tests invoke the parser with the ``--testcases`` argument like this:
-```console
-python a2lparser.py --testcases
-```
-This is especially useful if you start to change the configuration file or add / update your own rules.
-
-
-## How to use your own configuration
-
-The `A2L_ASAM.cfg` file is specified for the use of the ASAM MCD-2 MC Version 1.61
-
-If you need to support different keywords or parameters you should update this file\
-and generate a new abstract syntax tree skeleton by using this command:
-```console
-python a2lparser.py --gen-ast [your_config_file.cfg]
-```
-
-### Config file syntax
-
-The config generator expects a specific file format. Every line is a defined A2L Keyword, or user defined reference and then a colon followed by the parameters for this object.
-
-The Basic structure is as follows: 
-```
-A2L_KEYWORD : ([?]Parametername_Simple[*|**], ...)
-```
-
-| Symbols | Explanation 
-| :--------------: | :--------- |
-| #        | Declares the line as a comment
-| ?        | Defines the parameter as optional 
-| *        | Parameter is a reference to another object (A2L keyword) with more than one parameter |
-| **       | References to a list of Objects (A2L keywords) |
-|(nothing) | Simple attribut without reference (String, Int etc.)   |
-
-For example the A2L keyword ``USER_RIGHTS`` is defined like this:
-```properties
-## User Rights definitions
-USER_RIGHTS : (UserLevelId, ?OptionalParams*)
-USER_RIGHTS_OPT : (?Read_Only, ?Ref_Group**)
-
-## Simple objects referenced by User Rights
-READ_ONLY : (Boolean)
-REF_GROUP : (Identifier)
-```
-Which could parse a A2L ``USER_RIGHTS`` section as this:
-```properties
-/begin USER_RIGHTS calibration_engineers /* Required: User Level ID */
-	/begin REF_GROUP group_1	 /* Ref Group: Identifier   */
-	/end REF_GROUP
-	/begin REF_GROUP group_2	 /* Ref Group: Identifier   */
-	/end REF_GROUP
-	READ_ONLY			 /* Read Only: Boolean	    */
-/end USER_RIGHTS
-```
-
-
-### Changing the config file
-Let's say you want to parse a A2L file which which uses a optional ``VERSION`` tag for their computation method.
-
-```cpp
-// Example_A2L_file.a2l
-
-/begin COMPU_METHOD     TMPCON1 	/* name */
-                        "conversion method for engine temperature"
-                        TAB_NOINTP 	/* convers_type */
-                        "%4.2" 		/* display format */
-                        "°C" 		/* physical unit */
-    COMPU_TAB_REF       MOTEMP1
-    VERSION             "BG5.0815" 	/* This parameter is not expected */
-    					/* in 'normal' ASAM MCD version */
-/end COMPU_METHOD
-```
-
-So we change the ``COMPU_METHOD_OPT`` line in the config file like this: 
-```properties
-## Pre-defined version identifier
-VERSION : (VersoinIdentifier)
-
-## This is the original definition according to the ASAM MCD-2 MC Version 1.61
-COMPU_METHOD : (Name, LongIdentifier, ConversionType, Format, Unit, ?OptionalParams*)
-COMPU_METHOD_OPT : (?Coeffs*, ?Coeffs_Linear*, ?Compu_Tab_Ref, ?Formula*, ?Ref_Unit, ?Status_String_Ref)
-
-## Adding a version identifier to COMPU_METHOD_OPT
-COMPU_METHOD : (Name, LongIdentifier, ConversionType, Format, Unit, ?OptionalParams*)
-COMPU_METHOD_OPT : (?Version, ?Coeffs*, ?Coeffs_Linear*, ?Compu_Tab_Ref, ?Formula*, ?Ref_Unit, ?Status_String_Ref)
-```
-
-### How to use custom parsing rules
-If you want to use your own parsing rules, for example a new ``VERSION`` tag for the ``COMPU_METHOD`` description as mentioned above, you can update the rules in the ``a2l/a2l_yacc.py`` file like this:
-
-Original rule:
+## Usage as Module
 
 ```python
-# Original parsing rule
-def p_COMPU_METHOD_opt_params(self, p):
-        """
-        compu_method_opt    : compu_tab_ref
-                            | ref_unit
-                            | status_string_ref
+from a2lparser.a2l.parser import Parser
 
-        """
-        node = self.__get_or_create_AST_Node(A2l_ast.Compu_Method_Opt)
-        self.__add_AST_Node_Param(NodeClass = node,
-                                  AstNodeNames = [A2l_ast.Compu_Tab_Ref,
-                                                  A2l_ast.Ref_Unit,
-                                                  A2l_ast.Status_String_Ref],
-                                  Param = p[1])
+try:
+    # Create Parser and parse files
+    ast = Parser().parse_files(files="./data/test.a2l")
 
-        p[0] = node
+    # Dictionary access on abstract syntax tree
+    module = ast["test.a2l"]["PROJECT"]["MODULE"]
+
+    # Searches for all MEASUREMENT sections
+    measurements = ast.find_sections("MEASUREMENT")
+    print(measurements)
+
+except Exception as ex:
+    print(ex)
 ```
-Updated rule:
-```python
-# Updated parsing rule
-def p_COMPU_METHOD_opt_params(self, p):
-        """
-        compu_method_opt    : version
-                            | compu_tab_ref
-                            | ref_unit
-                            | status_string_ref
-
-        """
-        node = self.__get_or_create_AST_Node(A2l_ast.Compu_Method_Opt)
-        self.__add_AST_Node_Param(NodeClass = node,
-                                 AstNodeNames = [A2l_ast.Version,
-                                                 A2l_ast.Compu_Tab_Ref,
-                                                 A2l_ast.Ref_Unit,
-                                                 A2l_ast.Status_String_Ref],
-                                 Param = p[1])
-
-        p[0] = node
-```
-
-## ToDo
-- [x] Done: Update to Python 3
-- [ ] Reach 100% test coverage

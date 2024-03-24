@@ -25,11 +25,11 @@
 from pathlib import Path
 
 __package_name__ = "a2lparser"
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 __author__ = "mrom1"
 __author_email__ = "mrom@linuxmail.org"
-__description__ = "A2L file parsing tool and XML converter."
-__license__ = "GPLv3"
+__description__ = "ASAP2 A2L file parsing tool."
+__license__ = "GNU General Public License v3 (GPLv3)"
 __url__ = "https://github.com/mrom1/a2lparser"
 
 A2L_PARSER_HEADLINE = """

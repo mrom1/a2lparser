@@ -21,7 +21,7 @@
 
 import yaml
 from a2lparser.a2l.a2l_yacc import A2LYacc
-from a2lparser.a2l.converter.yaml_converter import YAMLConverter
+from a2lparser.converter.yaml_converter import YAMLConverter
 
 
 def test_converter_yaml_multiple_root_entries():

@@ -31,9 +31,9 @@ from a2lparser import A2L_GENERATED_FILES_DIR
 from a2lparser.a2l.parser import Parser
 from a2lparser.cli.command_prompt import CommandPrompt
 from a2lparser.a2l.ast.ast_generator import ASTGenerator
-from a2lparser.a2l.converter.xml_converter import XMLConverter
-from a2lparser.a2l.converter.json_converter import JSONConverter
-from a2lparser.a2l.converter.yaml_converter import YAMLConverter
+from a2lparser.converter.xml_converter import XMLConverter
+from a2lparser.converter.json_converter import JSONConverter
+from a2lparser.converter.yaml_converter import YAMLConverter
 
 
 @logger.catch
@@ -54,18 +54,11 @@ def main() -> None:
 
         # Set the logger
         logger.remove()
-        if args.debug:
-            logger.add(
-                sink=sys.stderr,
-                format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
-                level="DEBUG",
-            )
-        else:
-            logger.add(
-                sink=sys.stdout,
-                format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
-                level="INFO",
-            )
+        logger.add(
+            sink=sys.stdout,
+            format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
+            level="INFO",
+        )
 
         # Generates the AST node classes for the A2L objects using the ASTGenerator
         if args.gen_ast:
@@ -93,9 +86,7 @@ def main() -> None:
             sys.exit(1)
 
         # Initializing the A2L Parser
-        parser = Parser(debug=args.debug,
-                        optimize=not args.no_optimize,
-                        validation=not args.no_validation)
+        parser = Parser(optimize=not args.no_optimize, validation=not args.no_validation)
 
         # Parse input files into abstract syntax tree
         ast = parser.parse_files(args.filename)
@@ -131,17 +122,16 @@ def parse_arguments(args: list) -> argparse.Namespace:
     Parse the command line arguments.
     """
     parser = argparse.ArgumentParser(prog="a2lparser")
-    parser.add_argument("filename", nargs="?", help="relative path to the full filename")
-    parser.add_argument("-d", "--debug", action="store_true", default=False, help="enable debug output on stderr")
+    parser.add_argument("filename", nargs="?", help="A2L file(s) to parse")
     parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
     parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
     parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
-    parser.add_argument("--no-prompt", action="store_true", default=False, help="Disable prompt after parsing is done")
+    parser.add_argument("--no-prompt", action="store_true", default=False, help="Disables CLI prompt after parsing")
     parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
     parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
-    parser.add_argument("--gen-ast", nargs="?", const=A2L_DEFAULT_CONFIG_NAME,
-                        help="generates python file containing AST node classes")
     parser.add_argument("--output-dir", nargs="?", default=None, help="Output directory for converted files")
+    parser.add_argument("--gen-ast", nargs="?", const=A2L_DEFAULT_CONFIG_NAME,
+                        help="Generates python file containing AST node classes")
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
     return parser.parse_args(args)
 

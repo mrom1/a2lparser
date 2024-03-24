@@ -21,7 +21,7 @@
 
 import json
 from a2lparser.a2l.a2l_yacc import A2LYacc
-from a2lparser.a2l.converter.json_converter import JSONConverter
+from a2lparser.converter.json_converter import JSONConverter
 
 
 def test_converter_json_multiple_root_entries():

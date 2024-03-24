@@ -19,6 +19,7 @@
 #######################################################################################
 
 
+import code
 from pathlib import Path
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
@@ -37,30 +38,38 @@ class CommandPrompt:
         >>> ast = parser.parse_files("ECU_Example.a2l")
         >>> CommandPrompt.prompt(ast)
     """
+    _session = None
+
+    @staticmethod
+    def get_session():
+        """
+        Returns the prompt session.
+        """
+        if CommandPrompt._session is None:
+            history_file: Path = A2L_PACKAGE_DIR / "logs" / "a2lparser_history"
+            CommandPrompt._session = PromptSession(history=FileHistory(history_file), auto_suggest=AutoSuggestFromHistory())
+        return CommandPrompt._session
+
+    @staticmethod
+    def cli_readfunc(prompt):
+        """
+        Read function returning the session from prompt-toolkit.
+        """
+        return CommandPrompt.get_session().prompt(prompt)
 
     @staticmethod
     def prompt(ast):
         """
         Prompts the user for input..
         """
-        history_file: Path = A2L_PACKAGE_DIR / "logs" / "a2lparser_history"
-        session = PromptSession(history=FileHistory(str(history_file)), auto_suggest=AutoSuggestFromHistory())
+        local_vars = {"ast": ast}
 
         print(A2L_PARSER_HEADLINE)
         print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
+
         while True:
             try:
-                user_input = session.prompt(">>> ")
+                code.interact(banner="", local=local_vars, readfunc=CommandPrompt.cli_readfunc)
+                break
             except KeyboardInterrupt:
                 continue
-            except EOFError:
-                break
-
-            if user_input == "exit":
-                break
-
-            try:
-                if result := eval(user_input, {}, {"ast": ast}):
-                    print(result)
-            except Exception as ex:
-                print(ex)
