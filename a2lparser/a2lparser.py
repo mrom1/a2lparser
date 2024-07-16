@@ -60,6 +60,9 @@ def main() -> None:
             level="INFO",
         )
 
+        # Print header
+        print(A2L_PARSER_HEADLINE)
+
         # Generates the AST node classes for the A2L objects using the ASTGenerator
         if args.gen_ast:
             print("Generating python file containing the AST nodes...")
@@ -80,7 +83,6 @@ def main() -> None:
         # Provide a file or a collection of A2L-files to parse.
         if args.file is None:
             print()
-            print(A2L_PARSER_HEADLINE)
             print("\nPlease specify a A2L file.")
             print("For more information use the -h or --help flag.")
             sys.exit(1)
@@ -130,8 +132,13 @@ def parse_arguments(args: list) -> argparse.Namespace:
     parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
     parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
     parser.add_argument("--output-dir", nargs="?", default=None, metavar="PATH", help="Output directory for converted files")
-    parser.add_argument("--gen-ast", nargs="?", metavar="CONFIG", const=A2L_DEFAULT_CONFIG_NAME,
-                        help="Generates python file containing AST node classes")
+    parser.add_argument(
+        "--gen-ast",
+        nargs="?",
+        metavar="CONFIG",
+        const=A2L_DEFAULT_CONFIG_NAME,
+        help="Generates python file containing AST node classes",
+    )
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
     return parser.parse_args(args)
 

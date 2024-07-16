@@ -24,8 +24,7 @@ from pathlib import Path
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
-from a2lparser import A2L_PACKAGE_DIR
-from a2lparser import A2L_PARSER_HEADLINE
+from a2lparser import A2L_CLI_HISTORY_FILE
 
 
 class CommandPrompt:
@@ -38,7 +37,13 @@ class CommandPrompt:
         >>> ast = parser.parse_files("ECU_Example.a2l")
         >>> CommandPrompt.prompt(ast)
     """
+
     _session = None
+    # Create empty log file for command line history if it doesn't exist
+    if not A2L_CLI_HISTORY_FILE.exists():
+        A2L_CLI_HISTORY_FILE.parent.mkdir(parents=True, exist_ok=True)
+        A2L_CLI_HISTORY_FILE.write_text("")
+        print(f"Created command line history file at: {A2L_CLI_HISTORY_FILE.as_posix()}")
 
     @staticmethod
     def get_session():
@@ -46,7 +51,7 @@ class CommandPrompt:
         Returns the prompt session.
         """
         if CommandPrompt._session is None:
-            history_file: Path = A2L_PACKAGE_DIR / "logs" / "a2lparser_history"
+            history_file: Path = A2L_CLI_HISTORY_FILE
             CommandPrompt._session = PromptSession(history=FileHistory(history_file), auto_suggest=AutoSuggestFromHistory())
         return CommandPrompt._session
 
@@ -64,7 +69,6 @@ class CommandPrompt:
         """
         local_vars = {"ast": ast}
 
-        print(A2L_PARSER_HEADLINE)
         print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
 
         while True:
