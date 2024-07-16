@@ -1,3 +1,45 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "a2lparser"
+requires-python = ">=3.11"
+authors = [
+  { name = "mrom1", email = "mrom@linuxmail.org" } 
+]
+description="ASAP2 A2L file parsing tool."
+readme = "README.md"
+keywords = ["a2lparser", "A2L", "ASAP2", "ASAM MCD-2MC"]
+license = { file = "LICENSE" }
+dynamic = ["version"]
+classifiers = [
+  "Programming Language :: Python :: 3.11",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: OS Independent",
+]
+dependencies = [
+  "ply",
+  "loguru",
+  "alive-progress",
+  "prompt-toolkit",
+  "pyyaml",
+  "xmltodict",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/mrom1/a2lparser"
+"Repository" = "https://github.com/mrom1/a2lparser.git"
+"Bug Reports" = "https://github.com/mrom1/a2lparser/issues"
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
+
+[tool.setuptools]
+package-data = {"a2lparser" = ["*.cfg", "*.config"]}
+
+[project.scripts]
+a2lparser = "a2lparser.a2lparser:main"
+
 [tool.black]
 line-length = 128
 include = '\.pyi?$'
@@ -15,7 +57,11 @@ exclude = '''
   | dist
 )/
 '''
-[tool.pytest.ini_options]
-norecursedirs = "a2lparser/unittests"
+
+# Uncomment to always show output from tests in pytest
+# [tool.pytest.ini_options]
+# addopts = "-s"
+
 [tool.pylint.messages_control]
 max-line-length = 128
+disable="C0114, R0903, W0718, W0401, C0302"

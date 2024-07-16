@@ -19,88 +19,128 @@
 #######################################################################################
 
 
-import six
+import os
 import sys
 import argparse
-from argparse import RawTextHelpFormatter
+from loguru import logger
+from a2lparser import __version__
+from a2lparser import A2L_CONFIGS_DIR
+from a2lparser import A2L_PARSER_HEADLINE
+from a2lparser import A2L_DEFAULT_CONFIG_NAME
+from a2lparser import A2L_GENERATED_FILES_DIR
+from a2lparser.a2l.parser import Parser
+from a2lparser.cli.command_prompt import CommandPrompt
+from a2lparser.a2l.ast.ast_generator import ASTGenerator
+from a2lparser.converter.xml_converter import XMLConverter
+from a2lparser.converter.json_converter import JSONConverter
+from a2lparser.converter.yaml_converter import YAMLConverter
 
 
-if six.PY2:
-    from .__init__ import __version__
-    from .a2l.parser import Parser
-    from .a2l.config.config import Config
-    from .a2l.config.config_builder import ConfigBuilder
-    from .unittests.testsuite import Testsuite
-else:
-    from a2lparser import __version__
-    from a2lparser.a2l.parser import Parser
-    from a2lparser.a2l.config.config import Config
-    from a2lparser.a2l.config.config_builder import ConfigBuilder
-    from a2lparser.unittests.testsuite import Testsuite
+@logger.catch
+def main() -> None:
+    """
+    Main function of the a2lparser.
+
+    Usage through installation with pip:
+    $ a2lparser --help
+
+    Usage from root project dir:
+    $ python -m a2lparser.a2lparser --help
+
+    Documentation at: https://github.com/mrom1/a2lparser
+    """
+    try:
+        args = parse_arguments(sys.argv[1:])
+
+        # Set the logger
+        logger.remove()
+        logger.add(
+            sink=sys.stdout,
+            format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
+            level="INFO",
+        )
+
+        # Print header
+        print(A2L_PARSER_HEADLINE)
+
+        # Generates the AST node classes for the A2L objects using the ASTGenerator
+        if args.gen_ast:
+            print("Generating python file containing the AST nodes...")
+            if args.gen_ast == A2L_DEFAULT_CONFIG_NAME:
+                config_file = A2L_CONFIGS_DIR / A2L_DEFAULT_CONFIG_NAME
+            elif os.path.isfile(args.gen_ast):
+                config_file = args.gen_ast
+            else:
+                print(f"Given config file {args.gen_ast} not found.  Aborting AST generation.")
+                sys.exit(1)
+            print("Generating AST nodes from config at: ", config_file.as_posix())
+            generated_file = A2L_GENERATED_FILES_DIR / "a2l_ast.py"
+            generator = ASTGenerator(config_file.as_posix(), generated_file.as_posix())
+            generator.generate()
+            print(f"Generated {generated_file.as_posix()}")
+            sys.exit(0)
+
+        # Provide a file or a collection of A2L-files to parse.
+        if args.file is None:
+            print()
+            print("\nPlease specify a A2L file.")
+            print("For more information use the -h or --help flag.")
+            sys.exit(1)
+
+        # Initializing the A2L Parser
+        parser = Parser(optimize=not args.no_optimize, validation=not args.no_validation)
+
+        # Parse input files into abstract syntax tree
+        ast = parser.parse_files(args.file)
+        if not ast:
+            logger.error("Unable to parse any of the given files! Aborting now...")
+            sys.exit(1)
+
+        if args.xml:
+            try:
+                XMLConverter().convert(ast, output_dir=args.output_dir)
+            except XMLConverter.XMLConverterException as ex:
+                logger.error(f"XML Conversion error: {ex}")
+        if args.json:
+            try:
+                JSONConverter().convert(ast, output_dir=args.output_dir)
+            except JSONConverter.JSONConverterException as ex:
+                logger.error(f"JSON Conversion error: {ex}")
+        if args.yaml:
+            try:
+                YAMLConverter().convert(ast, output_dir=args.output_dir)
+            except YAMLConverter.YAMLConverterException as ex:
+                logger.error(f"YAML Conversion error: {ex}")
+
+        if not args.no_prompt:
+            CommandPrompt.prompt(ast)
+
+    except Exception as ex:
+        logger.error(ex)
 
 
-_A2LPARSER_DESCRIPTION = """\n
-* * * * * * * * * * * * *\n
-*    A2L File Parser    *\n
-* * * * * * * * * * * * *\n
-"""
-
-
-def main():
-    argparser = argparse.ArgumentParser(description=_A2LPARSER_DESCRIPTION, formatter_class=RawTextHelpFormatter)
-    argparser.add_argument("filename", nargs="?", help="relativ path to the full filename")
-    argparser.add_argument("-d", "--debug", action="store_true", help="enable debug output on stderr")
-    argparser.add_argument("-t", "--test", action="store_true", help="test the given file")
-    argparser.add_argument("-x", "--xml", action="store_true", help="XML output file")
-    argparser.add_argument("-o1", action="store_true", help="initial generated table")
-    argparser.add_argument("-o2", action="store_true", help="don't generate a table")
-    argparser.add_argument("--unittests", action="store_true", help="start all testcases")
-    argparser.add_argument("--gen-ast", nargs="?", help="generate ast file")
-    argparser.add_argument("--gen-rules", action="store_true", help="generate a2l yacc rules file")
-    argparser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="a2lparser version: {version}".format(version=__version__),
-        help="show version of the a2lparser package.",
+def parse_arguments(args: list) -> argparse.Namespace:
+    """
+    Parse the command line arguments.
+    """
+    parser = argparse.ArgumentParser(prog="a2lparser")
+    parser.add_argument("file", nargs="?", help="A2L files to parse")
+    parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
+    parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
+    parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
+    parser.add_argument("--no-prompt", action="store_true", default=False, help="Disables CLI prompt after parsing")
+    parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
+    parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
+    parser.add_argument("--output-dir", nargs="?", default=None, metavar="PATH", help="Output directory for converted files")
+    parser.add_argument(
+        "--gen-ast",
+        nargs="?",
+        metavar="CONFIG",
+        const=A2L_DEFAULT_CONFIG_NAME,
+        help="Generates python file containing AST node classes",
     )
-    args = argparser.parse_args()
-
-    if args.gen_ast:
-        ConfigBuilder(config=args.gen_ast, output_filename="a2l/ast/a2l_ast.py")
-        sys.exit(0)
-
-    if args.filename is None and args.unittests is False:
-        print(_A2LPARSER_DESCRIPTION)
-        print("\nPlease specifiy a A2L file.")
-        print("For more information use the -h or --help flag.")
-        sys.exit(2)
-
-    if args.o2 is True:
-        _optimize = 1
-        _gen_tables = 0
-    elif args.o1 is True:
-        _optimize = 1
-        _gen_tables = 1
-    else:
-        _optimize = 0
-        _gen_tables = 1
-
-    if args.unittests:
-        _verbosity = 0
-        _optimize = 0
-        _gen_tables = 1
-    else:
-        _verbosity = 2
-
-    cfg = Config(debug=args.debug, optimize=_optimize, error_resolve=True, write_tables=_gen_tables, verbosity=_verbosity)
-
-    p = Parser(config=cfg)
-
-    if args.unittests:
-        Testsuite(p)
-    else:
-        p.parseFile(fileName=args.filename)
+    parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
+    return parser.parse_args(args)
 
 
 if __name__ == "__main__":

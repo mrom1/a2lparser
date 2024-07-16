@@ -1,0 +1,51 @@
+/*  ==============================================================================================  */
+/*                                                                                                  */
+/*  TRANSFORMER & BLOB (ASAP2 V1.7)                                                                 */
+/*                                                                                                  */
+/*  The transformer uses BLOB as in-  and "standard" parameter as output                            */
+/*                                                                                                  */
+/*  ==============================================================================================  */
+
+/begin TRANSFORMER TestTransformerBlob
+  "1.1.0.0"                             // Version info
+  "TransformerTestV171.dll"             // Name of the 32bit DLL
+  ""                                    // Name of the 64bit DLL
+  2000                                  // timeout in [ms]
+  ON_USER_REQUEST
+  TestTransformerBlobReverse
+  /begin TRANSFORMER_IN_OBJECTS
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME_REVERSE
+    ASAM.C.BLOB.TRANSFORMER_TEST
+  /end TRANSFORMER_IN_OBJECTS
+  /begin TRANSFORMER_OUT_OBJECTS
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME_REVERSE
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_1
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_2
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_3
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_4
+  /end TRANSFORMER_OUT_OBJECTS
+/end TRANSFORMER
+
+/begin TRANSFORMER TestTransformerBlobReverse
+  "1.1.0.0"                             // Version info
+  "TransformerTestV171.dll"             // Name of the 32bit DLL
+  ""                                    // Name of the 64bit DLL
+  1500                                  // timeout in [ms]
+  ON_CHANGE
+  TestTransformerBlob
+  /begin TRANSFORMER_IN_OBJECTS
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_OUT_WAITTIME_REVERSE
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_1
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_2
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_3
+    ASAM.C.SCALAR.FLOAT32.IDENTICAL.TRANSFORMER_BLOB_OUT_4
+  /end TRANSFORMER_IN_OBJECTS
+  /begin TRANSFORMER_OUT_OBJECTS
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME
+    ASAM.C.SCALAR.UINT16.IDENTICAL.TRANSFORMER_BLOB_IN_WAITTIME_REVERSE
+    ASAM.C.BLOB.TRANSFORMER_TEST
+  /end TRANSFORMER_OUT_OBJECTS
+/end TRANSFORMER

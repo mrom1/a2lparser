@@ -1,2 +1,6 @@
-six
-ply==3.11
+ply
+loguru
+alive-progress
+prompt-toolkit
+pyyaml
+xmltodict

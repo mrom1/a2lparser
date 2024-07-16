@@ -1,0 +1,190 @@
+/*  ==============================================================================================  */
+/*                                                                                                  */
+/*  Characteristics (ASAP2 V1.7.1)                                                                  */
+/*                                                                                                  */
+/*  Note:                                                                                           */
+/*  These characteristics are used for testing of the a2lparser package.                            */
+/*  The values used are not meant to make sense in a practical way.                                 */
+/*                                                                                                  */
+/*  ==============================================================================================  */
+
+/begin CHARACTERISTIC ASAM.C.SCALAR.UWORD.IDENTICAL
+    "Scalar UWORD"
+    VALUE 
+    0x810002 
+    RL.FNC.UWORD.ROW_DIR                                 /* ROW_DIR / COLUMN_DIR is here exchangeable as only one value is stored */
+    0 
+    CM.IDENTICAL  
+    0 65535
+    EXTENDED_LIMITS 0 65535
+    BIT_MASK 0xFFFF
+    FORMAT "%5.0"
+    DISPLAY_IDENTIFIER DI.ASAM.C.SCALAR.UWORD.IDENTICAL
+    /begin ANNOTATION
+        ANNOTATION_LABEL "ASAM Workinggroup"
+        ANNOTATION_ORIGIN ""
+        /begin ANNOTATION_TEXT
+            "Test the A2L annotation"
+        /end ANNOTATION_TEXT
+    /end ANNOTATION
+/end CHARACTERISTIC
+
+/begin CHARACTERISTIC PUMKF /* name */
+    "Pumpk characteristic map"
+    /* long identifier */
+    MAP /* type */
+    0x7140 /* address */
+    DAMOS_KF /* deposit */
+    100.0 /* maxdiff */
+    R_VOLTAGE/* conversion */
+    0.0 /* lower limit */
+    5000.0 /* upper limit */
+    MAX_REFRESH 3 15 /* 15 msec */
+    /begin VIRTUAL_CHARACTERISTIC
+        "sqrt(X1)"
+        B_AREA
+    /end VIRTUAL_CHARACTERISTIC
+    REF_MEMORY_SEGMENT Data1
+    /begin FUNCTION_LIST
+        NL_ADJUSTMENT
+        FL_ADJUSTMENT
+        SPEED_LIM
+    /end FUNCTION_LIST
+    /begin IF_DATA
+        DIM
+        EXTERNAL
+        INDIRECT
+    /end IF_DATA
+    /begin AXIS_DESCR /* description of X-axis points */
+        STD_AXIS /* standard axis points */
+        N /* reference to input quantity */
+        CON_N /* conversion */
+        13 /* maximum number of axis points*/
+        0.0 /* lower limit */
+        5800.0 /* upper limit */
+        MAX_GRAD 20.0 /* X-axis: maximum gradient */
+    /end AXIS_DESCR
+    /begin AXIS_DESCR /* description of Y-axis points */
+        STD_AXIS /* standard axis points */
+        AMOUNT /* reference to input quantity */
+        CON_ME /* conversion */
+        17 /* maximum number of axis points*/
+        0.0 /* lower limit */
+        43.0 /* upper limit */
+    /end AXIS_DESCR
+/end CHARACTERISTIC
+
+
+/begin CHARACTERISTIC
+    PUKMPF /* name */
+    "PumpB characteristic map" /* long identifier */
+    MAP /* type */
+    0x7140 /* address */
+    DAMOS_KF /* deposit */
+    100.0 /* maxdiff */
+    R_VOLTAGE /* conversion */
+    0.0 /* lower limit */
+    5000.0 /* upper limit */
+    MODEL_LINK "system/sub-system/object.name"
+    BIT_MASK 0x40
+    BYTE_ORDER MSB_LAST
+    CALIBRATION_ACCESS OFFLINE_CALIBRATION
+    COMPARISON_QUANTITY COMPARISON_QUANTITY_NAME
+    DISCRETE
+    DISPLAY_IDENTIFIER load_engine
+    FORMAT "%0.2"
+    ECU_ADDRESS_EXTENSION 2
+    EXTENDED_LIMITS 0 4000.0
+    /begin DEPENDENT_CHARACTERISTIC
+        "sin(X1)"
+        BETA
+    /end DEPENDENT_CHARACTERISTIC
+    REF_MEMORY_SEGMENT Data1
+    /begin FUNCTION_LIST
+        ID_ADJUSTM
+        FL_ADJUSTM
+        SPEED_LIM
+    /end FUNCTION_LIST
+    GUARD_RAILS
+    MATRIX_DIM 2 4 3
+    /begin MAP_LIST
+        one two three
+    /end MAP_LIST
+    NUMBER 123123123
+    MAX_REFRESH 3 15
+    PHYS_UNIT "Nm"
+    READ_ONLY
+    STEP_SIZE 3
+    /begin IF_DATA
+        DIM
+        EXTERNAL
+        INDIRECT
+    /end IF_DATA
+    SYMBOL_LINK
+        "_VehicleSpeed" /* Symbol name */
+        0 /* Offset */
+    /begin ANNOTATION
+        ANNOTATION_LABEL "ANNOTATION_LABEL_CHARACTERISTIC_1"
+        ANNOTATION_ORIGIN "ANNOTATION_ORIGIN_CHARACTERISTIC_1"
+    /end ANNOTATION
+    /begin ANNOTATION
+        ANNOTATION_LABEL "ANNOTATION_LABEL_CHARACTERISTIC_2"
+        ANNOTATION_ORIGIN "ANNOTATION_ORIGIN_CHARACTERISTIC_2"
+        /begin ANNOTATION_TEXT "ANNOTATION_TEXT_CHARACERISTIC"
+        /end ANNOTATION_TEXT
+    /end ANNOTATION
+    /begin AXIS_DESCR STD_AXIS /* Standard axis points */
+        N /* Reference to input quantity */
+        CONV_N /* Conversion */
+        14 /* Max.number of axis points*/
+        0.0 /* Lower limit */
+        5800.0 /* Upper limit*/
+        /begin ANNOTATION
+            ANNOTATION_LABEL "AXIS_DESCR_LABEL_BLOCK_1"
+            ANNOTATION_ORIGIN "AXIS_DESCR_ORIGIN_BLOCK_1"
+            /begin ANNOTATION_TEXT "AXIS_DESCR_TEXT_BLOCK_1"
+            /end ANNOTATION_TEXT
+        /end ANNOTATION
+        MAX_GRAD 20.0 /* Axis: maximum gradient*/
+        AXIS_PTS_REF GRP_N
+        BYTE_ORDER MSB_LAST
+        FIX_AXIS_PAR 0 4 6
+        FIX_AXIS_PAR_DIST 0 100 8
+        /begin FIX_AXIS_PAR_LIST
+            2 5 9
+        /end FIX_AXIS_PAR_LIST
+        CURVE_AXIS_REF SPD_NORM
+        DEPOSIT ABSOLUTE
+        /begin ANNOTATION
+            ANNOTATION_LABEL "AXIS_DESCR_LABEL_BLOCK_2"
+            ANNOTATION_ORIGIN "AXIS_DESCR_ORIGIN_BLOCK_2"
+            /begin ANNOTATION_TEXT "AXIS_DESCR_TEXT_BLOCK_2"
+            /end ANNOTATION_TEXT
+        /end ANNOTATION
+        EXTENDED_LIMITS 0 6000.0
+        PHYS_UNIT "Nm"
+        READ_ONLY
+        STEP_SIZE 0.025
+        FORMAT "%4.2"
+        MONOTONY MON_INCREASE
+    /end AXIS_DESCR
+    ENCODING UTF8
+    /begin AXIS_DESCR
+        /* description of Y-axis points */
+        STD_AXIS /* standard axis points */
+        AMOUNT /* reference to input quantity */
+        CON_ME /* conversion */
+        17 /* maximum number of axis points*/
+        0.0 /* lower limit */
+        43.0 /* upper limit */
+    /end AXIS_DESCR
+    /begin VIRTUAL_CHARACTERISTIC
+        "sin(X1)"
+        B
+    /end VIRTUAL_CHARACTERISTIC
+    /begin IF_DATA XCP_INTERVAL
+        XCP_x1
+        XCP_x2
+        XCP_x3
+    /end IF_DATA
+/end CHARACTERISTIC

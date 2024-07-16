@@ -19,27 +19,29 @@
 #######################################################################################
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 import a2lparser
-
-# Read requirements.txt
-with open("requirements.txt") as f:
-    install_requirements = f.read().strip().split("\n")
 
 setup(
     name=a2lparser.__package_name__,
     version=a2lparser.__version__,
-    packages=[a2lparser.__package_name__],
-    install_requires=install_requirements,
+    packages=find_packages(exclude=["tests*"]),
+    install_requires=[
+        "ply",
+        "loguru",
+        "alive-progress",
+        "prompt-toolkit",
+        "pyyaml",
+        "xmltodict"
+    ],
     author=a2lparser.__author__,
     author_email=a2lparser.__author_email__,
     description=a2lparser.__description__,
     license=a2lparser.__license__,
     license_files=("LICENSE",),
     url=a2lparser.__url__,
-    package_data={"a2lparser": ["*.yml", "*.yaml"]},
+    package_data={"a2lparser": ["*.cfg", "*.config", "logs/a2lparser_history"]},
     classifiers=[
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",

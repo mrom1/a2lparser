@@ -19,117 +19,138 @@
 #######################################################################################
 
 
-import glob, os, time
-from a2lparser.logger.logger import Logger
-from a2lparser.a2l.config.config import Config
-from a2lparser.a2l.a2l_yacc import A2lYacc
-from a2lparser.a2l.xml.a2l_xml import A2lXml
+import os
+import re
+import glob
+from pathlib import Path
+from loguru import logger
+from a2lparser.a2l.a2l_yacc import A2LYacc
+from a2lparser.a2l.a2l_validator import A2LValidator
+from a2lparser.a2l.parsing_exception import ParsingException
+from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 
 
-class Parser(object):
+class Parser:
     """
+    Parser class for parsing A2L content.
+
+    Usage:
+        >>> try:
+        >>>     parser = Parser()
+        >>>     ast = parser.parse_files(files="./data/*.a2l")
+        >>> except ParsingException as ex:
+        >>>     print(ex)
     """
-    def __init__(self, config):
-        self.logger_manager = Logger()
-        self.logger_manager.set_level("INFO")
-        self.logger = self.logger_manager.new_module("PARSER")
 
-        if config.verbosity > 1:
-            self.logger.info("Initializing Parser ...")
+    def __init__(self, optimize: bool = True, validation: bool = True) -> None:
+        """
+        Parser Constructor.
 
-        self.parser = A2lYacc(config=config)
+        Args:
+            optimize: Will optimize the lex and yacc parsing process.
+            validation: Will validate the A2L content before parsing.
+        """
+        self.validation = validation
+        self.parser = A2LYacc(optimize=optimize)
+        self._include_pattern = re.compile(r"""
+            /include    # matches literal string "/include"
+            \s+         # matches one or more whitespaces
+            (           # start of the capturing group for the filename
+            [^\s"']+    # matches any character that is not whitespace or a quotation mark
+            |           # OR
+            "[^"]*"     # matches a quoted string (double quotes) capturing the content inside the quotes
+            |           # OR
+            '[^']*'     # matches a quoted string (single quotes) capturing the content inside the quotes
+            )           # end of the capturing group
+        """, re.IGNORECASE | re.VERBOSE)
 
+    def parse_files(self, files: str) -> dict:
+        """
+        Parses the given files.
+        Returns a dictionary of AbstractSyntaxTree objects with the file name as a key pair.
+        """
+        ast_objects = {}
 
-    def parseFile(self, fileName, xmlFileName='', createXML=True):
-        for file in glob.glob(fileName):
-            if os.path.exists(file):
-                try:
-                    with open(file) as f:
-                        [start_of_a2ml_section, end_of_a2ml_section] = self.__getA2mlSectionIndex(f)
-                        input_string = self.__extractA2mlSection(f)
-                        file_length = self.__getFileLength(f)
-                        f.seek(0)
-                        file_length_2 =f.read().count('\n')
+        # Glob A2L input files
+        a2l_files = glob.glob(files)
+        if not a2l_files:
+            raise ParsingException(f"Unable to find any A2L files matching: \"{files}\"")
 
-                        self.logger.info("Parsing file: " + file)
-                        abstract_syntax_tree = self.__timeFunction( self.parser.parse,
-                                                                    filename=file,
-                                                                    start_of_a2ml=start_of_a2ml_section,
-                                                                    end_of_a2ml=end_of_a2ml_section,
-                                                                    input_string=input_string,
-                                                                    filelength=file_length
-                                                                    )
-                        if createXML:
-                            self.logger.info("Creating XML File...")
-                            xmlFileName = self.__timeFunction(  self.__printXml,
-                                                                fileName=file,
-                                                                xmlFileName=xmlFileName,
-                                                                AstObject=abstract_syntax_tree
-                                                              )
-                            self.logger.info("XML File: " + xmlFileName + " created.")
-                        
-                        return abstract_syntax_tree
+        for a2l_file in a2l_files:
+            try:
+                # Load content from file into memory
+                a2l_content = self._load_file(filename=a2l_file)
 
-                except IOError as e:
-                    print(e.errno)
-                    print(e)
-            else:
-                self.logger.info("File " + fileName + " does not exist.")
+                # Validate the content read
+                if self.validation:
+                    try:
+                        A2LValidator().validate(a2l_content)
+                    except A2LValidator.A2LValidationError as e:
+                        logger.warning(f"WARNING: Validation of file \"{a2l_file}\" failed!\n{e}")
 
+                # Parse the content
+                filename = os.path.basename(a2l_file)
+                logger.info("Parsing file: {}", filename)
+                ast_objects[filename] = self._parse_content(content=a2l_content)
 
-    def __timeFunction(self, func, *args, **kwargs):
-        if self.parser.config.verbosity > 1:
-            self.logger_manager.set_level("INFO")
-            t_start = time.time()
-            r = func(*args, **kwargs)
-            t_end = time.time()
-            self.logger.info("elapsed time: %s %s" %((t_end -t_start), "sec"))
-            return r
+            except ParsingException as e:
+                logger.error(f"Unable to parse file \"{a2l_file}\": {e}")
+
+        return ast_objects
+
+    def _parse_content(self, content: str) -> AbstractSyntaxTree:
+        """
+        Parses the given content string and returns an AbstractSyntaxTree object.
+        """
+        return self.parser.generate_ast(content)
+
+    def _load_file(self, filename: str, current_dir: str = None) -> str:
+        """
+        Reads the content of the given filename and returns it with includes replaced recursively.
+
+        Args:
+            filename (str): The filename of the A2L file to be read.
+
+        Returns:
+            str: The complete A2L file with the included content.
+        """
+        a2l_file = Path(filename)
+        if current_dir is None:
+            current_dir = a2l_file.parent
+            file_path = current_dir / a2l_file.name
         else:
-            return func(*args, **kwargs)
+            file_path = current_dir / a2l_file
+        file_path = file_path.resolve()
+        current_dir = file_path.parent
 
+        with open(file_path, "r", encoding="utf-8") as file:
+            content = file.read()
 
-    def __printXml(self, fileName, xmlFileName, AstObject):
+        if includes := self._find_includes(content):
+            if isinstance(includes, list):
+                for include in includes:
+                    included_content = self._load_file(include, current_dir)
+                    content = self._include_pattern.sub(included_content, content, count=1)
+            else:
+                included_content = self._load_file(includes, current_dir)
+                content = self._include_pattern.sub(included_content, content)
+        return content
+
+    def _find_includes(self, content: str) -> str | list | None:
+        """
+        Looks for /include {file.a2l} tags inside given content and returns the full filename.
+
+        Args:
+            content (str): The content of the A2L file.
+
+        Returns:
+            str | list | None: The filenames to be included if found.
+        """
         try:
-            if len(xmlFileName) == 0:
-                xmlFileName = os.path.splitext(fileName)[0] + '.xml'
-            with open(xmlFileName, 'w') as f:
-                xml = A2lXml(self.parser.config)
-                xml.output(AST=AstObject,
-                               buffer=f)
-            return xmlFileName
-
-        except IOError as e:
-            print(e.errno)
-            print(e)
-
-
-    def __extractA2mlSection(self, filebuffer):
-        filebuffer.seek(0)
-        str = filebuffer.read()
-        if "/begin A2ML" in str and "/end A2ML" in str:
-            pre_a2ml = str[0:str.index("/begin A2ML")]
-            str = pre_a2ml + str[(str.index("/end A2ML") + len("/end A2ML")):]
-        return str
-
-
-    def __getA2mlSectionIndex(self, filebuffer):
-        filebuffer.seek(0)
-        text = filebuffer.read()
-        start_of_a2ml = 0
-        end_of_a2ml = 0
-
-        if "/begin A2ML" in text:
-            for num, line in enumerate(filebuffer, 1):
-                if line.strip() == "/begin A2ML":
-                    start_of_a2ml = num
-                elif line.strip() == "/end A2ML":
-                    end_of_a2ml = num
-                    break
-
-        return [start_of_a2ml, end_of_a2ml]
-
-
-    def __getFileLength(self, filebuffer):
-        filebuffer.seek(0)
-        return sum(1 for line in filebuffer)
+            matches = self._include_pattern.findall(content)
+            if len(matches) == 1:
+                return matches[0].strip("\"'")
+            if len(matches) > 1:
+                return [match.strip("\"'") for match in matches]
+        except Exception as e:
+            raise ParsingException(e) from e
