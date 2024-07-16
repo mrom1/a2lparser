@@ -12,44 +12,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  #################
-  # Windows Build #
-  #################
-  build-Windows:
-    runs-on: windows-latest
-
-    steps:
-      # Checkout the repository under $GITHUB_WORKSPACE and install python
-      - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-      # Set up virtual environment
-      - name: Set up virtual environment
-        run: |
-          python -m pip install --upgrade pip
-          python -m venv .venv
-      - name: Activate virtual environment
-        run: cmd.exe \c call .venv\Scripts\activate.bat
-      # Install build dependencies
-      - name: Install build dependencies
-        run: |
-          python -m pip install setuptools wheel build
-      # Building the package
-      - name: Build package
-        run: |
-          python -m build
-      # Installing package
-      - name: Install package
-        run: |
-          for %i in (dist\*.whl) do pip install %i
-      # Running a2lparser.
-      - name: Print package version
-        run: |
-          a2lparser --version || exit /b 1
-
-
   ###############
   # Linux Build #
   ###############
