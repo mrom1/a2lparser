@@ -78,7 +78,7 @@ def main() -> None:
             sys.exit(0)
 
         # Provide a file or a collection of A2L-files to parse.
-        if args.filename is None:
+        if args.file is None:
             print()
             print(A2L_PARSER_HEADLINE)
             print("\nPlease specify a A2L file.")
@@ -89,7 +89,7 @@ def main() -> None:
         parser = Parser(optimize=not args.no_optimize, validation=not args.no_validation)
 
         # Parse input files into abstract syntax tree
-        ast = parser.parse_files(args.filename)
+        ast = parser.parse_files(args.file)
         if not ast:
             logger.error("Unable to parse any of the given files! Aborting now...")
             sys.exit(1)
@@ -122,15 +122,15 @@ def parse_arguments(args: list) -> argparse.Namespace:
     Parse the command line arguments.
     """
     parser = argparse.ArgumentParser(prog="a2lparser")
-    parser.add_argument("filename", nargs="?", help="A2L file(s) to parse")
+    parser.add_argument("file", nargs="?", help="A2L files to parse")
     parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
     parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
     parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
     parser.add_argument("--no-prompt", action="store_true", default=False, help="Disables CLI prompt after parsing")
     parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
     parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
-    parser.add_argument("--output-dir", nargs="?", default=None, help="Output directory for converted files")
-    parser.add_argument("--gen-ast", nargs="?", const=A2L_DEFAULT_CONFIG_NAME,
+    parser.add_argument("--output-dir", nargs="?", default=None, metavar="PATH", help="Output directory for converted files")
+    parser.add_argument("--gen-ast", nargs="?", metavar="CONFIG", const=A2L_DEFAULT_CONFIG_NAME,
                         help="Generates python file containing AST node classes")
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
     return parser.parse_args(args)

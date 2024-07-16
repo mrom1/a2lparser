@@ -10,11 +10,11 @@ A2L-File:
     LongIdentifier: '"Tests including multiple subnested modules."'
     MODULE:
       A2ML: "/* template.aml *******************************************************************/\
-        \ \n/*                                              */ \n/*              \
-        \                                                                  */ \n/*\
-        \ Template for designing IF_DATA fields for ASAM MCD-2MC files and BLOB's\
-        \        */ \n/* for driver interface.                                   \
-        \                       */ \n/* ********************************************************************************/\
+        \ \n/*                                                                   \
+        \             */ \n/*                                                    \
+        \                            */ \n/* Template for designing IF_DATA fields\
+        \ for ASAM MCD-2MC files and BLOB's        */ \n/* for driver interface. \
+        \                                                         */ \n/* ********************************************************************************/\
         \ \nblock \"IF_DATA\" taggedunion if_data \n{ \n  \"ASAP1B_EXAMPLE\"  /* The\
         \ tag of ASAP1B is reserved for ASAM Interfaces  */ \n            /* EXAMPLE\
         \ shall be substituted with a name of     */ \n            /* manufacturer's\

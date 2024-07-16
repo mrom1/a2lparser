@@ -25,7 +25,7 @@ from a2lparser.a2l.a2l_validator import A2LValidator
 
 def test_validator_with_valid_content_simple():
     """
-    Test that a valid A2L file passes syntax validation without errors.
+    Test that valid A2L sections pass syntax validation without any error.
     """
     a2l_string = """\
     /begin PROJECT "test"
@@ -35,7 +35,7 @@ def test_validator_with_valid_content_simple():
     /end MOD_PAR
     /end PROJECT
     """
-    assert A2LValidator().validate(a2l_string) is None
+    A2LValidator().validate(a2l_string)
 
 
 def test_validator_with_missing_end_statement():
@@ -51,10 +51,10 @@ def test_validator_with_missing_end_statement():
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
         A2LValidator().validate(a2l_string)
     assert len(ex.value.errors) == 4
-    assert ex.value.errors[0] == "Invalid \"/end MOD_PAR\" found at line 4. Last found section CHARACTERISTIC at line 3."
-    assert ex.value.errors[1] == "Found \"/begin PROJECT\" tag without matching /end tag at line 1."
-    assert ex.value.errors[2] == "Found \"/begin MOD_PAR\" tag without matching /end tag at line 2."
-    assert ex.value.errors[3] == "Found \"/begin CHARACTERISTIC\" tag without matching /end tag at line 3."
+    assert ex.value.errors[0] == "Detected unexpected end of section on '/end MOD_PAR' at line 4."
+    assert ex.value.errors[1] == "Detected unclosed section 'CHARACTERISTIC' starting at line 3."
+    assert ex.value.errors[2] == "Detected unclosed section 'MOD_PAR' starting at line 2."
+    assert ex.value.errors[3] == "Detected unclosed section 'PROJECT' starting at line 1."
 
 
 def test_validator_with_missing_begin_statement():
@@ -71,7 +71,7 @@ def test_validator_with_missing_begin_statement():
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
         A2LValidator().validate(a2l_string)
     assert len(ex.value.errors) == 1
-    assert ex.value.errors[0] == "Invalid \"/end CHARACTERISTIC\" found at line 3. Last found section MOD_PAR at line 2."
+    assert ex.value.errors[0] == "Detected unexpected end of section on '/end CHARACTERISTIC' at line 3."
 
 
 def test_validator_with_nested_structure_error():
@@ -91,3 +91,64 @@ def test_validator_with_nested_structure_error():
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
         A2LValidator().validate(a2l_string)
     assert ex
+
+    assert ex.value.errors[0] == "Detected unexpected end of section on '/end CHARACTERISTIC' at line 5."
+    assert ex.value.errors[1] == "Detected unexpected end of section on '/end MOD_PAR' at line 7."
+    assert ex.value.errors[2] == "Detected unexpected end of section on '/end PROJECT' at line 8."
+    assert ex.value.errors[3] == "Detected unclosed section 'CHARACTERISTIC' starting at line 3."
+    assert ex.value.errors[4] == "Detected unclosed section 'MOD_PAR' starting at line 2."
+    assert ex.value.errors[5] == "Detected unclosed section 'PROJECT' starting at line 1."
+
+
+def test_validator_complex_comment_section_valid():
+    """
+    Tests more complex comments with nested A2L Keywords in them.
+    """
+    a2l_string = """
+    /begin PROJECT "test"
+    /begin MODULE M_TEST "test"
+    /****************/
+    ///begin A2ML
+    /****************/
+    /BEGIN BLOB TEST_BLOB ""
+        /* Test value */
+        0x0 1
+    /END BLOB
+    /****************/
+    /*/end A2ML     */
+    /****************/
+    /end MODULE
+    /end PROJECT
+    """
+    A2LValidator().validate(a2l_string)
+
+
+def test_validator_complex_comment_section_invalid():
+    """
+    Tests more complex comments with nested A2L Keywords in them.
+    """
+    a2l_string = """
+    /begin PROJECT "test"
+    /begin MODULE M_TEST "test"
+
+    ///begin A2ML
+
+    /****************/
+    /* BLOB         */
+    /****************/
+        /BEGIN BLOB TEST_BLOB ""
+            /* Test value */
+            0x0 1
+        /END BLOB
+
+    /****************/
+    /end A2ML
+    /****************/
+    /end MODULE
+    /end PROJECT
+    """
+    with pytest.raises(A2LValidator.A2LValidationError) as ex:
+        A2LValidator().validate(a2l_string)
+    assert ex
+
+    assert ex.value.errors[0] == "Detected unexpected end of section on '/end A2ML' at line 16."

@@ -1,6 +1,7 @@
 /begin A2ML 
+
 /* template.aml *******************************************************************/ 
-/*                                              */ 
+/*                                                                                */ 
 /*                                                                                */ 
 /* Template for designing IF_DATA fields for ASAM MCD-2MC files and BLOB's        */ 
 /* for driver interface.                                                          */ 

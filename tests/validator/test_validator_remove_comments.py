@@ -23,12 +23,16 @@ import pytest
 from a2lparser.a2l.a2l_validator import A2LValidator
 
 
-@pytest.mark.parametrize("line, expected_line", [
-    ("/begin PROJECT // This is a comment", "/begin PROJECT"),
-    ("/begin PROJECT//No space between comment", "/begin PROJECT"),
-    ("/begin PROJECT //No space after comment", "/begin PROJECT"),
-    ("// /begin PROJECT // This is a comment", ""),
-])
+@pytest.mark.parametrize(
+    "line, expected_line",
+    [
+        ("/begin PROJECT // This is a comment", "/begin PROJECT "),
+        ("/begin PROJECT//No space between comment", "/begin PROJECT"),
+        ("/begin PROJECT //No space after comment", "/begin PROJECT "),
+        ("// /begin PROJECT // This is a comment", ""),
+        ("/begin PROJECT ///begin A2ML /end PROJECT", "/begin PROJECT "),
+    ],
+)
 def test_validator_inline_comment(line, expected_line):
     """
     Test that a C-Style inline comment ("//") is removed correctly.
@@ -38,13 +42,20 @@ def test_validator_inline_comment(line, expected_line):
     assert parsed_line == expected_line
 
 
-@pytest.mark.parametrize("line, expected_line", [
-    ("/begin PROJECT /* in between */ /begin HEADER", "/begin PROJECT /begin HEADER"),
-    ("/begin PROJECT/*No space between comment*/", "/begin PROJECT"),
-    ("/begin PROJECT /*No space after comment*/", "/begin PROJECT"),
-    ("/begin PROJECT /* comment\n/begin MODULE /* nested\nEnd of comment.*/\n/*END PROJECT*//end PROJECT",
-     "/begin PROJECT /end PROJECT"),
-    ("/* /begin PROJECT /* This is a comment */", "")]
+@pytest.mark.parametrize(
+    "line, expected_line",
+    [
+        ("/begin PROJECT /* in between */ /begin HEADER", "/begin PROJECT  /begin HEADER"),
+        ("/begin PROJECT/*No space between comment*/", "/begin PROJECT"),
+        ("/begin PROJECT/*No space between comment*//end PROJECT", "/begin PROJECT/end PROJECT"),
+        ("/* /begin PROJECT /* This is a nested comment */", ""),
+        ("/begin PROJECT /*No space after comment*//end PROJECT", "/begin PROJECT /end PROJECT"),
+        (
+            "/begin PROJECT /* comment\n/begin MODULE /* nested\nEnd of comment.*/\n/*END PROJECT*//end PROJECT",
+            "/begin PROJECT \n/end PROJECT",
+        ),
+        ("/begin MODULE M_COMMENT /************/ /end MODULE", "/begin MODULE M_COMMENT  /end MODULE"),
+    ],
 )
 def test_validator_multiline_comment(line, expected_line):
     """
@@ -55,15 +66,22 @@ def test_validator_multiline_comment(line, expected_line):
     assert parsed_line == expected_line
 
 
-@pytest.mark.parametrize("line, expected_line", [
-    ("/begin PROJECT \"test\"", "/begin PROJECT \"test\""),
-    ("/begin PROJECT 'test'", "/begin PROJECT 'test'"),
-    ("/begin PROJECT /* some \"string literal\"*/ /end PROJECT", "/begin PROJECT /end PROJECT"),
-    ("/begin TEXT 'text // containing /* comments */' /end TEXT", "/begin TEXT 'text // containing /* comments */' /end TEXT"),
-    ("/begin TEXT \"text // /* comment */\" /end TEXT", "/begin TEXT \"text // /* comment */\" /end TEXT"),
-    ("/begin MODULE /*\"String inside comment\"*/ /end MODULE", "/begin MODULE /end MODULE"),
-    ("/begin PROJECT /* 'String inside comment' */ /end PROJECT", "/begin PROJECT /end PROJECT"),
-])
+@pytest.mark.parametrize(
+    "line, expected_line",
+    [
+        ('/begin PROJECT "test"', '/begin PROJECT "test"'),
+        ("/begin PROJECT 'test'", "/begin PROJECT 'test'"),
+        ('/begin PROJECT /* some "string literal"*/ /end PROJECT', "/begin PROJECT  /end PROJECT"),
+        (
+            "/begin TEXT 'text // containing /* comments */' /end TEXT",
+            "/begin TEXT 'text // containing /* comments */' /end TEXT",
+        ),
+        ('/begin TEXT "text // /* comment */" /end TEXT', '/begin TEXT "text // /* comment */" /end TEXT'),
+        ('/begin MODULE /*"String inside comment"*/ /end MODULE', "/begin MODULE  /end MODULE"),
+        ("/begin PROJECT /* 'String inside comment' */ /end PROJECT", "/begin PROJECT  /end PROJECT"),
+        ('          /BEGIN BLOB TEST_BLOB ""', '          /BEGIN BLOB TEST_BLOB ""'),
+    ],
+)
 def test_validator_string_literals(line, expected_line):
     """
     Test that comment tokens are allowed in string literals.

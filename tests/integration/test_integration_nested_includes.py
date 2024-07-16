@@ -51,12 +51,12 @@ def test_integration_nested_includes(monkeypatch, compare_files, check_files_exi
 
         # Compare files
         compare_files(
-            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.xml",
-            f"{temp_test_output_path.as_posix()}/XML/TEST_Nested_Includes.xml",
-        )
-        compare_files(
             f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.json",
             f"{temp_test_output_path.as_posix()}/JSON/TEST_Nested_Includes.json",
+        )
+        compare_files(
+            f"{Path(tempdir).as_posix()}/TEST_Nested_Includes.xml",
+            f"{temp_test_output_path.as_posix()}/XML/TEST_Nested_Includes.xml",
         )
         compare_files(
             f"{Path(tempdir)}/TEST_Nested_Includes.yml",

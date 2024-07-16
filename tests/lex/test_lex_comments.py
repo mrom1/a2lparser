@@ -79,3 +79,37 @@ def test_lex_multiline_comment():
     # Second parsed token should be '0xFF24A8DD'
     assert tokens[1].type == "INT_CONST_HEX"
     assert tokens[1].value == "0xFF24A8DD"
+
+
+def test_lex_complex_multiline_comment():
+    """
+    t
+    """
+    multiline_comment = """
+    -3.141562e+12
+    /************************************/
+    /* This is a multi-line comment     */
+    /************************************/
+    0x0088EEAA
+    """
+    lexer = A2LLex()
+
+    tokens = []
+    lexer.input(multiline_comment)
+    while True:
+        if token := lexer.token():
+            tokens.append(token)
+        else:
+            break
+    # The multi line comment and everything in it should have been ignored
+    # so only the two token numbers should be recognized in the string.
+    assert tokens
+    assert len(tokens) == 2
+
+    # First parsed token should be '-3.141562e+12'
+    assert tokens[0].type == "FLOAT_CONST"
+    assert tokens[0].value == "-3.141562e+12"
+
+    # Second parsed token should be '0x0088EEAA'
+    assert tokens[1].type == "INT_CONST_HEX"
+    assert tokens[1].value == "0x0088EEAA"

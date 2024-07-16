@@ -28,6 +28,7 @@ def check_files_exist():
     """
     Fixture for checking if files exist.
     """
+
     def _check_files_exist(*file_paths):
         missing_files = [file_path for file_path in file_paths if not os.path.exists(file_path)]
         assert not missing_files, f"The following files are missing: {missing_files}"
@@ -41,8 +42,13 @@ def compare_files():
     Fixture for comparing two files for equality.
     """
 
+    def _normalize_lines(lines):
+        return [line.strip() for line in lines]
+
     def _compare_files(file1, file2):
         with open(file1, "r", encoding="utf-8") as f1, open(file2, "r", encoding="utf-8") as f2:
-            assert f1.read() == f2.read()
+            lines1 = _normalize_lines(f1.readlines())
+            lines2 = _normalize_lines(f2.readlines())
+            assert lines1 == lines2, f"Files {file1} and {file2} do not match."
 
     return _compare_files

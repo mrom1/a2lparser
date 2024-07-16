@@ -16,7 +16,7 @@
 			<Name>MODULE_INCLUDES</Name>
 			<LongIdentifier>"TEST_MODULE_NESTED_INCLUDES"</LongIdentifier>
 			<A2ML>/* template.aml *******************************************************************/ 
-/*                                              */ 
+/*                                                                                */ 
 /*                                                                                */ 
 /* Template for designing IF_DATA fields for ASAM MCD-2MC files and BLOB's        */ 
 /* for driver interface.                                                          */ 
