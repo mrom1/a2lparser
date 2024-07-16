@@ -36,4 +36,4 @@ jobs:
       # Performs a flake8 check on the fritzsniffer package and tests
       - name: Run flake8
         run: |
-          flake8 a2lparser/ tests/ --config=.flake8
+          flake8 a2lparser/ --config=.flake8

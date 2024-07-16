@@ -43,7 +43,7 @@ jobs:
       # Installing package
       - name: Install package
         run: |
-          pip install dist\*.whl
+          for %i in (dist\*.whl) do pip install %i
       # Running a2lparser.
       - name: Print package version
         run: |
