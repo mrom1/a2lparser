@@ -22,7 +22,7 @@
 import tempfile
 from pathlib import Path
 from a2lparser import A2L_PACKAGE_DIR
-from a2lparser.a2lparser import main
+from a2lparser.main import main
 from tests.fixture_utils import compare_files, check_files_exist
 
 
@@ -37,7 +37,7 @@ def test_integration_asap2_demo_v171(monkeypatch, compare_files, check_files_exi
     with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
         monkeypatch.setattr("sys.argv", [
             "a2lparser",  f"testfiles/A2L/{a2l_filename}",
-            "--json", "--xml", "--yaml", "--no-prompt",
+            "--json", "--xml", "--yaml",
             "--output-dir",  f"\"{Path(tempdir).resolve().as_posix()}\"",
         ])
         main()

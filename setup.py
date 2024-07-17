@@ -46,5 +46,5 @@ setup(
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Operating System :: OS Independent",
     ],
-    entry_points={"console_scripts": ["a2lparser = a2lparser.a2lparser:main"]},
+    entry_points={"console_scripts": ["a2lparser = a2lparser.main:main"]},
 )

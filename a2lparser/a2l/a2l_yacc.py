@@ -29,7 +29,7 @@ from a2lparser.a2l.rules.rules_enum import RulesEnum
 from a2lparser.a2l.rules.rules_sections import RulesSections
 from a2lparser.a2l.rules.rules_datatypes import RulesDatatypes
 from a2lparser.a2l.rules.rules_sections_errorhandlers import RulesSectionsErrorhandlers
-from a2lparser.a2l.parsing_exception import ParsingException
+from a2lparser.a2lparser_exception import A2LParserException
 from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 import a2lparser.gen.a2l_ast as ASTNodes
 
@@ -82,19 +82,23 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
         self.debug = debug
         self.a2l_sections_list = []
 
-    def generate_ast(self, content: str) -> AbstractSyntaxTree:
+    def generate_ast(self, content: str, show_progressbar: bool = True) -> AbstractSyntaxTree:
         """
         Generates an AbstractSyntaxTree from an input string.
         """
         content_lines = content.count("\n")
-        with alive_bar(content_lines) as progressbar:
-            self.a2l_lex.progressbar = progressbar
+
+        if show_progressbar:
+            with alive_bar(content_lines) as progressbar:
+                self.a2l_lex.progressbar = progressbar
+                ast = self.a2l_yacc.parse(input=content, lexer=self.a2l_lex, debug=self.debug)
+        else:
             ast = self.a2l_yacc.parse(input=content, lexer=self.a2l_lex, debug=self.debug)
 
         if hasattr(ast, "node") and ast.node is not None:
             return AbstractSyntaxTree(ast.node)
 
-        raise ParsingException("Unable to parse given input. Generated AST is empty!")
+        raise A2LParserException("Unable to parse given input. Generated AST is empty!")
 
     ##################################################
     # General Parsing rules and starting point.      #

@@ -38,7 +38,7 @@ exclude = ["tests*"]
 package-data = {"a2lparser" = ["*.cfg", "*.config"]}
 
 [project.scripts]
-a2lparser = "a2lparser.a2lparser:main"
+a2lparser = "a2lparser.main:main"
 
 [tool.black]
 line-length = 128

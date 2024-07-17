@@ -1,4 +1,4 @@
-name: pypi
+name: build
 
 # Controls when the action will run. 
 on:

@@ -20,128 +20,165 @@
 
 
 import os
+import re
 import sys
-import argparse
+import glob
+from pathlib import Path
 from loguru import logger
-from a2lparser import __version__
-from a2lparser import A2L_CONFIGS_DIR
-from a2lparser import A2L_PARSER_HEADLINE
-from a2lparser import A2L_DEFAULT_CONFIG_NAME
-from a2lparser import A2L_GENERATED_FILES_DIR
-from a2lparser.a2l.parser import Parser
-from a2lparser.cli.command_prompt import CommandPrompt
-from a2lparser.a2l.ast.ast_generator import ASTGenerator
-from a2lparser.converter.xml_converter import XMLConverter
-from a2lparser.converter.json_converter import JSONConverter
-from a2lparser.converter.yaml_converter import YAMLConverter
+from a2lparser.a2l.a2l_yacc import A2LYacc
+from a2lparser.a2l.a2l_validator import A2LValidator
+from a2lparser.a2lparser_exception import A2LParserException
+from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 
 
-@logger.catch
-def main() -> None:
+class A2LParser:
     """
-    Main function of the a2lparser.
+    Parser class for parsing A2L content.
 
-    Usage through installation with pip:
-    $ a2lparser --help
-
-    Usage from root project dir:
-    $ python -m a2lparser.a2lparser --help
-
-    Documentation at: https://github.com/mrom1/a2lparser
+    Usage:
+        >>> try:
+        >>>     parser = Parser()
+        >>>     ast = parser.parse_file(files="./data/*.a2l")
+        >>> except ParsingException as ex:
+        >>>     print(ex)
     """
-    try:
-        args = parse_arguments(sys.argv[1:])
 
-        # Set the logger
-        logger.remove()
-        logger.add(
-            sink=sys.stdout,
-            format="[{time:HH:mm:ss}] <lvl>{message}</lvl>",
-            level="INFO",
+    def __init__(self, validation: bool = True, optimize: bool = True, log_level: str = "INFO", quiet: bool = False) -> None:
+        """
+        Parser Constructor.
+
+        Args:
+            validation: Will validate the A2L content before parsing.
+            optimize: Will optimize the lex and yacc parsing process.
+            log_level: The log level of the console output.
+            quiet: Will not log anything to the console.
+        """
+        self.validation = validation
+        self.quiet_mode = quiet
+        self.show_progressbar = log_level in {"DEBUG", "INFO"} and not quiet
+        self.parser = A2LYacc(optimize=optimize)
+        self._include_pattern = re.compile(
+            r"""
+            /include    # matches literal string "/include"
+            \s+         # matches one or more whitespaces
+            (           # start of the capturing group for the filename
+            [^\s"']+    # matches any character that is not whitespace or a quotation mark
+            |           # OR
+            "[^"]*"     # matches a quoted string (double quotes) capturing the content inside the quotes
+            |           # OR
+            '[^']*'     # matches a quoted string (single quotes) capturing the content inside the quotes
+            )           # end of the capturing group
+        """,
+            re.IGNORECASE | re.VERBOSE,
         )
+        # Set loguru logger format and level
+        logger.remove()
+        if not quiet:
+            logger.add(
+                sink=sys.stdout,
+                format="[{time:HH:mm:ss}] <lvl>[{level}]</lvl> <lvl>{message}</lvl>",
+                level=log_level,
+            )
 
-        # Print header
-        print(A2L_PARSER_HEADLINE)
+    def parse_file(self, files: str) -> dict:
+        """
+        Parses the given files.
+        Returns a dictionary of AbstractSyntaxTree objects with the file name as a key pair.
+        """
+        ast_objects = {}
 
-        # Generates the AST node classes for the A2L objects using the ASTGenerator
-        if args.gen_ast:
-            print("Generating python file containing the AST nodes...")
-            if args.gen_ast == A2L_DEFAULT_CONFIG_NAME:
-                config_file = A2L_CONFIGS_DIR / A2L_DEFAULT_CONFIG_NAME
-            elif os.path.isfile(args.gen_ast):
-                config_file = args.gen_ast
+        # Glob A2L input files
+        a2l_files = glob.glob(files)
+        if not a2l_files:
+            raise A2LParserException(f'Unable to find any A2L files matching: "{files}"')
+
+        for a2l_file in a2l_files:
+            try:
+                # Load content from file into memory
+                logger.info("Parsing file: {}", a2l_file)
+                a2l_content = self._load_file(filename=a2l_file)
+
+                # Validate the content read
+                if self.validation:
+                    try:
+                        A2LValidator().validate(a2l_content)
+                    except A2LValidator.A2LValidationError as e:
+                        logger.warning(f'Validation of file "{a2l_file}" failed!\n{e}')
+
+                # Parse the content
+                filename = os.path.basename(a2l_file)
+                ast_objects[filename] = self._parse_content(content=a2l_content, show_progressbar=self.show_progressbar)
+                logger.success("Created Abstract Syntax Tree from file: {}", filename)
+
+            except A2LParserException as e:
+                logger.error(f'Unable to parse file "{a2l_file}": {e}')
+
+        return ast_objects
+
+    def _parse_content(self, content: str, show_progressbar: bool = True) -> AbstractSyntaxTree:
+        """
+        Parses the given content string and returns an AbstractSyntaxTree object.
+        """
+        logger.debug("Starting AST generation...")
+        return self.parser.generate_ast(content, show_progressbar)
+
+    def _load_file(self, filename: str, current_dir: str = None) -> str:
+        """
+        Reads the content of the given filename and returns it with includes replaced recursively.
+
+        Args:
+            filename (str): The filename of the A2L file to be read.
+
+        Returns:
+            str: The complete A2L file with the included content.
+        """
+        a2l_file = Path(filename)
+        if current_dir is None:
+            current_dir = a2l_file.parent
+            file_path = current_dir / a2l_file.name
+        else:
+            file_path = current_dir / a2l_file
+        file_path = file_path.resolve()
+        current_dir = file_path.parent
+
+        encodings = ["utf-8", "utf-16", "utf-32"]
+        for encoding in encodings:
+            try:
+                with open(file_path, "r", encoding=encoding) as file:
+                    content = file.read()
+                    break
+            except UnicodeError:
+                content = None
+
+        if content is None:
+            with open(file_path, "r", encoding="latin-1") as file:
+                content = file.read()
+
+        if includes := self._find_includes(content):
+            if isinstance(includes, list):
+                for include in includes:
+                    included_content = self._load_file(include, current_dir)
+                    content = self._include_pattern.sub(included_content, content, count=1)
             else:
-                print(f"Given config file {args.gen_ast} not found.  Aborting AST generation.")
-                sys.exit(1)
-            print("Generating AST nodes from config at: ", config_file.as_posix())
-            generated_file = A2L_GENERATED_FILES_DIR / "a2l_ast.py"
-            generator = ASTGenerator(config_file.as_posix(), generated_file.as_posix())
-            generator.generate()
-            print(f"Generated {generated_file.as_posix()}")
-            sys.exit(0)
+                included_content = self._load_file(includes, current_dir)
+                content = self._include_pattern.sub(included_content, content)
+        return content
 
-        # Provide a file or a collection of A2L-files to parse.
-        if args.file is None:
-            print()
-            print("\nPlease specify a A2L file.")
-            print("For more information use the -h or --help flag.")
-            sys.exit(1)
+    def _find_includes(self, content: str) -> str | list | None:
+        """
+        Looks for /include {file.a2l} tags inside given content and returns the full filename.
 
-        # Initializing the A2L Parser
-        parser = Parser(optimize=not args.no_optimize, validation=not args.no_validation)
+        Args:
+            content (str): The content of the A2L file.
 
-        # Parse input files into abstract syntax tree
-        ast = parser.parse_files(args.file)
-        if not ast:
-            logger.error("Unable to parse any of the given files! Aborting now...")
-            sys.exit(1)
-
-        if args.xml:
-            try:
-                XMLConverter().convert(ast, output_dir=args.output_dir)
-            except XMLConverter.XMLConverterException as ex:
-                logger.error(f"XML Conversion error: {ex}")
-        if args.json:
-            try:
-                JSONConverter().convert(ast, output_dir=args.output_dir)
-            except JSONConverter.JSONConverterException as ex:
-                logger.error(f"JSON Conversion error: {ex}")
-        if args.yaml:
-            try:
-                YAMLConverter().convert(ast, output_dir=args.output_dir)
-            except YAMLConverter.YAMLConverterException as ex:
-                logger.error(f"YAML Conversion error: {ex}")
-
-        if not args.no_prompt:
-            CommandPrompt.prompt(ast)
-
-    except Exception as ex:
-        logger.error(ex)
-
-
-def parse_arguments(args: list) -> argparse.Namespace:
-    """
-    Parse the command line arguments.
-    """
-    parser = argparse.ArgumentParser(prog="a2lparser")
-    parser.add_argument("file", nargs="?", help="A2L files to parse")
-    parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
-    parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
-    parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
-    parser.add_argument("--no-prompt", action="store_true", default=False, help="Disables CLI prompt after parsing")
-    parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
-    parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
-    parser.add_argument("--output-dir", nargs="?", default=None, metavar="PATH", help="Output directory for converted files")
-    parser.add_argument(
-        "--gen-ast",
-        nargs="?",
-        metavar="CONFIG",
-        const=A2L_DEFAULT_CONFIG_NAME,
-        help="Generates python file containing AST node classes",
-    )
-    parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
-    return parser.parse_args(args)
-
-
-if __name__ == "__main__":
-    main()
+        Returns:
+            str | list | None: The filenames to be included if found.
+        """
+        try:
+            matches = self._include_pattern.findall(content)
+            if len(matches) == 1:
+                return matches[0].strip("\"'")
+            if len(matches) > 1:
+                return [match.strip("\"'") for match in matches]
+        except Exception as e:
+            raise A2LParserException(e) from e

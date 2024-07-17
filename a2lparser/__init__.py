@@ -58,7 +58,7 @@ try:
     Node()
 
 except ImportError:
-    print("First time initialization...")
+    print("No AST node classes found.  Generating AST nodes...")
     from a2lparser.a2l.ast.ast_generator import ASTGenerator
 
     # Generate the AST nodes from the standard config in configs/A2L_ASAM.cfg
@@ -66,7 +66,6 @@ except ImportError:
     ast_nodes_file = A2L_GENERATED_FILES_DIR / "a2l_ast.py"
 
     # Generate the AST node containers
-    print("Generating python file containing the AST nodes...")
     generator = ASTGenerator(asam_config.as_posix(), ast_nodes_file.as_posix())
     generator.generate()
-    print(f"Generated file at:  {ast_nodes_file.as_posix()}")
+    print(f"Generated AST nodes file at:  {ast_nodes_file.as_posix()}")

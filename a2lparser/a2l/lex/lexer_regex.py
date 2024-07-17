@@ -46,7 +46,7 @@ class LexerRegex:
     hex_digits = "[0-9a-fA-F]+"
     bin_prefix = "[+-]?0[bB]"
     integer_suffix_opt = r"(([uU]ll)|([uU]LL)|(ll[uU]?)|(LL[uU]?)|([uU][lL])|([lL][uU]?)|[uU])?"
-    decimal_constant = f"([+-]?0{integer_suffix_opt})|([+-]?[1-9][0-9]*{integer_suffix_opt})"
+    decimal_constant = f"[+-]?([0-9]+){integer_suffix_opt}"
     hex_prefix = "[+-]?0[xX]"
     hex_constant = hex_prefix + hex_digits + integer_suffix_opt
     exponent_part = r"""([eE][-+]?[0-9]+)"""

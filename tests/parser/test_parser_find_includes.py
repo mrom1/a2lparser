@@ -20,7 +20,7 @@
 
 
 import pytest
-from a2lparser.a2l.parser import Parser
+from a2lparser.a2lparser import A2LParser
 
 
 @pytest.mark.parametrize('matching_includes, expected_filename', [
@@ -42,6 +42,6 @@ def test_parser_load_file_include_mechanism(matching_includes, expected_filename
     """
     Tests the include mechanism of the A2L parser.
     """
-    parser = Parser()
+    parser = A2LParser()
     filename = parser._find_includes(matching_includes)
     assert filename == expected_filename

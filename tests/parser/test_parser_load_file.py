@@ -23,7 +23,7 @@ import os
 import tempfile
 import pytest
 from a2lparser import A2L_PACKAGE_DIR
-from a2lparser.a2l.parser import Parser
+from a2lparser.a2lparser import A2LParser
 
 
 @pytest.fixture
@@ -92,7 +92,7 @@ def test_parser_load_file_simple(create_file, a2l_content_sections_tuple):
     temp_test_dir_prefix = "temp_dir_output_"
 
     # Parser object
-    parser = Parser()
+    parser = A2LParser()
 
     # Create temporary directory and files
     with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
@@ -145,7 +145,7 @@ def test_parser_load_file_complex(create_file, a2l_content_sections_tuple):
     temp_test_dir_prefix = "temp_dir_output_"
 
     # Parser object
-    parser = Parser()
+    parser = A2LParser()
 
     # Create temporary directory and files
     with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:

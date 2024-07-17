@@ -1342,7 +1342,8 @@ class RulesSections:
         """
         if_data_opt : if_data_block
         """
-        p[0] = p[1]
+        if p[1]:
+            p[0] = p[1]
 
     def p_if_data_opt_list(self, p):
         """
@@ -1362,6 +1363,12 @@ class RulesSections:
         if_data_block = [x for x in p[2] if isinstance(x, ASTNodes.If_Data_Block)]
         data_params = [x for x in p[2] if not isinstance(x, ASTNodes.If_Data_Block)]
         p[0] = ASTNodes.If_Data_Block(Name=p[1], DataParams=data_params, If_Data_Block=if_data_block)
+
+    def p_if_data_block_empty(self, p):
+        """
+        if_data_block : if_data_block_begin if_data_block_end
+        """
+        p[0] = ASTNodes.If_Data_Block(Name=p[1])
 
     def p_if_data_block_begin(self, p):
         """

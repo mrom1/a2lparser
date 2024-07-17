@@ -19,7 +19,7 @@
 #######################################################################################
 
 
-class ParsingException(Exception):
+class A2LParserException(Exception):
     """
     Exception thrown when encountering a fatal error during parsing.
     """

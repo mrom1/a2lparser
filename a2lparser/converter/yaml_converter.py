@@ -20,6 +20,7 @@
 
 
 import yaml
+from loguru import logger
 from a2lparser.converter.a2l_converter import A2LConverter
 
 
@@ -48,10 +49,13 @@ class YAMLConverter(A2LConverter):
             output_filename (str, optional): The filename of the YAML file.
         """
         try:
+            logger.info("Converting AST to YAML and writing to file...")
             converted_tuples = self.convert_to_string(ast, output_filename)
             for tup in converted_tuples:
                 filename, yaml_string = tup
                 self.write_to_file(content=yaml_string, filename=filename, output_dir=output_dir)
+                logger.success(f"Created YAML file: {filename}")
+
         except Exception as e:
             raise self.YAMLConverterException(e) from e
 

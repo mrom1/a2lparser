@@ -21,7 +21,7 @@
 
 import pytest
 from a2lparser import __version__
-from a2lparser.a2lparser import main
+from a2lparser.main import main
 
 
 def test_integration_version_argument(monkeypatch, capsys):

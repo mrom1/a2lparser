@@ -23,7 +23,7 @@ import pytest
 from a2lparser.a2l.a2l_lex import A2LLex
 
 
-@pytest.mark.parametrize("decimal_constant", ["123", "-456", "0"])
+@pytest.mark.parametrize("decimal_constant", ["123", "-456", "0", "08001", "-01234", "+22"])
 def test_lex_datatypes_decimal_constants(decimal_constant):
     """
     Testing the A2L Lexer for detection of decimal numbers.

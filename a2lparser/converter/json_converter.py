@@ -20,6 +20,7 @@
 
 
 import json
+from loguru import logger
 from a2lparser.converter.a2l_converter import A2LConverter
 
 
@@ -36,10 +37,7 @@ class JSONConverter(A2LConverter):
         Exception raised when an error occurs while converting an AST to a JSON file.
         """
 
-    def convert(self, ast: dict,
-                output_dir: str = ".",
-                output_filename: str = None,
-                pretty: bool = True) -> None:
+    def convert(self, ast: dict, output_dir: str = ".", output_filename: str = None, pretty: bool = True) -> None:
         """
         Convert the given AST dictionary to JSON and write it to a file.
 
@@ -50,10 +48,13 @@ class JSONConverter(A2LConverter):
             pretty (bool, optional): Whether to format the JSON file with indentation and newlines.
         """
         try:
+            logger.info("Converting AST to JSON and writing to file...")
             converted_tuples = self.convert_to_string(ast, output_filename, pretty)
             for tup in converted_tuples:
                 filename, json_string = tup
                 self.write_to_file(content=json_string, filename=filename, output_dir=output_dir)
+                logger.success(f"Created JSON file: {filename}")
+
         except Exception as e:
             raise self.JSONConverterException(e) from e
 
