@@ -20,20 +20,17 @@
 
 
 from setuptools import setup, find_packages
+
+# When importing the a2lparser it automatically tries to generate the AST code.
+# This is the reason this line is in here. It is not strictly necessary anymore since 0.1.1 fixes.
+# In the future the whole build process should be modernized moving away from setup.py.
 import a2lparser
 
 setup(
     name=a2lparser.__package_name__,
     version=a2lparser.__version__,
     packages=find_packages(exclude=["tests*"]),
-    install_requires=[
-        "ply",
-        "loguru",
-        "alive-progress",
-        "prompt-toolkit",
-        "pyyaml",
-        "xmltodict"
-    ],
+    install_requires=["ply", "loguru", "alive-progress", "prompt-toolkit", "pyyaml", "xmltodict"],
     author=a2lparser.__author__,
     author_email=a2lparser.__author_email__,
     description=a2lparser.__description__,

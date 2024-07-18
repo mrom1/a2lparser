@@ -25,7 +25,7 @@
 from pathlib import Path
 
 __package_name__ = "a2lparser"
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __author__ = "mrom1"
 __author_email__ = "mrom@linuxmail.org"
 __description__ = "ASAP2 A2L file parsing tool."
