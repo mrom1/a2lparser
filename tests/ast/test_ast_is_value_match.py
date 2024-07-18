@@ -82,7 +82,11 @@ def test_ast_is_value_match_nested_list(nested_dict):
     """
     ast = AbstractSyntaxTree(None, nested_dict)
     matched = ast._is_value_match(
-        value=nested_dict, search_expression="a LIST", case_sensitive=False, exact_match=False, recursive_search=True
+        value=nested_dict,
+        search_expression="a LIST",
+        case_sensitive=False,
+        exact_match=False,
+        recursive_search=True,
     )
     assert matched is True
 
@@ -114,7 +118,9 @@ def test_ast_is_value_match_nested_list(nested_dict):
         ("MEASUREMENT annotation", True, True),
     ],
 )
-def test_ast_is_value_match_partial(nested_dict, search_expression, case_sensitive, expected_result):
+def test_ast_is_value_match_partial(
+    nested_dict, search_expression, case_sensitive, expected_result
+):
     """
     Test matching a part of a value in a nested dictionary.
     """
@@ -140,7 +146,9 @@ def test_ast_is_value_match_partial(nested_dict, search_expression, case_sensiti
         ("this is my measurement annotation", False, True),
     ],
 )
-def test_ast_is_value_match_case_sensitivity(nested_dict, search_expression, case_sensitive, expected_result):
+def test_ast_is_value_match_case_sensitivity(
+    nested_dict, search_expression, case_sensitive, expected_result
+):
     """
     Test for matching a value in a nested dictionary with and without case sensitivity.
     """
@@ -164,7 +172,9 @@ def test_ast_is_value_match_case_sensitivity(nested_dict, search_expression, cas
         ("This is my MEASUREMENT annotation", True, True, True),
     ],
 )
-def test_ast_is_value_match_exact_case(nested_dict, search_expression, case_sensitive, exact_match, expected_result):
+def test_ast_is_value_match_exact_case(
+    nested_dict, search_expression, case_sensitive, exact_match, expected_result
+):
     """
     Test for matching the exact case of a value in a nested dictionary.
     """

@@ -36,9 +36,11 @@ def test_rules_module():
         /begin AXIS_PTS STV_N "first block" 0x9876 N DAMOS_SST 100.0 R_SPEED 21 0.0 5800.0
         /end AXIS_PTS
 
-        /begin CHARACTERISTIC PUMKF "Pump characteristic map" MAP 0x7140 DAMOS_KF 100.0 R_VOLTAGE 0.0 5000.0
+        /begin CHARACTERISTIC PUMKF "Pump characteristic map"
+          MAP 0x7140 DAMOS_KF 100.0 R_VOLTAGE 0.0 5000.0
         /end CHARACTERISTIC
-        /begin CHARACTERISTIC PUMKF "Characteristic map" MAP 0xFFFF DAMOS_KF 124.0 R_VOLTAGE 0.0 1000.0
+        /begin CHARACTERISTIC PUMKF "Characteristic map"
+          MAP 0xFFFF DAMOS_KF 124.0 R_VOLTAGE 0.0 1000.0
         /end CHARACTERISTIC
 
         /begin COMPU_METHOD CM_N_SB_03 "CM_Force" TAB_INTP "%3.41" "N"

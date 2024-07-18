@@ -110,14 +110,18 @@ def test_rules_blob_full():
     assert blob["CALIBRATION_ACCESS"] == "NOT_IN_MCD_SYSTEM"
     assert blob["DISPLAY_IDENTIFIER"] == "Data_Blob_Display"
     assert blob["ECU_ADDRESS_EXTENSION"] == "0"
-    assert blob["MAX_REFRESH"] == {'ScalingUnit': '5', 'Rate': '15'}
+    assert blob["MAX_REFRESH"] == {"ScalingUnit": "5", "Rate": "15"}
     assert blob["MODEL_LINK"] == '"binary/blobs/TP_BLOB.obj"'
-    assert blob["SYMBOL_LINK"] == {'SymbolName': '"_XCP_BLOB"', 'Offset': '256'}
-    assert blob["ANNOTATION"][0] == {'ANNOTATION_LABEL': '"Data_Blob Description"',
-                                     'ANNOTATION_TEXT': ['"Data_Blob_Description"', '"Data_Blob_Placeholder"']}
-    assert blob["ANNOTATION"][1] == {'ANNOTATION_LABEL': '"MODEL_LINK DESCRIPTION"',
-                                     'ANNOTATION_ORIGIN': '"MODEL_LINK ORIGIN"',
-                                     'ANNOTATION_TEXT': ['"SwcBlobPlaceholder_1"', '"SwcBlobPlaceholder_2"']}
+    assert blob["SYMBOL_LINK"] == {"SymbolName": '"_XCP_BLOB"', "Offset": "256"}
+    assert blob["ANNOTATION"][0] == {
+        "ANNOTATION_LABEL": '"Data_Blob Description"',
+        "ANNOTATION_TEXT": ['"Data_Blob_Description"', '"Data_Blob_Placeholder"'],
+    }
+    assert blob["ANNOTATION"][1] == {
+        "ANNOTATION_LABEL": '"MODEL_LINK DESCRIPTION"',
+        "ANNOTATION_ORIGIN": '"MODEL_LINK ORIGIN"',
+        "ANNOTATION_TEXT": ['"SwcBlobPlaceholder_1"', '"SwcBlobPlaceholder_2"'],
+    }
 
     # IF_DATA Asserts
     assert len(blob["IF_DATA"]) == 2
@@ -128,14 +132,37 @@ def test_rules_blob_full():
 
     assert if_data_odb["Name"] == "ODB"
     assert if_data_odb["BINARY_SOURCE"]["Name"] == "BINARY_SOURCE"
-    assert if_data_odb["BINARY_SOURCE"]["DataParams"] == ['"BINARY_BLOB_ARRAY"', '103', '1', 'QP_BLOB',
-                                                          '0x100', '1', '23', '1952251460', '1020', '2952232964']
+    assert if_data_odb["BINARY_SOURCE"]["DataParams"] == [
+        '"BINARY_BLOB_ARRAY"',
+        "103",
+        "1",
+        "QP_BLOB",
+        "0x100",
+        "1",
+        "23",
+        "1952251460",
+        "1020",
+        "2952232964",
+    ]
     assert if_data_odb["TP_BLOB"]["Name"] == "TP_BLOB"
-    assert if_data_odb["TP_BLOB"]["DataParams"] == ['"TP_BLOB_ARRAY"', 'HEX_PAGE', '0x400', '0xAFF7C84C', '0xDC']
+    assert if_data_odb["TP_BLOB"]["DataParams"] == [
+        '"TP_BLOB_ARRAY"',
+        "HEX_PAGE",
+        "0x400",
+        "0xAFF7C84C",
+        "0xDC",
+    ]
     assert if_data_odb["TP_BLOB"]["TRIGGER_BLOB"]["Name"] == "TRIGGER_BLOB"
-    assert if_data_odb["TP_BLOB"]["TRIGGER_BLOB"]["DataParams"] == ['0xFF', '0x63', '0xCF', '0x7F', '0x81', '0x84']
+    assert if_data_odb["TP_BLOB"]["TRIGGER_BLOB"]["DataParams"] == [
+        "0xFF",
+        "0x63",
+        "0xCF",
+        "0x7F",
+        "0x81",
+        "0x84",
+    ]
 
     assert if_data_xcp["Name"] == "XCP_TEST"
-    assert if_data_xcp["DataParams"] == ['0xFF', '0xFF00']
+    assert if_data_xcp["DataParams"] == ["0xFF", "0xFF00"]
     assert if_data_xcp["XCP_BLOB"]["Name"] == "XCP_BLOB"
-    assert if_data_xcp["XCP_BLOB"]["DataParams"] == ['0xAAFFEE00']
+    assert if_data_xcp["XCP_BLOB"]["DataParams"] == ["0xAAFFEE00"]

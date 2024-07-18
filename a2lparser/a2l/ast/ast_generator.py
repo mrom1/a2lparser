@@ -120,7 +120,9 @@ class ASTGenerator:
         """
         self.cfg_filename = cfg_filename
         self.out_filename = out_filename
-        self.node_config = [NodeConfiguration(name, content) for (name, content) in self.parse_config()]
+        self.node_config = [
+            NodeConfiguration(name, content) for (name, content) in self.parse_config()
+        ]
 
     def generate(self, use_clean_names: bool = True) -> None:
         """
@@ -149,11 +151,18 @@ class ASTGenerator:
                 colon_i = line.find(":")
                 left_parenthesis_i = line.find("(")
                 right_parenthesis_i = line.find(")")
-                if colon_i < 1 or left_parenthesis_i <= colon_i or right_parenthesis_i <= left_parenthesis_i:
-                    raise RuntimeError(f"Invalid line in {self.cfg_filename}:\n{line}\n" % (self.cfg_filename, line))
+                if (
+                    colon_i < 1
+                    or left_parenthesis_i <= colon_i
+                    or right_parenthesis_i <= left_parenthesis_i
+                ):
+                    raise RuntimeError(
+                        f"Invalid line in {self.cfg_filename}:\n{line}\n"
+                        % (self.cfg_filename, line)
+                    )
 
                 name = line[:colon_i]
-                val = line[left_parenthesis_i + 1: right_parenthesis_i]
+                val = line[left_parenthesis_i + 1 : right_parenthesis_i]
                 vallist = [v.strip() for v in val.split(",")] if val else []
                 yield name, vallist
 
@@ -235,7 +244,9 @@ class NodeConfiguration:
             if "_" in clean_name:
                 index = [i for i, ltr in enumerate(clean_name) if ltr == "_"]
                 indices = [i + 1 for i in index]
-                clean_name = "".join(c.upper() if i in indices else c for i, c in enumerate(clean_name))
+                clean_name = "".join(
+                    c.upper() if i in indices else c for i, c in enumerate(clean_name)
+                )
 
             self.node_name = clean_name
 
@@ -254,12 +265,8 @@ class NodeConfiguration:
 
             arguments_list += ")"
 
-            for entry in self.entries:
-                clean_entries.append(entry.strip("?"))
-
-            slots = ", ".join(f"'{e}'" for e in clean_entries)
-            slots += ", '__weakref__'"
-
+            clean_entries.extend(entry.strip("?") for entry in self.entries)
+            slots = ", ".join(f"'{e}'" for e in clean_entries) + ", '__weakref__'"
         else:
             slots = "'__weakref__'"
             arguments_list = "(self)"
@@ -281,23 +288,18 @@ class NodeConfiguration:
                 nodelist = []
                 return tuple(nodelist)
         """
-        clean_children = []
-        clean_seq_children = []
-        for child in self.children:
-            clean_children.append(child.strip("?"))
-
-        for seq_child in self.seq_children:
-            clean_seq_children.append(seq_child.strip("?"))
-
+        clean_children = [child.strip("?") for child in self.children]
+        clean_seq_children = [seq_child.strip("?") for seq_child in self.seq_children]
         src = "    def children(self):\n"
 
         if self.entries:
             src += "        nodelist = []\n"
 
             for child in clean_children:
-                src += ("        if self.%(child)s is not None:" + ' nodelist.append(("%(child)s", self.%(child)s))\n') % (
-                    dict(child=child)
-                )
+                src += (
+                    "        if self.%(child)s is not None:"
+                    + ' nodelist.append(("%(child)s", self.%(child)s))\n'
+                ) % (dict(child=child))
 
             for seq_child in clean_seq_children:
                 src += (
@@ -318,8 +320,9 @@ class NodeConfiguration:
         Generated source example:
             attr_names = ('AxisPoints', )
         """
-        clean_attributes = []
-        for attribute in self.attributes:
-            clean_attributes.append(attribute.strip("?"))
-        src = "    attr_names = (" + ''.join(f"{nm!r}, " for nm in clean_attributes) + ')'
-        return src
+        clean_attributes = [attribute.strip("?") for attribute in self.attributes]
+        return (
+            "    attr_names = ("
+            + "".join(f"{nm!r}, " for nm in clean_attributes)
+            + ")"
+        )

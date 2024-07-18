@@ -51,10 +51,16 @@ def test_validator_inline_comment(line, expected_line):
         ("/* /begin PROJECT /* This is a nested comment */", ""),
         ("/begin PROJECT /*No space after comment*//end PROJECT", "/begin PROJECT /end PROJECT"),
         (
-            "/begin PROJECT /* comment\n/begin MODULE /* nested\nEnd of comment.*/\n/*END PROJECT*//end PROJECT",
+            (
+                "/begin PROJECT /* comment\n/begin MODULE /* nested\n"
+                "End of comment.*/\n/*END PROJECT*//end PROJECT"
+            ),
             "/begin PROJECT \n/end PROJECT",
         ),
-        ("/begin MODULE M_COMMENT /************/ /end MODULE", "/begin MODULE M_COMMENT  /end MODULE"),
+        (
+            "/begin MODULE M_COMMENT /************/ /end MODULE",
+            "/begin MODULE M_COMMENT  /end MODULE",
+        ),
     ],
 )
 def test_validator_multiline_comment(line, expected_line):
@@ -76,9 +82,15 @@ def test_validator_multiline_comment(line, expected_line):
             "/begin TEXT 'text // containing /* comments */' /end TEXT",
             "/begin TEXT 'text // containing /* comments */' /end TEXT",
         ),
-        ('/begin TEXT "text // /* comment */" /end TEXT', '/begin TEXT "text // /* comment */" /end TEXT'),
+        (
+            '/begin TEXT "text // /* comment */" /end TEXT',
+            '/begin TEXT "text // /* comment */" /end TEXT',
+        ),
         ('/begin MODULE /*"String inside comment"*/ /end MODULE', "/begin MODULE  /end MODULE"),
-        ("/begin PROJECT /* 'String inside comment' */ /end PROJECT", "/begin PROJECT  /end PROJECT"),
+        (
+            "/begin PROJECT /* 'String inside comment' */ /end PROJECT",
+            "/begin PROJECT  /end PROJECT",
+        ),
         ('          /BEGIN BLOB TEST_BLOB ""', '          /BEGIN BLOB TEST_BLOB ""'),
     ],
 )

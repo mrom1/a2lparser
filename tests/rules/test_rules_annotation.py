@@ -22,7 +22,7 @@
 from a2lparser.a2l.a2l_yacc import A2LYacc
 
 
-def test_rules_annotation():
+def test_rules_annotation():  # sourcery skip: extract-duplicate-method
     """
     Tests parsing a valid "ANNOTATION" block.
     """
@@ -54,7 +54,11 @@ def test_rules_annotation():
     annotation_1 = annotation[0]
     assert annotation_1["ANNOTATION_LABEL"] == '"valid_section_1"'
     assert annotation_1["ANNOTATION_ORIGIN"] == '"first block origin"'
-    assert annotation_1["ANNOTATION_TEXT"] == ['"string_literal_1"', '"STRING_LITERAL_2"', '"STRING LITERAL 3"']
+    assert annotation_1["ANNOTATION_TEXT"] == [
+        '"string_literal_1"',
+        '"STRING_LITERAL_2"',
+        '"STRING LITERAL 3"',
+    ]
 
     annotation_2 = annotation[1]
     assert annotation_2["ANNOTATION_LABEL"] == '"valid_section_2"'

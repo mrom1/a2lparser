@@ -71,7 +71,10 @@ def test_validator_with_missing_begin_statement():
     with pytest.raises(A2LValidator.A2LValidationError) as ex:
         A2LValidator().validate(a2l_string)
     assert len(ex.value.errors) == 1
-    assert ex.value.errors[0] == "Detected unexpected end of section on '/end CHARACTERISTIC' at line 3."
+    assert (
+        ex.value.errors[0]
+        == "Detected unexpected end of section on '/end CHARACTERISTIC' at line 3."
+    )
 
 
 def test_validator_with_nested_structure_error():
@@ -92,7 +95,10 @@ def test_validator_with_nested_structure_error():
         A2LValidator().validate(a2l_string)
     assert ex
 
-    assert ex.value.errors[0] == "Detected unexpected end of section on '/end CHARACTERISTIC' at line 5."
+    assert (
+        ex.value.errors[0]
+        == "Detected unexpected end of section on '/end CHARACTERISTIC' at line 5."
+    )
     assert ex.value.errors[1] == "Detected unexpected end of section on '/end MOD_PAR' at line 7."
     assert ex.value.errors[2] == "Detected unexpected end of section on '/end PROJECT' at line 8."
     assert ex.value.errors[3] == "Detected unclosed section 'CHARACTERISTIC' starting at line 3."

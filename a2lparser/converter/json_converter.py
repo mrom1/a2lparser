@@ -37,7 +37,9 @@ class JSONConverter(A2LConverter):
         Exception raised when an error occurs while converting an AST to a JSON file.
         """
 
-    def convert(self, ast: dict, output_dir: str = ".", output_filename: str = None, pretty: bool = True) -> None:
+    def convert(
+        self, ast: dict, output_dir: str = ".", output_filename: str = None, pretty: bool = True
+    ) -> None:
         """
         Convert the given AST dictionary to JSON and write it to a file.
 
@@ -58,19 +60,19 @@ class JSONConverter(A2LConverter):
         except Exception as e:
             raise self.JSONConverterException(e) from e
 
-    def convert_to_string(self, ast: dict,
-                          output_filename: str = None,
-                          pretty: bool = True) -> list:
+    def convert_to_string(
+        self, ast: dict, output_filename: str = None, pretty: bool = True
+    ) -> list:
         """
         Convert the given AST dictionary to a JSON string.
 
         Args:
             ast (dict): The AST dictionary to be converted to JSON.
             output_filename (str, optional): The filename to be used.
-            pretty (bool, optional): Whether to format the JSON string with indentation and newlines.
+            pretty (bool, optional): Format the JSON string with indentation and newlines.
 
         Returns:
-            str: List of tuples (filename, json_string).
+            list: List of tuples (filename, json_string).
         """
         try:
             result = []

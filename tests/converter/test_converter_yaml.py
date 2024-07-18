@@ -91,7 +91,9 @@ def test_converter_yaml_single_measurement_entry():
     """
     ast = A2LYacc().generate_ast(measurement_block)
     assert ast
-    yaml_measurement = YAMLConverter().convert_to_string(ast.get_dict(), output_filename="measurement")
+    yaml_measurement = YAMLConverter().convert_to_string(
+        ast.get_dict(), output_filename="measurement"
+    )
     assert yaml_measurement
 
     yaml_measurement_filename, yaml_measurement_root = yaml_measurement[0]
@@ -113,14 +115,21 @@ def test_converter_yaml_single_measurement_entry():
     assert ast_measurement["UpperLimit"] == yaml_measurement_parsed["UpperLimit"]
     assert ast_measurement["BIT_MASK"] == yaml_measurement_parsed["BIT_MASK"]
     assert ast_measurement["BYTE_ORDER"] == yaml_measurement_parsed["BYTE_ORDER"]
-    assert str(ast_measurement["DISCRETE"]).lower() == str(yaml_measurement_parsed["DISCRETE"]).lower()
+    assert (
+        str(ast_measurement["DISCRETE"]).lower() == str(yaml_measurement_parsed["DISCRETE"]).lower()
+    )
     assert ast_measurement["ECU_ADDRESS"] == yaml_measurement_parsed["ECU_ADDRESS"]
-    assert ast_measurement["ECU_ADDRESS_EXTENSION"] == yaml_measurement_parsed["ECU_ADDRESS_EXTENSION"]
+    assert (
+        ast_measurement["ECU_ADDRESS_EXTENSION"] == yaml_measurement_parsed["ECU_ADDRESS_EXTENSION"]
+    )
     assert ast_measurement["ERROR_MASK"] == yaml_measurement_parsed["ERROR_MASK"]
     assert ast_measurement["FORMAT"] == yaml_measurement_parsed["FORMAT"]
     assert ast_measurement["LAYOUT"] == yaml_measurement_parsed["LAYOUT"]
     assert ast_measurement["PHYS_UNIT"] == yaml_measurement_parsed["PHYS_UNIT"]
-    assert str(ast_measurement["READ_WRITE"]).lower() == str(yaml_measurement_parsed["READ_WRITE"]).lower()
+    assert (
+        str(ast_measurement["READ_WRITE"]).lower()
+        == str(yaml_measurement_parsed["READ_WRITE"]).lower()
+    )
     assert ast_measurement["REF_MEMORY_SEGMENT"] == yaml_measurement_parsed["REF_MEMORY_SEGMENT"]
     assert ast_measurement["MAX_REFRESH"] == yaml_measurement_parsed["MAX_REFRESH"]
     assert ast_measurement["SYMBOL_LINK"] == yaml_measurement_parsed["SYMBOL_LINK"]

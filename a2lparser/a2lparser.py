@@ -37,13 +37,19 @@ class A2LParser:
 
     Usage:
         >>> try:
-        >>>     parser = Parser()
-        >>>     ast = parser.parse_file(files="./data/*.a2l")
-        >>> except ParsingException as ex:
+        >>>     parser = A2LParser()
+        >>>     ast = parser.parse_file("./data/*.a2l")
+        >>> except A2LParserException as ex:
         >>>     print(ex)
     """
 
-    def __init__(self, validation: bool = True, optimize: bool = True, log_level: str = "INFO", quiet: bool = False) -> None:
+    def __init__(
+        self,
+        validation: bool = True,
+        optimize: bool = True,
+        log_level: str = "INFO",
+        quiet: bool = False,
+    ) -> None:
         """
         Parser Constructor.
 
@@ -64,9 +70,11 @@ class A2LParser:
             (           # start of the capturing group for the filename
             [^\s"']+    # matches any character that is not whitespace or a quotation mark
             |           # OR
-            "[^"]*"     # matches a quoted string (double quotes) capturing the content inside the quotes
+            "[^"]*"     # matches a quoted string (double quotes) capturing
+            |           # the content inside the quotes
             |           # OR
-            '[^']*'     # matches a quoted string (single quotes) capturing the content inside the quotes
+            '[^']*'     # matches a quoted string (single quotes) capturing
+                        # the content inside the quotes
             )           # end of the capturing group
         """,
             re.IGNORECASE | re.VERBOSE,
@@ -82,8 +90,21 @@ class A2LParser:
 
     def parse_file(self, files: str) -> dict:
         """
-        Parses the given files.
-        Returns a dictionary of AbstractSyntaxTree objects with the file name as a key pair.
+        Parses one or more A2L files and returns a dictionary of AbstractSyntaxTree objects.
+        The dictionary keys are the file names and the values are the AbstractSyntaxTree objects.
+
+        Args:
+            files (str): A glob pattern or file path to one or more A2L files.
+
+        Returns:
+            dict: A dictionary with file names as keys and AbstractSyntaxTree objects as values.
+
+        Raises:
+            A2LParserException: If no files matching the pattern are found or if parsing fails.
+
+        Example:
+            ast_dict = parser.parse_file("test.a2l")
+            ast_obj = ast_dict["test.a2l"]
         """
         ast_objects = {}
 
@@ -107,7 +128,9 @@ class A2LParser:
 
                 # Parse the content
                 filename = os.path.basename(a2l_file)
-                ast_objects[filename] = self._parse_content(content=a2l_content, show_progressbar=self.show_progressbar)
+                ast_objects[filename] = self.parse_content(
+                    content=a2l_content, show_progressbar=self.show_progressbar
+                )
                 logger.success("Created Abstract Syntax Tree from file: {}", filename)
 
             except A2LParserException as e:
@@ -115,19 +138,35 @@ class A2LParser:
 
         return ast_objects
 
-    def _parse_content(self, content: str, show_progressbar: bool = True) -> AbstractSyntaxTree:
+    def parse_content(self, content: str, show_progressbar: bool = True) -> AbstractSyntaxTree:
         """
         Parses the given content string and returns an AbstractSyntaxTree object.
+
+        Args:
+            content (str): The content string to be parsed.
+            show_progressbar (bool, optional): Whether to show a progress bar during parsing.
+
+        Returns:
+            AbstractSyntaxTree: The parsed AbstractSyntaxTree object.
+
+        Note:
+            This function may raise A2LParserException.
+
+        Example Usage:
+            ast = parser.parse_content("A2L content", show_progressbar=True)
         """
-        logger.debug("Starting AST generation...")
+        logger.debug("Starting to parse A2L content...")
         return self.parser.generate_ast(content, show_progressbar)
 
     def _load_file(self, filename: str, current_dir: str = None) -> str:
         """
-        Reads the content of the given filename and returns it with includes replaced recursively.
+        Loads the file supporting the /include mechanism of A2L.
+        Recursively reads the content of the given filename and
+        replace the /include tags with the content of the included files.
 
         Args:
             filename (str): The filename of the A2L file to be read.
+            current_dir (str, optional): The current directory of the A2L file.
 
         Returns:
             str: The complete A2L file with the included content.

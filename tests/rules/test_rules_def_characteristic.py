@@ -34,5 +34,6 @@ def test_rules_def_characteristic():
     """
     ast = A2LYacc().generate_ast(characteristic_block)
     assert ast
-    assert ast["DEF_CHARACTERISTIC"] == {'Identifier':
-                                         ['INJECTION_CURVE', 'DELAY_FACTOR', 'RANDOM_FACTOR']}
+    assert ast["DEF_CHARACTERISTIC"] == {
+        "Identifier": ["INJECTION_CURVE", "DELAY_FACTOR", "RANDOM_FACTOR"]
+    }

@@ -93,7 +93,7 @@ def test_rules_typedef_axis_full():
     assert typedef_axis["LowerLimit"] == "0.0"
     assert typedef_axis["UpperLimit"] == "2460.0"
     assert typedef_axis["BYTE_ORDER"] == "MSB_LAST_MSW_FIRST"
-    assert typedef_axis["EXTENDED_LIMITS"] == {'LowerLimit': '0', 'UpperLimit': '3500'}
+    assert typedef_axis["EXTENDED_LIMITS"] == {"LowerLimit": "0", "UpperLimit": "3500"}
     assert typedef_axis["FORMAT"] == '"%0.01f"'
     assert typedef_axis["MONOTONY"] == "STRICT_DECREASE"
     assert typedef_axis["PHYS_UNIT"] == '"s"'

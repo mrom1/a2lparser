@@ -38,7 +38,7 @@ def test_rules_var_forbidden_comb():
 
     var_forbidden_comb = ast["VAR_FORBIDDEN_COMB"]
     assert var_forbidden_comb
-    assert var_forbidden_comb['CriterionList'][0][0] == 'Car'
-    assert var_forbidden_comb['CriterionList'][0][1] == 'Limousine'
-    assert var_forbidden_comb['CriterionList'][1][0] == 'Gear'
-    assert var_forbidden_comb['CriterionList'][1][1] == 'Manual'
+    assert var_forbidden_comb["CriterionList"][0][0] == "Car"
+    assert var_forbidden_comb["CriterionList"][0][1] == "Limousine"
+    assert var_forbidden_comb["CriterionList"][1][0] == "Gear"
+    assert var_forbidden_comb["CriterionList"][1][1] == "Manual"

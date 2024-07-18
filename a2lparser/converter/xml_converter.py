@@ -38,7 +38,12 @@ class XMLConverter(A2LConverter):
         """
 
     def convert(
-        self, ast: dict, output_dir: str = ".", output_filename: str = None, encoding: str = "utf-8", pretty: bool = True
+        self,
+        ast: dict,
+        output_dir: str = ".",
+        output_filename: str = None,
+        encoding: str = "utf-8",
+        pretty: bool = True,
     ) -> None:
         """
         Convert the given AST dictionary to XML and write it to a file.
@@ -61,21 +66,20 @@ class XMLConverter(A2LConverter):
         except Exception as e:
             raise self.XMLConverterException(e) from e
 
-    def convert_to_string(self, ast: dict,
-                          output_filename: str = None,
-                          encoding: str = "utf-8",
-                          pretty: bool = True) -> list:
+    def convert_to_string(
+        self, ast: dict, output_filename: str = None, encoding: str = "utf-8", pretty: bool = True
+    ) -> list:
         """
         Convert the given AST dictionary to a XML string.
 
         Args:
             ast (dict): The AST dictionary to be converted to XML.
             output_filename (str, optional): The filename to be used for the XML string.
-            encoding (str, optional): The encoding to be used for the XML string (default is "utf-8").
-            pretty (bool, optional): Whether to format the XML string with indentation and newlines (default is True).
+            encoding (str, optional): The encoding to be used for the XML string (defaults "utf-8").
+            pretty (bool, optional): Format the XML string with indentation and newlines.
 
         Returns:
-            str: List of tuples (filename, xml_string).
+            list: List of tuples (filename, xml_string).
         """
         try:
             result = []

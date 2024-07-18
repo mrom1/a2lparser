@@ -104,4 +104,7 @@ def test_rules_typedef_measurement_full():
     assert typedef_measurement["LAYOUT"] == "ALTERNATE_WITH_Y"
     assert typedef_measurement["MATRIX_DIM"] == ["1"]
     assert typedef_measurement["PHYS_UNIT"] == '"V"'
-    assert typedef_measurement["BIT_OPERATION"] == {'LEFT_SHIFT': {'Bitcount': '4'}, 'SIGN_EXTEND': {'Boolean': True}}
+    assert typedef_measurement["BIT_OPERATION"] == {
+        "LEFT_SHIFT": {"Bitcount": "4"},
+        "SIGN_EXTEND": {"Boolean": True},
+    }

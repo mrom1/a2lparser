@@ -93,9 +93,15 @@ def test_rules_function():
     assert function["FUNCTION_VERSION"] == '"BG5.0815"'
     assert function["DEF_CHARACTERISTIC"]["Identifier"] == ["INJECTION_CURVE", "DELAY_FACTOR"]
     assert function["IN_MEASUREMENT"]["Identifier"] == ["WHEEL_REVOLUTIONS", "ENGINE_SPEED"]
-    assert function["LOC_MEASUREMENT"]["Identifier"] == ["SsmInLastWinsThreshold", "SsmInThrottlePedalPosition"]
+    assert function["LOC_MEASUREMENT"]["Identifier"] == [
+        "SsmInLastWinsThreshold",
+        "SsmInThrottlePedalPosition",
+    ]
     assert function["OUT_MEASUREMENT"]["Identifier"] == ["OK_FLAG", "SENSOR_FLAG"]
-    assert function["REF_CHARACTERISTIC"]["Identifier"] == ["ENG_SPEED_CORR_CURVE", "ENG_SPEED_CORR_CURVE_STD"]
+    assert function["REF_CHARACTERISTIC"]["Identifier"] == [
+        "ENG_SPEED_CORR_CURVE",
+        "ENG_SPEED_CORR_CURVE_STD",
+    ]
     assert function["AR_COMPONENT"]["ComponentType"] == '"ApplicationSwComponentType"'
     assert function["AR_COMPONENT"]["AR_PROTOTYPE_OF"] == '"HANDLE"'
     assert function["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_1"'
@@ -117,6 +123,6 @@ def test_rules_function():
     assert if_data_map
     assert if_data_xcp
     assert if_data_map["Name"] == "MAP_REF_ADDR"
-    assert if_data_map["DataParams"] == ['LINK_MAP', 'ref_name', '0x003432']
+    assert if_data_map["DataParams"] == ["LINK_MAP", "ref_name", "0x003432"]
     assert if_data_xcp["Name"] == "XCP_REF_ADDR"
-    assert if_data_xcp["DataParams"] == ['XCP_REF_MAP', '0x00332266']
+    assert if_data_xcp["DataParams"] == ["XCP_REF_MAP", "0x00332266"]

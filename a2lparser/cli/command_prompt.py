@@ -52,7 +52,9 @@ class CommandPrompt:
         """
         if CommandPrompt._session is None:
             history_file: Path = A2L_CLI_HISTORY_FILE
-            CommandPrompt._session = PromptSession(history=FileHistory(history_file), auto_suggest=AutoSuggestFromHistory())
+            CommandPrompt._session = PromptSession(
+                history=FileHistory(history_file), auto_suggest=AutoSuggestFromHistory()
+            )
         return CommandPrompt._session
 
     @staticmethod
@@ -69,7 +71,7 @@ class CommandPrompt:
         """
         local_vars = {"ast": ast}
 
-        print("You can access the 'ast' attribute which holds the abstract syntax tree as a reference.\n")
+        print("You can access the 'ast' attribute which holds the AST as a reference.\n")
 
         while True:
             try:

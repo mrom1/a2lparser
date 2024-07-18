@@ -186,7 +186,11 @@ class A2LLex:
 
     @TOKEN(
         r"\b("
-        + r"|".join(LexerKeywords.keywords_type + LexerKeywords.keywords_enum + LexerKeywords.keywords_datatypes)
+        + r"|".join(
+            LexerKeywords.keywords_type
+            + LexerKeywords.keywords_enum
+            + LexerKeywords.keywords_datatypes
+        )
         + r")\b"
     )
     def t_KEYWORD_TYPE(self, t):

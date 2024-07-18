@@ -24,6 +24,21 @@ import pytest
 
 
 @pytest.fixture
+def create_file():
+    """
+    Fixture for creating a file inside a temporary directory for testing.
+    """
+
+    def _create_file(tempdir, filename, content):
+        file_path = os.path.join(tempdir, filename)
+        with open(file_path, "w", encoding="utf-8") as file:
+            file.write(content)
+        return file_path
+
+    return _create_file
+
+
+@pytest.fixture
 def check_files_exist():
     """
     Fixture for checking if files exist.

@@ -111,22 +111,26 @@ def test_rules_instance_full():
     assert instance["LAYOUT"] == "ALTERNATE_WITH_X"
     assert instance["MODEL_LINK"] == '"system/referer/SwcXcpInstance.referer"'
     assert instance["READ_WRITE"] is True
-    assert instance["MATRIX_DIM"] == ['2', '4']
-    assert instance["MAX_REFRESH"] == {'ScalingUnit': '120', 'Rate': '250'}
-    assert instance["SYMBOL_LINK"] == {'SymbolName': '"_InstanceReference"', 'Offset': '0'}
+    assert instance["MATRIX_DIM"] == ["2", "4"]
+    assert instance["MAX_REFRESH"] == {"ScalingUnit": "120", "Rate": "250"}
+    assert instance["SYMBOL_LINK"] == {"SymbolName": '"_InstanceReference"', "Offset": "0"}
     assert len(instance["IF_DATA"]) == 2
     if_data_map = instance["IF_DATA"][0]
     if_data_xcp = instance["IF_DATA"][1]
     assert if_data_map
     assert if_data_xcp
     assert if_data_map["Name"] == "MAP_REF_ADDR"
-    assert if_data_map["DataParams"] == ['LINK_MAP', 'ref_name', '0x003432']
+    assert if_data_map["DataParams"] == ["LINK_MAP", "ref_name", "0x003432"]
     assert if_data_xcp["Name"] == "XCP_REF_ADDR"
-    assert if_data_xcp["DataParams"] == ['XCP_REF_MAP', '0x00332266']
+    assert if_data_xcp["DataParams"] == ["XCP_REF_MAP", "0x00332266"]
     assert len(instance["ANNOTATION"]) == 2
-    assert instance["ANNOTATION"][0] == {'ANNOTATION_LABEL': '"INSTANCE_ANNOTATION"'}
-    assert instance["ANNOTATION"][1] == {'ANNOTATION_TEXT':
-                                         ['"INSTANCE_ANNOTATION_DESCRIPTION"', '"This is an instance description"']}
+    assert instance["ANNOTATION"][0] == {"ANNOTATION_LABEL": '"INSTANCE_ANNOTATION"'}
+    assert instance["ANNOTATION"][1] == {
+        "ANNOTATION_TEXT": [
+            '"INSTANCE_ANNOTATION_DESCRIPTION"',
+            '"This is an instance description"',
+        ]
+    }
     assert len(instance["OVERWRITE"]) == 2
     overwrite_1 = instance["OVERWRITE"][0]
     overwrite_2 = instance["OVERWRITE"][1]
@@ -136,9 +140,9 @@ def test_rules_instance_full():
     assert overwrite_2["Name"] == "XcpInstance"
     assert overwrite_2["AxisNumber"] == "3"
     assert overwrite_2["CONVERSION"] == "ConversionMethod1"
-    assert overwrite_2["EXTENDED_LIMITS"] == {'LowerLimit': '0', 'UpperLimit': '200'}
+    assert overwrite_2["EXTENDED_LIMITS"] == {"LowerLimit": "0", "UpperLimit": "200"}
     assert overwrite_2["FORMAT"] == '"%.2f"'
     assert overwrite_2["INPUT_QUANTITY"] == "Speed2"
-    assert overwrite_2["LIMITS"] == {'LowerLimit': '0', 'UpperLimit': '160'}
+    assert overwrite_2["LIMITS"] == {"LowerLimit": "0", "UpperLimit": "160"}
     assert overwrite_2["MONOTONY"] == "STRICT_DECREASE"
     assert overwrite_2["PHYS_UNIT"] == '"km/h"'

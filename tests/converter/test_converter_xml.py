@@ -91,7 +91,9 @@ def test_converter_xml_single_measurement_entry():
     """
     ast = A2LYacc().generate_ast(measurement_block)
     assert ast
-    xml_measurement = XMLConverter().convert_to_string(ast.get_dict(), output_filename="measurement")
+    xml_measurement = XMLConverter().convert_to_string(
+        ast.get_dict(), output_filename="measurement"
+    )
     assert xml_measurement
 
     xml_measurement_filename, xml_measurement_root = xml_measurement[0]
@@ -113,14 +115,21 @@ def test_converter_xml_single_measurement_entry():
     assert ast_measurement["UpperLimit"] == xml_measurement_parsed["UpperLimit"]
     assert ast_measurement["BIT_MASK"] == xml_measurement_parsed["BIT_MASK"]
     assert ast_measurement["BYTE_ORDER"] == xml_measurement_parsed["BYTE_ORDER"]
-    assert str(ast_measurement["DISCRETE"]).lower() == str(xml_measurement_parsed["DISCRETE"]).lower()
+    assert (
+        str(ast_measurement["DISCRETE"]).lower() == str(xml_measurement_parsed["DISCRETE"]).lower()
+    )
     assert ast_measurement["ECU_ADDRESS"] == xml_measurement_parsed["ECU_ADDRESS"]
-    assert ast_measurement["ECU_ADDRESS_EXTENSION"] == xml_measurement_parsed["ECU_ADDRESS_EXTENSION"]
+    assert (
+        ast_measurement["ECU_ADDRESS_EXTENSION"] == xml_measurement_parsed["ECU_ADDRESS_EXTENSION"]
+    )
     assert ast_measurement["ERROR_MASK"] == xml_measurement_parsed["ERROR_MASK"]
     assert ast_measurement["FORMAT"] == xml_measurement_parsed["FORMAT"]
     assert ast_measurement["LAYOUT"] == xml_measurement_parsed["LAYOUT"]
     assert ast_measurement["PHYS_UNIT"] == xml_measurement_parsed["PHYS_UNIT"]
-    assert str(ast_measurement["READ_WRITE"]).lower() == str(xml_measurement_parsed["READ_WRITE"]).lower()
+    assert (
+        str(ast_measurement["READ_WRITE"]).lower()
+        == str(xml_measurement_parsed["READ_WRITE"]).lower()
+    )
     assert ast_measurement["REF_MEMORY_SEGMENT"] == xml_measurement_parsed["REF_MEMORY_SEGMENT"]
     assert ast_measurement["MAX_REFRESH"] == xml_measurement_parsed["MAX_REFRESH"]
     assert ast_measurement["SYMBOL_LINK"] == xml_measurement_parsed["SYMBOL_LINK"]

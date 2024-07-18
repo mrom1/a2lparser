@@ -31,7 +31,7 @@ def test_integration_version_argument(monkeypatch, capsys):
     Calls "a2lparser --version" and checks if the output contains the expected version information.
     """
     # Modify sys.argv to include the version argument
-    monkeypatch.setattr('sys.argv', ['a2lparser', '--version'])
+    monkeypatch.setattr("sys.argv", ["a2lparser", "--version"])
 
     # Call main function
     with pytest.raises(SystemExit):

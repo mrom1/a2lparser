@@ -212,7 +212,7 @@ def test_rules_characteristic_full():
     assert characteristic["EXTENDED_LIMITS"]["UpperLimit"] == "4000.0"
     assert characteristic["FUNCTION_LIST"]["Name"] == ["ID_ADJUSTM", "FL_ADJUSTM", "SPEED_LIM"]
     assert characteristic["MAP_LIST"]["Name"] == ["one", "two", "three"]
-    assert characteristic["MATRIX_DIM"] == ['2', '4', '3']
+    assert characteristic["MATRIX_DIM"] == ["2", "4", "3"]
     assert characteristic["MAX_REFRESH"]["ScalingUnit"] == "3"
     assert characteristic["MAX_REFRESH"]["Rate"] == "15"
     assert characteristic["SYMBOL_LINK"]["SymbolName"] == '"_VehicleSpeed"'
@@ -220,10 +220,20 @@ def test_rules_characteristic_full():
     assert characteristic["VIRTUAL_CHARACTERISTIC"]["FORMULA"] == '"sin(X1)"'
     assert characteristic["VIRTUAL_CHARACTERISTIC"]["CHARACTERISTIC"] == ["B"]
     assert len(characteristic["ANNOTATION"]) == 2
-    assert characteristic["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_CHARACTERISTIC_1"'
-    assert characteristic["ANNOTATION"][0]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_CHARACTERISTIC_1"'
-    assert characteristic["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_CHARACTERISTIC_2"'
-    assert characteristic["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_CHARACTERISTIC_2"'
+    assert (
+        characteristic["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_CHARACTERISTIC_1"'
+    )
+    assert (
+        characteristic["ANNOTATION"][0]["ANNOTATION_ORIGIN"]
+        == '"ANNOTATION_ORIGIN_CHARACTERISTIC_1"'
+    )
+    assert (
+        characteristic["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_CHARACTERISTIC_2"'
+    )
+    assert (
+        characteristic["ANNOTATION"][1]["ANNOTATION_ORIGIN"]
+        == '"ANNOTATION_ORIGIN_CHARACTERISTIC_2"'
+    )
     assert characteristic["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_CHARACERISTIC"']
     assert len(characteristic["AXIS_DESCR"]) == 2
     assert characteristic["AXIS_DESCR"][0]["Attribute"] == "STD_AXIS"
@@ -252,12 +262,28 @@ def test_rules_characteristic_full():
     assert characteristic["AXIS_DESCR"][0]["FIX_AXIS_PAR_DIST"]["Numberapo"] == "8"
     assert characteristic["AXIS_DESCR"][0]["FIX_AXIS_PAR_LIST"]["AxisPts_Value"] == ["2", "5", "9"]
     assert len(characteristic["AXIS_DESCR"][0]["ANNOTATION"]) == 2
-    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"AXIS_DESCR_LABEL_BLOCK_1"'
-    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][0]["ANNOTATION_ORIGIN"] == '"AXIS_DESCR_ORIGIN_BLOCK_1"'
-    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][0]["ANNOTATION_TEXT"] == ['"AXIS_DESCR_TEXT_BLOCK_1"']
-    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"AXIS_DESCR_LABEL_BLOCK_2"'
-    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"AXIS_DESCR_ORIGIN_BLOCK_2"'
-    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"AXIS_DESCR_TEXT_BLOCK_2"']
+    assert (
+        characteristic["AXIS_DESCR"][0]["ANNOTATION"][0]["ANNOTATION_LABEL"]
+        == '"AXIS_DESCR_LABEL_BLOCK_1"'
+    )
+    assert (
+        characteristic["AXIS_DESCR"][0]["ANNOTATION"][0]["ANNOTATION_ORIGIN"]
+        == '"AXIS_DESCR_ORIGIN_BLOCK_1"'
+    )
+    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][0]["ANNOTATION_TEXT"] == [
+        '"AXIS_DESCR_TEXT_BLOCK_1"'
+    ]
+    assert (
+        characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_LABEL"]
+        == '"AXIS_DESCR_LABEL_BLOCK_2"'
+    )
+    assert (
+        characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_ORIGIN"]
+        == '"AXIS_DESCR_ORIGIN_BLOCK_2"'
+    )
+    assert characteristic["AXIS_DESCR"][0]["ANNOTATION"][1]["ANNOTATION_TEXT"] == [
+        '"AXIS_DESCR_TEXT_BLOCK_2"'
+    ]
     assert characteristic["AXIS_DESCR"][1]["Attribute"] == "STD_AXIS"
     assert characteristic["AXIS_DESCR"][1]["InputQuantity"] == "AMOUNT"
     assert characteristic["AXIS_DESCR"][1]["CONVERSION"] == "CON_ME"

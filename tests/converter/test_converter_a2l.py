@@ -32,7 +32,7 @@ def valid_ast_dict_multiple_files() -> dict:
         },
         "filename2.aml": {
             "key_2": "value_2",
-        }
+        },
     }
 
 
@@ -50,7 +50,7 @@ def invalid_ast_dict_from_string() -> dict:
         },
         "MEASUREMENT": {
             "key": "value",
-        }
+        },
     }
 
 

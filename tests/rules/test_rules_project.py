@@ -44,10 +44,9 @@ def test_rules_project_two_modules_minimal():
     """
     ast = A2LYacc().generate_ast(project_content)
     assert ast
-    assert ast["ASAP2_VERSION"] == {'VersionNo': '1', 'UpgradeNo': '71'}
+    assert ast["ASAP2_VERSION"] == {"VersionNo": "1", "UpgradeNo": "71"}
 
     project = ast["PROJECT"]
-    assert project
     assert project["Name"] == "Example_Project"
     assert project["LongIdentifier"] == '"ProjectBackupModule"'
     assert project["HEADER"]["Comment"] == '"Tests a Project with two modules"'

@@ -24,7 +24,7 @@ from a2lparser.a2l.lex.lexer_keywords import LexerKeywords
 from a2lparser.a2l.ast.abstract_syntax_tree import AbstractSyntaxTree
 
 
-class A2LConverter():
+class A2LConverter:
     """
     Base class for converting an A2L dictionary.
     """
@@ -42,7 +42,7 @@ class A2LConverter():
         Args:
             ast (dict): The AST dictionary to be sliced.
             file_extension (str): The file extension to be used for the output files.
-            filename (str, optional): The filename to be used for the output files. Defaults to None.
+            filename (str, optional): The filename to be used for the output files. Defaults None.
 
         Returns:
             list: A list of (filename, ast) tuples.
@@ -54,7 +54,11 @@ class A2LConverter():
                 # If no filename is given, we raise an exception.
                 if filename is None:
                     raise self.A2LConverterException(
-                        "Could not find filename in AST. Pass filename argument to resolve this error.")
+                        (
+                            "Could not find filename in AST. "
+                            "Pass filename argument to resolve this error."
+                        )
+                    )
                 root = self.add_root_element(ast)
                 out_filename = f"{filename}.{file_extension}"
                 result.append((out_filename, root))
@@ -66,12 +70,12 @@ class A2LConverter():
                     if filename is not None:
                         out_filename = f"filename_{index}.{file_extension}"
                     else:
-                        out_filename = f"{self.remove_file_extension(input_filename)}.{file_extension}"
+                        out_filename = (
+                            f"{self.remove_file_extension(input_filename)}.{file_extension}"
+                        )
                     result.append((out_filename, root))
         except Exception as e:
-            raise self.A2LConverterException(
-                f"Conversion Error while slicing AST: {e}"
-            ) from e
+            raise self.A2LConverterException(f"Conversion Error while slicing AST: {e}") from e
         return result
 
     def write_to_file(self, content: str, filename: str, output_dir: str = ".") -> None:
@@ -86,23 +90,24 @@ class A2LConverter():
         if output_dir is None:
             output_dir = "."
         else:
-            output_dir = output_dir.replace("\"", "").replace("'", "")
+            output_dir = output_dir.replace('"', "").replace("'", "")
         full_output_dir = os.path.abspath(output_dir)
 
         if not os.path.isdir(full_output_dir):
             raise self.A2LConverterException(
-                f"Unable to write to output directory: '{full_output_dir}'. The directory does not exist."
+                (
+                    f"Unable to write to output directory: '{full_output_dir}'. "
+                    "The directory does not exist."
+                )
             )
 
         full_path = os.path.join(full_output_dir, filename)
 
         try:
-            with open(full_path, 'w', encoding="utf-8") as f:
+            with open(full_path, "w", encoding="utf-8") as f:
                 f.write(content)
         except Exception as e:
-            raise self.A2LConverterException(
-                f"Error writing to file '{filename}': {e}"
-            ) from e
+            raise self.A2LConverterException(f"Error writing to file '{filename}': {e}") from e
 
     def is_ast_valid_structure(self, ast: dict) -> bool:
         """

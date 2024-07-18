@@ -48,7 +48,7 @@ def main() -> None:
     Usage from root project dir:
     $ python -m a2lparser.main --help
 
-    Documentation at: https://github.com/mrom1/a2lparser
+    Repository at: https://github.com/mrom1/a2lparser
     """
     try:
         args = parse_arguments(sys.argv[1:])
@@ -83,7 +83,10 @@ def main() -> None:
 
         # Initializing the A2L Parser
         parser = A2LParser(
-            validation=not args.no_validation, optimize=not args.no_optimize, log_level=args.log_level, quiet=args.quiet
+            validation=not args.no_validation,
+            optimize=not args.no_optimize,
+            log_level=args.log_level,
+            quiet=args.quiet,
         )
 
         # Parse input files into abstract syntax tree
@@ -125,14 +128,37 @@ def parse_arguments(args: list) -> argparse.Namespace:
     """
     parser = argparse.ArgumentParser(prog="a2lparser")
     parser.add_argument("file", nargs="?", help="A2L files to parse")
-    parser.add_argument("-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file")
-    parser.add_argument("-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file")
-    parser.add_argument("-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file")
-    parser.add_argument("--output-dir", nargs="?", default=None, metavar="PATH", help="Output directory for converted files")
-    parser.add_argument("--prompt", action="store_true", default=False, help="Enables CLI prompt after parsing")
-    parser.add_argument("--quiet", action="store_true", default=False, help="Disables console output")
-    parser.add_argument("--no-optimize", action="store_true", default=False, help="Disables optimization mode")
-    parser.add_argument("--no-validation", action="store_true", default=False, help="Disables possible A2L validation warnings")
+    parser.add_argument(
+        "-x", "--xml", action="store_true", help="Converts an A2L file to a XML output file"
+    )
+    parser.add_argument(
+        "-j", "--json", action="store_true", help="Converts an A2L file to a JSON output file"
+    )
+    parser.add_argument(
+        "-y", "--yaml", action="store_true", help="Converts an A2L file to a YAML output file"
+    )
+    parser.add_argument(
+        "--output-dir",
+        nargs="?",
+        default=None,
+        metavar="PATH",
+        help="Output directory for converted files",
+    )
+    parser.add_argument(
+        "--prompt", action="store_true", default=False, help="Enables CLI prompt after parsing"
+    )
+    parser.add_argument(
+        "--quiet", action="store_true", default=False, help="Disables console output"
+    )
+    parser.add_argument(
+        "--no-optimize", action="store_true", default=False, help="Disables optimization mode"
+    )
+    parser.add_argument(
+        "--no-validation",
+        action="store_true",
+        default=False,
+        help="Disables possible A2L validation warnings",
+    )
     parser.add_argument(
         "--gen-ast",
         nargs="?",
@@ -140,7 +166,9 @@ def parse_arguments(args: list) -> argparse.Namespace:
         const=A2L_DEFAULT_CONFIG_NAME,
         help="Generates python file containing AST node classes",
     )
-    parser.add_argument("--log-level", default="INFO", choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
+    parser.add_argument(
+        "--log-level", default="INFO", choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    )
     parser.add_argument("--version", action="version", version=f"a2lparser version: {__version__}")
     return parser.parse_args(args)
 

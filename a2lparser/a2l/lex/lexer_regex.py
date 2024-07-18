@@ -52,11 +52,16 @@ class LexerRegex:
     exponent_part = r"""([eE][-+]?[0-9]+)"""
     fractional_constant = r"""([+-]?[0-9]+\.[0-9]+)|([+-]?\.[0-9]+)|([+-]?[0-9]+\.)"""
     floating_constant = (
-        f"( ( (({fractional_constant}){exponent_part}?) | ([0-9]+{exponent_part}) | ([+-]?[0-9]+{exponent_part}) )[FfLl]?)"
+        f"( ( (({fractional_constant}){exponent_part}?) | "
+        f"([0-9]+{exponent_part}) | ([+-]?[0-9]+{exponent_part}) )[FfLl]?)"
     )
     binary_exponent_part = r"""([pP][+-]?[0-9]+)"""
-    hex_fractional_constant = f"((({hex_digits}" + r""")?\.""" + hex_digits + ")|(" + hex_digits + r"""\.))"""
-    hex_floating_constant = f"({hex_prefix}({hex_digits}|{hex_fractional_constant}){binary_exponent_part}[FfLl]?)"
+    hex_fractional_constant = (
+        f"((({hex_digits}" + r""")?\.""" + hex_digits + ")|(" + hex_digits + r"""\.))"""
+    )
+    hex_floating_constant = (
+        f"({hex_prefix}({hex_digits}|{hex_fractional_constant}){binary_exponent_part}[FfLl]?)"
+    )
 
     #############################
     # RegEx for parsing strings #

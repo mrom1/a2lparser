@@ -33,7 +33,10 @@ def a2l_dict():
     return {
         "VERSION": {"Major_Version": 1, "Minor_Version": 0, "Patch_Version": 0},
         "MODULE": {"MODULE_NAME": "MyModule"},
-        "ANNOTATION": {"ANNOTATION_NAME": "MyAnnotation", "ANNOTATION_TEXT": "This is my annotation"},
+        "ANNOTATION": {
+            "ANNOTATION_NAME": "MyAnnotation",
+            "ANNOTATION_TEXT": "This is my annotation",
+        },
         "CHARACTERISTIC": {"CHARACTERISTIC_NAME": "MyCharacteristic"},
         "MEASUREMENT": {
             "MEASUREMENT_NAME": "MyMeasurement",
@@ -64,7 +67,13 @@ def a2l_dict_nested():
         },
         "CHARACTERISTIC": {
             "CHARACTERISTIC_NAME": "MyCharacteristic",
-            "ANNOTATION": {"ANNOTATION_TEXT": ["Characteristic annotation", "inside a LIST", "a LIST with three items"]},
+            "ANNOTATION": {
+                "ANNOTATION_TEXT": [
+                    "Characteristic annotation",
+                    "inside a LIST",
+                    "a LIST with three items",
+                ]
+            },
         },
         "MEASUREMENT": {
             "MEASUREMENT_NAME": "MyMeasurement",
@@ -77,7 +86,13 @@ def a2l_dict_nested():
                 "CHARACTERISTIC_NAME": "MyCharacteristicEcuAddress",
                 "ECU_ADDRESS": "0x4488ee44",
                 "ANNOTATION": [
-                    {"ANNOTATION_TEXT": ["Characteristic annotation", "inside a LIST", "a LIST with three items"]},
+                    {
+                        "ANNOTATION_TEXT": [
+                            "Characteristic annotation",
+                            "inside a LIST",
+                            "a LIST with three items",
+                        ]
+                    },
                     {"ANNOTATION_TEXT": ["ecu address: 0x88ff8800", "ecu_addr_match: 0x4488ef11"]},
                     {"ANNOTATION_TEXT": ["ecu_addr_no_match: 0xff88ef11"]},
                 ],
@@ -162,8 +177,12 @@ def test_abstract_syntax_tree_find_value(a2l_dict_nested, a2l_node):
 
     expected_ecu_address_root = a2l_dict_nested["ECU_ADDRESS"]
     expected_ecu_address_measurement = a2l_dict_nested["MEASUREMENT"]["ECU_ADDRESS"]
-    expected_ecu_address_measurement_characteristic = a2l_dict_nested["MEASUREMENT"]["CHARACTERISTIC"]["ECU_ADDRESS"]
-    expected_ecu_address_in_annotation_text = a2l_dict_nested["MEASUREMENT"]["CHARACTERISTIC"]["ANNOTATION"][1]
+    expected_ecu_address_measurement_characteristic = a2l_dict_nested["MEASUREMENT"][
+        "CHARACTERISTIC"
+    ]["ECU_ADDRESS"]
+    expected_ecu_address_in_annotation_text = a2l_dict_nested["MEASUREMENT"]["CHARACTERISTIC"][
+        "ANNOTATION"
+    ][1]
     ecu_address = ast.find_value("0x4488")
     assert ecu_address
     assert ecu_address["ECU_ADDRESS"] == expected_ecu_address_root
@@ -173,7 +192,10 @@ def test_abstract_syntax_tree_find_value(a2l_dict_nested, a2l_node):
     assert ecu_address_measurement["ECU_ADDRESS"] == expected_ecu_address_measurement
 
     ecu_address_measurement_characteristic = ecu_address_measurement["CHARACTERISTIC"]
-    assert ecu_address_measurement_characteristic["ECU_ADDRESS"] == expected_ecu_address_measurement_characteristic
+    assert (
+        ecu_address_measurement_characteristic["ECU_ADDRESS"]
+        == expected_ecu_address_measurement_characteristic
+    )
     assert (
         ecu_address_measurement_characteristic["ANNOTATION"]["ANNOTATION_TEXT"]
         == expected_ecu_address_in_annotation_text["ANNOTATION_TEXT"]

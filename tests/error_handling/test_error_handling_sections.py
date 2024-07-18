@@ -78,9 +78,11 @@ def test_error_handling_measurement_subsection_error():
     assert measurement["BYTE_ORDER"] == "MSB_FIRST"
     assert measurement["REF_MEMORY_SEGMENT"] == "Data2"
     assert measurement["PHYS_UNIT"] == '"mph"'
-    assert measurement["FUNCTION_LIST"] == {'Name': ['ID_ADJUSTM', 'FL_ADJUSTM']}
-    assert measurement["IF_DATA"] == {'Name': 'ISO',
-                                      'DataParams': ['SND', '0x10', '0x00', '0x05', '0x08', 'RCV', '4', 'long']}
+    assert measurement["FUNCTION_LIST"] == {"Name": ["ID_ADJUSTM", "FL_ADJUSTM"]}
+    assert measurement["IF_DATA"] == {
+        "Name": "ISO",
+        "DataParams": ["SND", "0x10", "0x00", "0x05", "0x08", "RCV", "4", "long"],
+    }
     assert measurement["ANNOTATION"]["ANNOTATION_LABEL"] == '"annotation test label"'
     assert measurement["ANNOTATION"]["ANNOTATION_TEXT"] == ['"annotation text example"']
 

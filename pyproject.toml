@@ -41,7 +41,7 @@ package-data = {"a2lparser" = ["*.cfg", "*.config"]}
 a2lparser = "a2lparser.main:main"
 
 [tool.black]
-line-length = 128
+line-length = 100
 include = '\.pyi?$'
 exclude = '''
 /(

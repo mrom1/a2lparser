@@ -9,17 +9,19 @@
 
 ## Overview
 
-The Python A2L Parser is a tool designed for reading A2L files compliant with the [ASAM MCD-2 MC](https://www.asam.net/standards/detail/mcd-2-mc/) Data Model for ECU Measurement and Calibration. This parser, implemented in Python using [PLY](https://ply.readthedocs.io/en/latest/index.html), constructs an Abstract Syntax Tree (AST) from A2L files, allowing for structured data access and utility functions like searching.
+The Python A2L Parser is a tool designed to parse A2L files compliant with the [ASAM MCD-2 MC](https://www.asam.net/standards/detail/mcd-2-mc/) Data Model for ECU Measurement and Calibration. Implemented in Python using [PLY](https://ply.readthedocs.io/en/latest/index.html), it constructs an Abstract Syntax Tree (AST) from A2L files, enabling structured data access and utility functions such as searching. All resources used in development are sourced from publicly available information, including the [ASAM Wiki](https://www.asam.net/standards/detail/mcd-2-mc/wiki/).
 
-This project supports ASAM MCD-2 MC Version 1.7.1 and focuses on parsing A2L grammar, not providing mapping capabilities. The module also includes functionality for converting parsed A2L files into simpler formats like XML, JSON, and YAML.
+The parser supports ASAM MCD-2 MC Version 1.7.1 and is focused on parsing A2L grammar without providing mapping capabilities. Additionally, the module includes functionality for converting parsed A2L files into simpler formats like XML, JSON, and YAML.
 
-You can use this repository to interpret A2L files, build upon this functionality, or for educational purposes.
+This repository can be used for interpreting or validating A2L files, extending its functionality, or for educational purposes.
 
-**Note:** This project is released under the GPL license with no warranty and is recommended for educational purposes. For professional solutions, consider exploring specialized tools such as the [MATLAB Vehicle Network Toolbox](https://www.mathworks.com/help/vnt/index.html) or the [Vector ASAP2 Toolset](https://www.vector.com/int/en/products/products-a-z/software/asap2-tool-set/).
+**Note:** Released under the GPL license with no warranty, this project is recommended for educational use. For professional solutions, consider specialized tools such as the [MATLAB Vehicle Network Toolbox](https://www.mathworks.com/help/vnt/index.html) or the [Vector ASAP2 Toolset](https://www.vector.com/int/en/products/products-a-z/software/asap2-tool-set/).
 
 ## Installation
 
 To install the A2L Parser, run:
+
+**Note:** Until I fix some more minor issues and create a release version, a TestPyPi version is uploaded which you can use:
 
 ```console
 pip install -i https://test.pypi.org/simple/ a2lparser --extra-index-url https://pypi.org/simple/
@@ -32,17 +34,34 @@ from a2lparser.a2lparser import A2LParser
 from a2lparser.a2lparser_exception import A2LParserException
 
 try:
-    # Create Parser and parse files
-    ast = A2LParser(quiet=True).parse_file(files="./data/test.a2l")
+    # Create a parser and parse files.
+    # Allows multiple files to be passed with wildcards.
+    # Will only print errors, no information like progressbar.
+    # Returns a dictionary.
+    ast_dict = A2LParser(log_level="INFO").parse_file("./testfiles/test_*.a2l")
 
-    # Dictionary access on abstract syntax tree
-    module = ast["test.a2l"]["PROJECT"]["MODULE"]
+    # The dictionary holds the AbstractSyntaxTree object under the file name key.
+    ast = ast_dict["test_1.a2l"]
 
-    # Searches for all MEASUREMENT sections
+    # Dictionary access on the abstract syntax tree.
+    # Returns a Python dictionary.
+    project = ast["PROJECT"]
+    module = project["MODULE"]
+    print(f"Project {project['Name']} with module: {module['Name']}"
+
+    # Searches for all MEASUREMENT sections.
+    # find_section returns an AbstractSyntaxTree
     measurements = ast.find_sections("MEASUREMENT")
-    print(measurements)
+
+    # All found MEASUREMENT sections are under the "MEASUREMENT" key
+    measurements_list = measurements["MEASUREMENT"]
+
+    print(f"Found {len(measurements_list)} MEASUREMENT sections.")
 
 except A2LParserException as ex:
+    # Catching A2LParserException:
+    # Generally occurs when a fatal error in parsing is encountered,
+    # or if the generated AST is empty (i.e., no data could be parsed).
     print(ex)
 ```
 
@@ -69,5 +88,5 @@ options:
   --no-validation       Disables possible A2L validation warnings
   --gen-ast [CONFIG]    Generates python file containing AST node classes
   --log-level {DEBUG,INFO,WARNING,ERROR,CRITICAL}
-  --version             show program's version number and exit  ```
+  --version             show program's version number and exit
 ```

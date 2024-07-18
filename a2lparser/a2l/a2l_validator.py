@@ -75,7 +75,9 @@ class A2LValidator:
                 elif match.group().lower().startswith("/end"):
                     _, last_section = sections_stack[-1]
                     if last_section != section:
-                        errors.append(f"Detected unexpected end of section on '{line.lstrip()}' at line {i}.")
+                        errors.append(
+                            f"Detected unexpected end of section on '{line.lstrip()}' at line {i}."
+                        )
                     else:
                         sections_stack.pop()
 
@@ -86,6 +88,14 @@ class A2LValidator:
             raise self.A2LValidationError(errors)
 
     def _remove_comments(self, line: str) -> str:
+        """
+        Removes comments from a given line of code.
+
+        Args:
+            line (str): The line of code containing comments.
+        Returns:
+            str: The line of code with comments removed.
+        """
         result = []
         i = 0
         length = len(line)
@@ -95,17 +105,17 @@ class A2LValidator:
         while i < length:
             # If inside a comment block, skip characters until the end of the block
             if skip_tokens:
-                if line[i:i+2] == '*/':
+                if line[i : i + 2] == "*/":
                     skip_tokens = False
                     i += 2
                     continue
                 i += 1
             # Detect the start of a multiline comment
-            elif line[i:i+2] == '/*' and not string_literal_started:
+            elif line[i : i + 2] == "/*" and not string_literal_started:
                 skip_tokens = True
                 i += 2
             # Detect the start of a single line comment
-            elif line[i:i+2] == '//' and not string_literal_started:
+            elif line[i : i + 2] == "//" and not string_literal_started:
                 break
             # Handle string literals properly
             elif line[i] in {'"', "'"}:
@@ -113,7 +123,9 @@ class A2LValidator:
                 result.append(line[i])
                 i += 1
                 string_literal_started = not string_literal_started
-                while i < length and (line[i] != quote_char or (line[i] == quote_char and line[i-1] == '\\')):
+                while i < length and (
+                    line[i] != quote_char or (line[i] == quote_char and line[i - 1] == "\\")
+                ):
                     result.append(line[i])
                     i += 1
                 if i < length:
@@ -125,4 +137,4 @@ class A2LValidator:
                 result.append(line[i])
                 i += 1
 
-        return ''.join(result)
+        return "".join(result)

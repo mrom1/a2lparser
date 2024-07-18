@@ -99,11 +99,11 @@ def test_rules_a2ml_full_content():
           block "IF_DATA" taggedunion if_data {
 
 
-    /*  ==============================================================================================  */
-    /*                                                                                                  */
-    /*  ASAM XCP AML                                                                                    */
-    /*                                                                                                  */
-    /*  ==============================================================================================  */
+    /*  ======================================================================================  */
+    /*                                                                                          */
+    /*  ASAM XCP AML                                                                            */
+    /*                                                                                          */
+    /*  ======================================================================================  */
 
             "XCP" struct {
               taggedstruct {
@@ -191,14 +191,19 @@ def test_rules_a2ml_full_content():
     assert asap2_version == {"VersionNo": "1", "UpgradeNo": "71"}
     assert project["Name"] == "ASAP2_Example"
     assert project["LongIdentifier"] == '""'
-    assert header == {"Comment": '"ASAP2 Example File"',
-                      "PROJECT_NO": "P2016_09_AE_MCD_2MC_BS_V1_7_1_main",
-                      "VERSION": '"V1.7.1"'}
+    assert header == {
+        "Comment": '"ASAP2 Example File"',
+        "PROJECT_NO": "P2016_09_AE_MCD_2MC_BS_V1_7_1_main",
+        "VERSION": '"V1.7.1"',
+    }
     assert module["A2ML"] == a2ml_content
-    assert module["MOD_COMMON"] == {"Comment": '""', "ALIGNMENT_BYTE": "1",
-                                    "ALIGNMENT_FLOAT32_IEEE": "4",
-                                    "ALIGNMENT_FLOAT64_IEEE": "4",
-                                    "ALIGNMENT_LONG": "4",
-                                    "ALIGNMENT_WORD": "2",
-                                    "BYTE_ORDER": "MSB_LAST",
-                                    "DEPOSIT": "ABSOLUTE"}
+    assert module["MOD_COMMON"] == {
+        "Comment": '""',
+        "ALIGNMENT_BYTE": "1",
+        "ALIGNMENT_FLOAT32_IEEE": "4",
+        "ALIGNMENT_FLOAT64_IEEE": "4",
+        "ALIGNMENT_LONG": "4",
+        "ALIGNMENT_WORD": "2",
+        "BYTE_ORDER": "MSB_LAST",
+        "DEPOSIT": "ABSOLUTE",
+    }

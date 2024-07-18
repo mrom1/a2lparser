@@ -37,9 +37,7 @@ class YAMLConverter(A2LConverter):
         Exception raised when an error occurs while converting an AST to a YAML file.
         """
 
-    def convert(self, ast: dict,
-                output_dir: str = ".",
-                output_filename: str = None) -> None:
+    def convert(self, ast: dict, output_dir: str = ".", output_filename: str = None) -> None:
         """
         Convert the given AST dictionary to YAML and write it to a file.
 
@@ -68,7 +66,7 @@ class YAMLConverter(A2LConverter):
             output_filename (str, optional): The filename to be used.
 
         Returns:
-            str: List of tuples (filename, yaml_string).
+            list: List of tuples (filename, yaml_string).
         """
         try:
             result = []

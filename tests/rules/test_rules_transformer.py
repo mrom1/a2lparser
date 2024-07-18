@@ -87,5 +87,14 @@ def test_rules_transformer_full():
     assert transformer["Timeout"] == "5000"
     assert transformer["Trigger"] == "ON_CHANGE"
     assert transformer["InverseTransformer"] == "TRANSFORMER_TOOL_REVERSE_1"
-    assert transformer["TRANSFORMER_IN_OBJECTS"] == ["IN_CHAR_1", "IN_BLOB_1", "IN_TYPEDEF_STRUCT_x1"]
-    assert transformer["TRANSFORMER_OUT_OBJECTS"] == ["OUT_ID_14", "OUT_STRUCT_x2", "OUT_BLOB_1", "OUT_BLOB_2"]
+    assert transformer["TRANSFORMER_IN_OBJECTS"] == [
+        "IN_CHAR_1",
+        "IN_BLOB_1",
+        "IN_TYPEDEF_STRUCT_x1",
+    ]
+    assert transformer["TRANSFORMER_OUT_OBJECTS"] == [
+        "OUT_ID_14",
+        "OUT_STRUCT_x2",
+        "OUT_BLOB_1",
+        "OUT_BLOB_2",
+    ]

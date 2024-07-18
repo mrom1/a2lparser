@@ -127,4 +127,7 @@ def test_rules_axis_descr_full():
     assert axis_descr["ANNOTATION"][0]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_BLOCK_1"']
     assert axis_descr["ANNOTATION"][1]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_2"'
     assert axis_descr["ANNOTATION"][1]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_2"'
-    assert axis_descr["ANNOTATION"][1]["ANNOTATION_TEXT"] == ['"ANNOTATION_TEXT_BLOCK_2_1"', '"ANNOTATION_TEXT_BLOCK_2_2"']
+    assert axis_descr["ANNOTATION"][1]["ANNOTATION_TEXT"] == [
+        '"ANNOTATION_TEXT_BLOCK_2_1"',
+        '"ANNOTATION_TEXT_BLOCK_2_2"',
+    ]

@@ -5,6 +5,8 @@ count = True
 
 statistics = True
 
-max-line-length = 128
+max-line-length = 100
 
 exclude = .tox,.venv,.env,venv,env,build,dist,doc,a2lparser/gen/
+
+extend-ignore = E203

@@ -35,7 +35,9 @@ def test_ast_generator():
     temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
     temp_test_dir_prefix = "temp_dir_output_"
 
-    with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
+    with tempfile.TemporaryDirectory(
+        dir=temp_test_output_path, prefix=temp_test_dir_prefix
+    ) as tempdir:
         config_file = A2L_CONFIGS_DIR / A2L_DEFAULT_CONFIG_NAME
         ast_python_file = os.path.join(tempdir, "test_a2l_ast.py")
         ast_generator = ASTGenerator(cfg_filename=str(config_file), out_filename=ast_python_file)

@@ -38,10 +38,10 @@ class AbstractSyntaxTree:
 
     class ASTException(Exception):
         """
-        Raised when a fatal error is encountered while trying to generate an Abstract Syntax Tree dictionary.
+        Raised when a fatal error is encountered while trying to generate an AST dictionary.
         """
 
-    def __init__(self, abstract_syntax_tree, dictionary: dict = None) -> None:  # type: ignore
+    def __init__(self, abstract_syntax_tree, dictionary: dict = None) -> None:
         """
         AbstractSyntaxTree Constructor.
 
@@ -63,6 +63,71 @@ class AbstractSyntaxTree:
 
         if not bool(dictionary) and abstract_syntax_tree:
             self._create_dict_from_ast(abstract_syntax_tree)
+
+    @staticmethod
+    def validate_ast(ast) -> bool:
+        """
+        Validates the abstract syntax tree.
+        """
+        if isinstance(ast, ASTNodes.Abstract_Syntax_Tree):
+            if getattr(ast, "node") is not None:
+                return True
+        elif isinstance(ast, (dict, list, tuple)) and len(ast) > 0:
+            return True
+        elif hasattr(ast, "children") and callable(getattr(ast, "children")):
+            return True
+        return False
+
+    def find_value(
+        self, search_value: str, case_sensitive: bool = False, exact_match: bool = False
+    ) -> "AbstractSyntaxTree":
+        """
+        Returns the dictionaries containing the passed value like this:
+        { "<search_value>": {found_dictionaries} }
+
+        Args:
+            search_value: The search value to search for.
+            case_sensitive: Whether or not the value should be matched case-sensitive.
+            exact_match: Whether or not the value should be exactly matched.
+
+        Returns:
+            dict: A dictionary containing the found values.
+        """
+        return AbstractSyntaxTree(
+            self._ast, self._find_value(search_value, self._dict, case_sensitive, exact_match)
+        )
+
+    def find_sections(self, section_name: str) -> "AbstractSyntaxTree":
+        """
+        Returns an AbstractSyntaxTree object containing the sections of the given section_name.
+
+        Args:
+            section_name (str): The name of the section to search for.
+
+        Returns:
+            AbstractSyntaxTree: An AbstractSyntaxTree object containing the found sections.
+                Dictionary access is wrapped through section name as key.
+                If only one section is found, it is wrapped in a dictionary.
+                If multiple sections are found, they are wrapped in a list.
+        """
+        sections = []
+        section_name = section_name.upper()
+        for key, value in self._dict.items():
+            if key.upper() == section_name:
+                sections.append(value)
+            elif isinstance(value, dict):
+                if section := AbstractSyntaxTree(self._ast, value).find_sections(section_name):
+                    if isinstance(section[section_name], list):
+                        sections.extend(section[section_name])
+                    else:
+                        sections.append(section[section_name])
+        if len(sections) == 1:
+            return AbstractSyntaxTree(
+                abstract_syntax_tree=self._ast, dictionary={section_name: sections[0]}
+            )
+        return AbstractSyntaxTree(
+            abstract_syntax_tree=self._ast, dictionary={section_name: sections}
+        )
 
     def __getitem__(self, key):
         return self._dict[key]
@@ -94,87 +159,104 @@ class AbstractSyntaxTree:
 
     def keys(self):
         """
-        returns a view object that contains the keys of the object.
+        Returns a view object that contains the keys of the object.
         """
         return self._dict.keys()
 
     def values(self):
         """
-        this method returns a view object that contains the values of the object.
+        This method returns a view object that contains the values of the object.
         """
         return self._dict.values()
 
     def items(self):
         """
-        this method returns a view object that contains the key-value pairs of the object.
+        This method returns a view object that contains the key-value pairs of the object.
         """
         return self._dict.items()
 
     def update(self, other):
         """
-        updates the dictionary
+        Updates the dictionary
         """
         self._dict.update(other)
 
     def clear(self):
         """
-        clears the dictionary.
+        Clears the dictionary.
         """
         self._dict.clear()
 
     def get_dict(self):
         """
-        returns a reference to the dictionary object.
+        Returns a reference to the dictionary object.
         """
         return self._dict
 
-    @staticmethod
-    def validate_ast(ast) -> bool:
+    def _print_dict(self, dictionary, indent=""):
         """
-        Validates the abstract syntax tree.
-        """
-        if isinstance(ast, ASTNodes.Abstract_Syntax_Tree):
-            if getattr(ast, "node") is not None:
-                return True
-        elif isinstance(ast, (dict, list, tuple)) and len(ast) > 0:
-            return True
-        elif hasattr(ast, "children") and callable(getattr(ast, "children")):
-            return True
-        return False
-
-    def find_sections(self, section_name: str) -> "AbstractSyntaxTree":
-        """
-        Returns an AbstractSyntaxTree object containing the sections of the given section_name
-        """
-        sections = []
-        section_name = section_name.upper()
-        for key, value in self._dict.items():
-            if key.upper() == section_name:
-                sections.append(value)
-            elif isinstance(value, dict):
-                if section := AbstractSyntaxTree(self._ast, value).find_sections(section_name):
-                    if isinstance(section[section_name], list):
-                        sections.extend(section[section_name])
-                    else:
-                        sections.append(section[section_name])
-        if len(sections) == 1:
-            return AbstractSyntaxTree(abstract_syntax_tree=self._ast, dictionary={section_name: sections[0]})
-        return AbstractSyntaxTree(abstract_syntax_tree=self._ast, dictionary={section_name: sections})
-
-    def find_value(self, search_value: str, case_sensitive: bool = False, exact_match: bool = False) -> "AbstractSyntaxTree":
-        """
-        Returns the dictionaries containing the passed value like this:
-        { "<search_value>": {found_dictionaries} }
+        Recursively prints a dictionary in a tree-like structure, similar to the Unix tree command.
 
         Args:
-            search_value: The search value to search for.
-            case_sensitive: Whether or not the value should be matched case-sensitive.
-            exact_match: Whether or not the value should be exactly matched.
+            dictionary (dict): The dictionary to be printed.
+            indent (str, optional): The indentation string to be used for each level of the tree.
+                Defaults to an empty string.
+
+        Returns:
+            str: The string representation of the dictionary in the tree-like structure.
+
+        Examples:
+            >>> dictionary = {'a': {'b': 1, 'c': 2}, 'd': [{'e': 3}, {'f': 4}]}
+            >>> print(_print_dict(dictionary))
+            .
+            ├── a:
+            │   ├── b: 1
+            │   ├── c: 2
+            │   └── d:
+            │       ├── e: 3
+            │       └── f: 4
+            └── d:
+                ├── e: 3
+                └── f: 4
         """
-        return AbstractSyntaxTree(self._ast, self._find_value(search_value, self._dict, case_sensitive, exact_match))
+        if not isinstance(dictionary, dict):
+            return f"{indent}└── {dictionary}"
+        result = ""
+        for i, (key, value) in enumerate(dictionary.items()):
+            if isinstance(value, dict):
+                if i == len(dictionary) - 1:
+                    result += f"\n{indent}└── {key}:"
+                    result += self._print_dict(value, f"{indent}    ")
+                else:
+                    result += f"\n{indent}├── {key}:"
+                    result += self._print_dict(value, f"{indent}│   ")
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        if i == len(dictionary) - 1:
+                            result += f"\n{indent}└── {key}:"
+                            result += self._print_dict(item, f"{indent}    ")
+                        else:
+                            result += f"\n{indent}├── {key}:"
+                            result += self._print_dict(item, f"{indent}│   ")
+                    else:
+                        result += (
+                            f"\n{indent}└── {key}: {item}"
+                            if i == len(dictionary) - 1
+                            else f"\n{indent}├── {key}: {item}"
+                        )
+            elif i == len(dictionary) - 1:
+                result += f"\n{indent}└── {key}: {value}"
+            else:
+                result += f"\n{indent}├── {key}: {value}"
+        return result
 
     def _find_value(
-        self, search_expression: Union[str, re.Pattern], dictionary: dict, case_sensitive: bool, exact_match: bool
+        self,
+        search_expression: Union[str, re.Pattern],
+        dictionary: dict,
+        case_sensitive: bool,
+        exact_match: bool,
     ) -> dict:
         """
         Searches recursively for a search expression under the values of the given dictionary.
@@ -184,11 +266,16 @@ class AbstractSyntaxTree:
             dictionary: Expects a dctionary to be passed.
             case_sensitive: Whether or not the value should be matched case-sensitive.
             exact_match: Whether or not the value should be exactly matched.
+
+        Returns:
+            dict: A dictionary containing the found values.
         """
         result = {}
         if isinstance(dictionary, dict):
             for key, value in dictionary.items():
-                if self._is_value_match(value, search_expression, case_sensitive, exact_match, True):
+                if self._is_value_match(
+                    value, search_expression, case_sensitive, exact_match, True
+                ):
                     if key in result:
                         if not isinstance(result[key], list):
                             result[key] = [result[key]]
@@ -197,7 +284,9 @@ class AbstractSyntaxTree:
                     if isinstance(value, list):
                         for obj in value:
                             if isinstance(obj, dict):
-                                if section := self._find_value(search_expression, obj, case_sensitive, exact_match):
+                                if section := self._find_value(
+                                    search_expression, obj, case_sensitive, exact_match
+                                ):
                                     if key in result:
                                         if isinstance(result[key], list):
                                             result[key].append(section)
@@ -205,14 +294,20 @@ class AbstractSyntaxTree:
                                             result[key] = section
                                         else:
                                             result[key] = [result[key], section]
-                    if self._is_value_match(value, search_expression, case_sensitive, exact_match, False):
+                    if self._is_value_match(
+                        value, search_expression, case_sensitive, exact_match, False
+                    ):
                         if isinstance(value, dict):
-                            if section := self._find_value(search_expression, value, case_sensitive, exact_match):
+                            if section := self._find_value(
+                                search_expression, value, case_sensitive, exact_match
+                            ):
                                 result[key] = section
                         else:
                             result[key] = value
                     elif isinstance(value, dict):
-                        if section := self._find_value(search_expression, value, case_sensitive, exact_match):
+                        if section := self._find_value(
+                            search_expression, value, case_sensitive, exact_match
+                        ):
                             result[key] = section
                 elif isinstance(value, dict):
                     self._find_value(search_expression, value, case_sensitive, exact_match)
@@ -247,31 +342,55 @@ class AbstractSyntaxTree:
             values = str(value)
 
         if isinstance(values, str):
-            if self._is_value_match_expression(values, search_expression, case_sensitive, exact_match):
+            if self._is_value_match_expression(
+                values, search_expression, case_sensitive, exact_match
+            ):
                 return True
         elif not recursive_search and isinstance(values, list):
             for obj in values:
-                if not isinstance(obj, (dict, list, tuple, AbstractSyntaxTree)) and self._is_value_match_expression(
+                if not isinstance(
+                    obj, (dict, list, tuple, AbstractSyntaxTree)
+                ) and self._is_value_match_expression(
                     str(obj), search_expression, case_sensitive, exact_match
                 ):
                     return True
         elif recursive_search and isinstance(values, list):
             for obj in values:
-                if self._is_value_match(obj, search_expression, case_sensitive, exact_match, recursive_search):
+                if self._is_value_match(
+                    obj, search_expression, case_sensitive, exact_match, recursive_search
+                ):
                     return True
         return False
 
     def _is_value_match_expression(
-        self, value_string: str, search_expression: Union[str, re.Pattern], case_sensitive: bool, exact_match: bool
+        self,
+        value_string: str,
+        search_expression: Union[str, re.Pattern],
+        case_sensitive: bool,
+        exact_match: bool,
     ):
         """
-        Checks if the given string matches the given search expression
+        Checks if the given value string matches the search expression.
+
+        Args:
+            value_string (str): The value string to be checked.
+            search_expression (Union[str, re.Pattern]): The expression to search for.
+            case_sensitive (bool): Whether the search should be case-sensitive.
+            exact_match (bool): Whether the search should be an exact match.
+
+        Returns:
+            bool: True if the value string matches the search expression, False otherwise.
         """
         if isinstance(search_expression, str):
             if not case_sensitive:
                 search_expression = search_expression.lower()
                 value_string = value_string.lower()
-            if exact_match and value_string == search_expression or not exact_match and search_expression in value_string:
+            if (
+                exact_match
+                and value_string == search_expression
+                or not exact_match
+                and search_expression in value_string
+            ):
                 return True
         elif isinstance(search_expression, re.Pattern):
             return search_expression.search(value_string) is not None
@@ -286,7 +405,15 @@ class AbstractSyntaxTree:
         + LexerKeywords.keywords_datatypes,
     ) -> bool:
         """
-        Returns true if the given node name is a A2L keyword.
+        Check if the given node name is a keyword.
+
+        Args:
+            node_name (str): The name of the node.
+            keywords (list, optional): The list of keywords. Defaults to the combination of
+                keywords_type, keywords_enum, keywords_section, and keywords_datatypes.
+
+        Returns:
+            bool: True if the node name is a keyword, False otherwise.
         """
         return any(node_name.upper() == keyword for keyword in keywords)
 
@@ -316,7 +443,12 @@ class AbstractSyntaxTree:
 
     def _add_children(self, node, parent_dict):
         """
-        Will recursively add the children of the given node to the given parent dictionary.
+        Recursively adds children nodes to the parent dictionary based on the given node.
+
+        Args:
+            self: The object instance.
+            node: The current node to process.
+            parent_dict: The dictionary representing the parent node.
         """
         if not hasattr(node, "children"):
             return
@@ -363,35 +495,3 @@ class AbstractSyntaxTree:
                         child_dict[attr_name] = attr_value
 
             self._add_children(child_obj, child_dict)
-
-    def _print_dict(self, dictionary, indent=""):
-        """
-        Prints the AST dictionary in the style of the unix tree command.
-        """
-        if not isinstance(dictionary, dict):
-            return f"{indent}└── {dictionary}"
-        result = ""
-        for i, (key, value) in enumerate(dictionary.items()):
-            if isinstance(value, dict):
-                if i == len(dictionary) - 1:
-                    result += f"\n{indent}└── {key}:"
-                    result += self._print_dict(value, f"{indent}    ")
-                else:
-                    result += f"\n{indent}├── {key}:"
-                    result += self._print_dict(value, f"{indent}│   ")
-            elif isinstance(value, list):
-                for item in value:
-                    if isinstance(item, dict):
-                        if i == len(dictionary) - 1:
-                            result += f"\n{indent}└── {key}:"
-                            result += self._print_dict(item, f"{indent}    ")
-                        else:
-                            result += f"\n{indent}├── {key}:"
-                            result += self._print_dict(item, f"{indent}│   ")
-                    else:
-                        result += f"\n{indent}└── {key}: {item}" if i == len(dictionary) - 1 else f"\n{indent}├── {key}: {item}"
-            elif i == len(dictionary) - 1:
-                result += f"\n{indent}└── {key}: {value}"
-            else:
-                result += f"\n{indent}├── {key}: {value}"
-        return result

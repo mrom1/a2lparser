@@ -141,24 +141,39 @@ def test_rules_measurement_full():
     assert measurement["FORMAT"] == '"%.3"'
     assert measurement["FUNCTION_LIST"]["Name"] == ["FNC_VAL_1", "FNC_VAL_2", "FNC_VAL_3"]
     assert measurement["LAYOUT"] == "ALTERNATE_WITH_Y"
-    assert measurement["MATRIX_DIM"] == ["2", "4",  "3"]
-    assert measurement["MAX_REFRESH"] == {'ScalingUnit': '998', 'Rate': '2'}
+    assert measurement["MATRIX_DIM"] == ["2", "4", "3"]
+    assert measurement["MAX_REFRESH"] == {"ScalingUnit": "998", "Rate": "2"}
     assert measurement["MODEL_LINK"] == '"system/measurement/ecu_x79c13.obj"'
     assert measurement["PHYS_UNIT"] == '"Nm"'
     assert measurement["READ_WRITE"] is True
     assert measurement["REF_MEMORY_SEGMENT"] == "Data1"
-    assert measurement["SYMBOL_LINK"] == {'SymbolName': '"_VehicleSpeed"', 'Offset': '0'}
-    assert measurement["VIRTUAL"] == {'MeasuringChannel': ['PHI_BASIS', 'PHI_CORR']}
-    assert measurement["BIT_OPERATION"] == {'RIGHT_SHIFT': {'Bitcount': '4'}, 'SIGN_EXTEND': {'Boolean': True}}
+    assert measurement["SYMBOL_LINK"] == {"SymbolName": '"_VehicleSpeed"', "Offset": "0"}
+    assert measurement["VIRTUAL"] == {"MeasuringChannel": ["PHI_BASIS", "PHI_CORR"]}
+    assert measurement["BIT_OPERATION"] == {
+        "RIGHT_SHIFT": {"Bitcount": "4"},
+        "SIGN_EXTEND": {"Boolean": True},
+    }
 
     assert len(measurement["IF_DATA"]) == 2
     assert measurement["IF_DATA"][0]["Name"] == "CANAPE_EXT"
-    assert measurement["IF_DATA"][0]["DataParams"] == ['100', 'LINK_MAP',
-                                                       '"xxx79c13e523bc16dfbba3285.x794ec36d9751f96100"',
-                                                       '0x2D474', '0x0', '0', '0x0', '1', '0xCF', '0x0',
-                                                       'DISPLAY', '0', '-36044.75', '36043.75']
+    assert measurement["IF_DATA"][0]["DataParams"] == [
+        "100",
+        "LINK_MAP",
+        '"xxx79c13e523bc16dfbba3285.x794ec36d9751f96100"',
+        "0x2D474",
+        "0x0",
+        "0",
+        "0x0",
+        "1",
+        "0xCF",
+        "0x0",
+        "DISPLAY",
+        "0",
+        "-36044.75",
+        "36043.75",
+    ]
     assert measurement["IF_DATA"][1]["Name"] == "CANAPE"
-    assert measurement["IF_DATA"][1]["DataParams"] == ['DISPLAY', '0', '-36044.75', '36043.75']
+    assert measurement["IF_DATA"][1]["DataParams"] == ["DISPLAY", "0", "-36044.75", "36043.75"]
 
     assert len(measurement["ANNOTATION"]) == 2
     assert measurement["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_1"'
@@ -185,7 +200,7 @@ def test_rules_in_measurement():
 
     in_measurement = ast["IN_MEASUREMENT"]
     assert in_measurement
-    assert in_measurement["Identifier"] == ['WHEEL_REVOLUTIONS', 'ENGINE_SPEED', 'RESOLUTION_TICKS']
+    assert in_measurement["Identifier"] == ["WHEEL_REVOLUTIONS", "ENGINE_SPEED", "RESOLUTION_TICKS"]
 
 
 def test_rules_out_measurement():
@@ -204,4 +219,9 @@ def test_rules_out_measurement():
 
     out_measurement = ast["OUT_MEASUREMENT"]
     assert out_measurement
-    assert out_measurement["Identifier"] == ['OK_FLAG', 'SENSOR_FLAG', 'FAILURE_FLAG', 'GLOBAL_FLAG']
+    assert out_measurement["Identifier"] == [
+        "OK_FLAG",
+        "SENSOR_FLAG",
+        "FAILURE_FLAG",
+        "GLOBAL_FLAG",
+    ]

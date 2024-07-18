@@ -79,8 +79,14 @@ def test_rules_group():
     assert group["GroupLongIdentifier"] == '"Subsystem"'
     assert group["ROOT"] is True
     assert group["FUNCTION_LIST"]["Name"] == ["ID_ADJUSTM", "FL_ADJUSTM", "SPEED_LIM"]
-    assert group["REF_CHARACTERISTIC"]["Identifier"] == ["ENG_SPEED_CORR_CURVE", "XAS_ENG_SPEED_CORR_CURVE"]
-    assert group["REF_MEASUREMENT"]["Identifier"] == ["CustBsw_Init_Current_Loop", "CustBsw_Init_Previous_Loop"]
+    assert group["REF_CHARACTERISTIC"]["Identifier"] == [
+        "ENG_SPEED_CORR_CURVE",
+        "XAS_ENG_SPEED_CORR_CURVE",
+    ]
+    assert group["REF_MEASUREMENT"]["Identifier"] == [
+        "CustBsw_Init_Current_Loop",
+        "CustBsw_Init_Previous_Loop",
+    ]
     assert group["SUB_GROUP"]["Identifier"] == ["AAS", "LRG", "Sar"]
     assert group["ANNOTATION"][0]["ANNOTATION_LABEL"] == '"ANNOTATION_LABEL_BLOCK_1"'
     assert group["ANNOTATION"][0]["ANNOTATION_ORIGIN"] == '"ANNOTATION_ORIGIN_BLOCK_1"'
@@ -94,6 +100,6 @@ def test_rules_group():
     assert if_data_map
     assert if_data_xcp
     assert if_data_map["Name"] == "MAP_REF_ADDR"
-    assert if_data_map["DataParams"] == ['LINK_MAP', 'ref_name', '0x003432']
+    assert if_data_map["DataParams"] == ["LINK_MAP", "ref_name", "0x003432"]
     assert if_data_xcp["Name"] == "XCP_REF_ADDR"
-    assert if_data_xcp["DataParams"] == ['XCP_REF_MAP', '0x00332266']
+    assert if_data_xcp["DataParams"] == ["XCP_REF_MAP", "0x00332266"]

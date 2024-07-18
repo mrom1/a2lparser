@@ -126,7 +126,9 @@ class RulesSections:
         """
         node = self.stack.get_or_create_node(ASTNodes.Annotation_Opt)
         self.stack.add_node_param(
-            node, [ASTNodes.Annotation_Label, ASTNodes.Annotation_Origin, ASTNodes.Annotation_Text], p[1]
+            node,
+            [ASTNodes.Annotation_Label, ASTNodes.Annotation_Origin, ASTNodes.Annotation_Text],
+            p[1],
         )
         p[0] = node
 
@@ -189,7 +191,12 @@ class RulesSections:
                      END AXIS_DESCR
         """
         p[0] = ASTNodes.Axis_Descr(
-            Attribute=p[3], InputQuantity=p[4], Conversion=p[5], MaxAxisPoints=p[6], LowerLimit=p[7], UpperLimit=p[8]
+            Attribute=p[3],
+            InputQuantity=p[4],
+            Conversion=p[5],
+            MaxAxisPoints=p[6],
+            LowerLimit=p[7],
+            UpperLimit=p[8],
         )
         if len(p) == 12:
             p[0].OptionalParams = p[9]
@@ -253,7 +260,9 @@ class RulesSections:
         axis_descr_opt : annotation
         """
         node = self.stack.get_or_create_node(ASTNodes.Axis_Descr_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Annotation], param=p[1]
+        )
         p[0] = node
 
     def p_axis_descr_opt_list(self, p):
@@ -266,11 +275,13 @@ class RulesSections:
     def p_axis_pts(self, p):
         """
         axis_pts : BEGIN AXIS_PTS \
-                      ident string_literal constant ident ident constant ident constant constant constant \
+                      ident string_literal constant ident ident constant \
+                      ident constant constant constant \
                    END AXIS_PTS
 
                  | BEGIN AXIS_PTS \
-                      ident string_literal constant ident ident constant ident constant constant constant axis_pts_opt_list \
+                      ident string_literal constant ident ident constant \
+                      ident constant constant constant axis_pts_opt_list \
                    END AXIS_PTS
         """
         p[0] = self.stack.create_node(
@@ -343,8 +354,9 @@ class RulesSections:
                 ASTNodes.Max_Refresh,
                 ASTNodes.Extended_Limits,
                 ASTNodes.Symbol_Link,
-                ASTNodes.Function_List],
-            param=p[1]
+                ASTNodes.Function_List,
+            ],
+            param=p[1],
         )
         p[0] = node
 
@@ -354,7 +366,9 @@ class RulesSections:
                      | if_data
         """
         node = self.stack.get_or_create_node(ASTNodes.Axis_Pts_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1]
+        )
         p[0] = node
 
     def p_axis_pts_opt_list(self, p):
@@ -402,10 +416,15 @@ class RulesSections:
 
     def p_axis_rescale_x(self, p):
         """
-        axis_rescale_x : AXIS_RESCALE_X constant datatype_enum constant indexorder_enum addrtype_enum
+        axis_rescale_x : AXIS_RESCALE_X constant datatype_enum \
+                                        constant indexorder_enum addrtype_enum
         """
         p[0] = ASTNodes.Axis_Rescale_X(
-            Position=p[2], Datatype=p[3], MaxNumberOfRescalePairs=p[4], IndexIncr=p[5], Addressing=p[6]
+            Position=p[2],
+            Datatype=p[3],
+            MaxNumberOfRescalePairs=p[4],
+            IndexIncr=p[5],
+            Addressing=p[6],
         )
 
     def p_bit_mask(self, p):
@@ -529,7 +548,8 @@ class RulesSections:
     def p_calibration_handle(self, p):
         """
         calibration_handle : BEGIN CALIBRATION_HANDLE constant_list END CALIBRATION_HANDLE
-                           | BEGIN CALIBRATION_HANDLE constant_list calibration_handle_text END CALIBRATION_HANDLE
+                           | BEGIN CALIBRATION_HANDLE constant_list calibration_handle_text \
+                             END CALIBRATION_HANDLE
         """
         p[0] = ASTNodes.Calibration_Handle(Handle=p[3])
         if len(p) == 7:
@@ -575,7 +595,8 @@ class RulesSections:
     def p_characteristic(self, p):
         """
         characteristic : BEGIN CHARACTERISTIC \
-                            ident string_literal characteristic_enum constant ident constant ident constant constant \
+                            ident string_literal characteristic_enum constant ident \
+                            constant ident constant constant \
                          END CHARACTERISTIC
 
                        | BEGIN CHARACTERISTIC \
@@ -679,7 +700,9 @@ class RulesSections:
         """
         node = self.stack.get_or_create_node(ASTNodes.Characteristic_Opt)
         self.stack.add_node_object_list(
-            node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.Axis_Descr, ASTNodes.If_Data], param=p[1]
+            node_class=node,
+            ast_node_names=[ASTNodes.Annotation, ASTNodes.Axis_Descr, ASTNodes.If_Data],
+            param=p[1],
         )
         p[0] = node
 
@@ -721,10 +744,13 @@ class RulesSections:
                        END COMPU_METHOD
 
                      | BEGIN COMPU_METHOD \
-                           ident string_literal conversion_type_enum string_literal string_literal compu_method_opt_list \
+                           ident string_literal conversion_type_enum \
+                           string_literal string_literal compu_method_opt_list \
                        END COMPU_METHOD
         """
-        p[0] = ASTNodes.Compu_Method(Name=p[3], LongIdentifier=p[4], ConversionType=p[5], Format=p[6], Unit=p[7])
+        p[0] = ASTNodes.Compu_Method(
+            Name=p[3], LongIdentifier=p[4], ConversionType=p[5], Format=p[6], Unit=p[7]
+        )
         if len(p) == 11:
             p[0].OptionalParams = p[8]
             self.stack.remove_node(ASTNodes.Compu_Method_Opt)
@@ -737,7 +763,9 @@ class RulesSections:
         """
         node = self.stack.get_or_create_node(ASTNodes.Compu_Method_Opt)
         self.stack.add_node_param(
-            node_class=node, ast_node_names=[ASTNodes.Compu_Tab_Ref, ASTNodes.Ref_Unit, ASTNodes.Status_String_Ref], param=p[1]
+            node_class=node,
+            ast_node_names=[ASTNodes.Compu_Tab_Ref, ASTNodes.Ref_Unit, ASTNodes.Status_String_Ref],
+            param=p[1],
         )
         p[0] = node
 
@@ -774,10 +802,17 @@ class RulesSections:
                     END COMPU_TAB
 
                   | BEGIN COMPU_TAB \
-                        ident string_literal conversion_type_enum constant axis_points_list compu_tab_opt_list \
+                        ident string_literal conversion_type_enum constant \
+                        axis_points_list compu_tab_opt_list \
                     END COMPU_TAB
         """
-        p[0] = ASTNodes.Compu_Tab(Name=p[3], LongIdentifier=p[4], ConversionType=p[5], NumberValuePairs=p[6], Axis_Points=p[7])
+        p[0] = ASTNodes.Compu_Tab(
+            Name=p[3],
+            LongIdentifier=p[4],
+            ConversionType=p[5],
+            NumberValuePairs=p[6],
+            Axis_Points=p[7],
+        )
         if len(p) == 11:
             p[0].OptionalParams = p[8]
             self.stack.remove_node(ASTNodes.Compu_Tab_Opt)
@@ -819,11 +854,16 @@ class RulesSections:
                      END COMPU_VTAB
 
                    | BEGIN COMPU_VTAB \
-                        ident string_literal conversion_type_enum constant inVal_outVal_list default_value \
+                        ident string_literal conversion_type_enum constant \
+                        inVal_outVal_list default_value \
                      END COMPU_VTAB
         """
         p[0] = ASTNodes.Compu_Vtab(
-            Name=p[3], LongIdentifier=p[4], ConversionType=p[5], NumberValuePairs=p[6], InVal_OutVal=p[7]
+            Name=p[3],
+            LongIdentifier=p[4],
+            ConversionType=p[5],
+            NumberValuePairs=p[6],
+            InVal_OutVal=p[7],
         )
         if len(p) == 11:
             p[0].Default_Value = getattr(p[8], p[8].__slots__[0])
@@ -835,10 +875,13 @@ class RulesSections:
                                END COMPU_VTAB_RANGE
 
                              | BEGIN COMPU_VTAB_RANGE \
-                                   ident string_literal constant inVal_MinMax_outVal_list default_value \
+                                   ident string_literal constant inVal_MinMax_outVal_list \
+                                   default_value \
                                END COMPU_VTAB_RANGE
         """
-        p[0] = ASTNodes.Compu_Vtab_Range(Name=p[3], LongIdentifier=p[4], NumberValueTriples=p[5], InVal_MinMax_OutVal=p[6])
+        p[0] = ASTNodes.Compu_Vtab_Range(
+            Name=p[3], LongIdentifier=p[4], NumberValueTriples=p[5], InVal_MinMax_OutVal=p[6]
+        )
         if len(p) == 10:
             p[0].Default_Value = getattr(p[7], p[7].__slots__[0])
 
@@ -1097,7 +1140,9 @@ class RulesSections:
         frame_opt : frame_measurement
         """
         node = self.stack.get_or_create_node(ASTNodes.Frame_Opt)
-        self.stack.add_node_param(node_class=node, ast_node_names=[ASTNodes.Frame_Measurement], param=p[1])
+        self.stack.add_node_param(
+            node_class=node, ast_node_names=[ASTNodes.Frame_Measurement], param=p[1]
+        )
         p[0] = node
 
     def p_frame_opt_objects_list(self, p):
@@ -1105,7 +1150,9 @@ class RulesSections:
         frame_opt : if_data
         """
         node = self.stack.get_or_create_node(ASTNodes.Frame_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.If_Data], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.If_Data], param=p[1]
+        )
         p[0] = node
 
     def p_frame_opt_list(self, p):
@@ -1136,7 +1183,9 @@ class RulesSections:
         function_opt : function_version
         """
         node = self.stack.get_or_create_node(ASTNodes.Function_Opt)
-        self.stack.add_node_param(node_class=node, ast_node_names=[ASTNodes.Function_Version], param=p[1])
+        self.stack.add_node_param(
+            node_class=node, ast_node_names=[ASTNodes.Function_Version], param=p[1]
+        )
         p[0] = node
 
     def p_function_opt_objects(self, p):
@@ -1223,7 +1272,12 @@ class RulesSections:
         node = self.stack.get_or_create_node(ASTNodes.Group_Opt)
         self.stack.add_node_object(
             node_class=node,
-            ast_node_names=[ASTNodes.Function_List, ASTNodes.Ref_Characteristic, ASTNodes.Ref_Measurement, ASTNodes.Sub_Group],
+            ast_node_names=[
+                ASTNodes.Function_List,
+                ASTNodes.Ref_Characteristic,
+                ASTNodes.Ref_Measurement,
+                ASTNodes.Sub_Group,
+            ],
             param=p[1],
         )
         p[0] = node
@@ -1234,7 +1288,9 @@ class RulesSections:
                   | if_data
         """
         node = self.stack.get_or_create_node(ASTNodes.Group_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1]
+        )
         p[0] = node
 
     def p_group_opt_list(self, p):
@@ -1266,7 +1322,9 @@ class RulesSections:
                    | version
         """
         node = self.stack.get_or_create_node(ASTNodes.Header_Opt)
-        self.stack.add_node_param(node_class=node, ast_node_names=[ASTNodes.Project_No, ASTNodes.Version], param=p[1])
+        self.stack.add_node_param(
+            node_class=node, ast_node_names=[ASTNodes.Project_No, ASTNodes.Version], param=p[1]
+        )
         p[0] = node
 
     def p_header_opt_list(self, p):
@@ -1289,7 +1347,10 @@ class RulesSections:
         data_params = [x for x in p[2] if not isinstance(x, ASTNodes.If_Data_Block)]
         if_data_block = [x for x in p[2] if isinstance(x, ASTNodes.If_Data_Block)]
         p[0] = ASTNodes.If_Data(
-            Name=p[1], OptionalParams=ASTNodes.If_Data_Opt(DataParams=data_params, If_Data_Block=if_data_block)
+            Name=p[1],
+            OptionalParams=ASTNodes.If_Data_Opt(
+                DataParams=data_params, If_Data_Block=if_data_block
+            ),
         )
 
     def p_if_data_mandatory_only(self, p):
@@ -1362,7 +1423,9 @@ class RulesSections:
         """
         if_data_block = [x for x in p[2] if isinstance(x, ASTNodes.If_Data_Block)]
         data_params = [x for x in p[2] if not isinstance(x, ASTNodes.If_Data_Block)]
-        p[0] = ASTNodes.If_Data_Block(Name=p[1], DataParams=data_params, If_Data_Block=if_data_block)
+        p[0] = ASTNodes.If_Data_Block(
+            Name=p[1], DataParams=data_params, If_Data_Block=if_data_block
+        )
 
     def p_if_data_block_empty(self, p):
         """
@@ -1463,7 +1526,9 @@ class RulesSections:
         """
         node = self.stack.get_or_create_node(ASTNodes.Instance_Opt)
         self.stack.add_node_object_list(
-            node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data, ASTNodes.Overwrite], param=p[1]
+            node_class=node,
+            ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data, ASTNodes.Overwrite],
+            param=p[1],
         )
         p[0] = node
 
@@ -1622,7 +1687,9 @@ class RulesSections:
                         | if_data
         """
         node = self.stack.get_or_create_node(ASTNodes.Measurement_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Annotation, ASTNodes.If_Data], param=p[1]
+        )
         p[0] = node
 
     def p_measurement_opt_list(self, p):
@@ -1676,7 +1743,14 @@ class RulesSections:
                              END MEMORY_SEGMENT
         """
         p[0] = ASTNodes.Memory_Segment(
-            Name=p[3], LongIdentifier=p[4], PrgType=p[5], MemoryType=p[6], Attribute=p[7], Address=p[8], Size=p[9], Offset=p[10]
+            Name=p[3],
+            LongIdentifier=p[4],
+            PrgType=p[5],
+            MemoryType=p[6],
+            Attribute=p[7],
+            Address=p[8],
+            Size=p[9],
+            Offset=p[10],
         )
 
         if len(p) == 14:
@@ -2107,7 +2181,9 @@ class RulesSections:
         project_opt : module
         """
         node = self.stack.get_or_create_node(ASTNodes.Project_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Module], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Module], param=p[1]
+        )
         p[0] = node
 
     def p_project_opt_list(self, p):
@@ -2286,7 +2362,9 @@ class RulesSections:
         record_layout_opt : reserved
         """
         node = self.stack.get_or_create_node(ASTNodes.Record_Layout_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Reserved], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Reserved], param=p[1]
+        )
         p[0] = node
 
     def p_record_layout_opt_list(self, p):
@@ -2572,8 +2650,15 @@ class RulesSections:
                       END TRANSFORMER
 
         """
-        p[0] = ASTNodes.Transformer(Name=p[3], Version=p[4], Executable32=p[5], Executable64=p[6],
-                                    Timeout=p[7], Trigger=p[8], InverseTransformer=p[9])
+        p[0] = ASTNodes.Transformer(
+            Name=p[3],
+            Version=p[4],
+            Executable32=p[5],
+            Executable64=p[6],
+            Timeout=p[7],
+            Trigger=p[8],
+            InverseTransformer=p[9],
+        )
         if len(p) == 13:
             p[0].OptionalParams = p[10]
             self.stack.remove_node(ASTNodes.Transformer_Opt)
@@ -2609,7 +2694,8 @@ class RulesSections:
 
     def p_transformer_out_objects(self, p):
         """
-        transformer_out_objects : BEGIN TRANSFORMER_OUT_OBJECTS ident_list END TRANSFORMER_OUT_OBJECTS
+        transformer_out_objects : BEGIN TRANSFORMER_OUT_OBJECTS ident_list \
+                                  END TRANSFORMER_OUT_OBJECTS
         """
         p[0] = ASTNodes.Transformer_Out_Objects(p[3])
 
@@ -2624,15 +2710,17 @@ class RulesSections:
                         ident constant constant constant typedef_axis_opt_list \
                        END TYPEDEF_AXIS
         """
-        p[0] = ASTNodes.Typedef_Axis(Name=p[3],
-                                     LongIdentifier=p[4],
-                                     InputQuantity=p[5],
-                                     RecordLayout=p[6],
-                                     MaxDiff=p[7],
-                                     Conversion=p[8],
-                                     MaxAxisPoints=p[9],
-                                     LowerLimit=p[10],
-                                     UpperLimit=p[11])
+        p[0] = ASTNodes.Typedef_Axis(
+            Name=p[3],
+            LongIdentifier=p[4],
+            InputQuantity=p[5],
+            RecordLayout=p[6],
+            MaxDiff=p[7],
+            Conversion=p[8],
+            MaxAxisPoints=p[9],
+            LowerLimit=p[10],
+            UpperLimit=p[11],
+        )
         if len(p) == 15:
             p[0].OptionalParams = p[12]
             self.stack.remove_node(ASTNodes.Typedef_Axis_Opt)
@@ -2662,7 +2750,7 @@ class RulesSections:
                 ASTNodes.Format,
                 ASTNodes.Monotony,
                 ASTNodes.Phys_Unit,
-                ASTNodes.Step_Size
+                ASTNodes.Step_Size,
             ],
             param=p[1],
         )
@@ -2673,19 +2761,24 @@ class RulesSections:
         typedef_axis_opt : extended_limits
         """
         node = self.stack.get_or_create_node(ASTNodes.Typedef_Axis_Opt)
-        self.stack.add_node_object(node_class=node, ast_node_names=[ASTNodes.Extended_Limits], param=p[1])
+        self.stack.add_node_object(
+            node_class=node, ast_node_names=[ASTNodes.Extended_Limits], param=p[1]
+        )
         p[0] = node
 
     def p_typedef_blob(self, p):
         """
         typedef_blob : BEGIN TYPEDEF_BLOB ident string_literal constant END TYPEDEF_BLOB
-                     | BEGIN TYPEDEF_BLOB ident string_literal constant address_type END TYPEDEF_BLOB
+                     | BEGIN TYPEDEF_BLOB ident string_literal constant address_type \
+                       END TYPEDEF_BLOB
         """
         if len(p) == 8:
             p[0] = ASTNodes.Typedef_Blob(Name=p[3], LongIdentifier=p[4], Size=p[5])
         elif len(p) == 9:
             address_type = p[6].AddressType
-            p[0] = ASTNodes.Typedef_Blob(Name=p[3], LongIdentifier=p[4], Size=p[5], Address_Type=address_type)
+            p[0] = ASTNodes.Typedef_Blob(
+                Name=p[3], LongIdentifier=p[4], Size=p[5], Address_Type=address_type
+            )
 
     def p_typedef_characteristic(self, p):
         """
@@ -2698,14 +2791,16 @@ class RulesSections:
                                     ident constant constant typedef_characteristic_opt_list \
                                  END TYPEDEF_CHARACTERISTIC
         """
-        p[0] = ASTNodes.Typedef_Characteristic(Name=p[3],
-                                               LongIdentifier=p[4],
-                                               Type=p[5],
-                                               RecordLayout=p[6],
-                                               MaxDiff=p[7],
-                                               Conversion=p[8],
-                                               LowerLimit=p[9],
-                                               UpperLimit=p[10])
+        p[0] = ASTNodes.Typedef_Characteristic(
+            Name=p[3],
+            LongIdentifier=p[4],
+            Type=p[5],
+            RecordLayout=p[6],
+            MaxDiff=p[7],
+            Conversion=p[8],
+            LowerLimit=p[9],
+            UpperLimit=p[10],
+        )
         if len(p) == 14:
             p[0].OptionalParams = p[11]
             self.stack.remove_node(ASTNodes.Typedef_Characteristic_Opt)
@@ -2766,7 +2861,9 @@ class RulesSections:
         typedef_characteristic_opt : axis_descr
         """
         node = self.stack.get_or_create_node(ASTNodes.Typedef_Characteristic_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Axis_Descr], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Axis_Descr], param=p[1]
+        )
         p[0] = node
 
     def p_typedef_measurement(self, p):
@@ -2780,14 +2877,16 @@ class RulesSections:
                                 constant constant constant typedef_measurement_opt_list \
                               END TYPEDEF_MEASUREMENT
         """
-        p[0] = ASTNodes.Typedef_Measurement(Name=p[3],
-                                            LongIdentifier=p[4],
-                                            Datatype=p[5],
-                                            Conversion=p[6],
-                                            Resolution=p[7],
-                                            Accuracy=p[8],
-                                            LowerLimit=p[9],
-                                            UpperLimit=p[10])
+        p[0] = ASTNodes.Typedef_Measurement(
+            Name=p[3],
+            LongIdentifier=p[4],
+            Datatype=p[5],
+            Conversion=p[6],
+            Resolution=p[7],
+            Accuracy=p[8],
+            LowerLimit=p[9],
+            UpperLimit=p[10],
+        )
         if len(p) == 14:
             p[0].OptionalParams = p[11]
             self.stack.remove_node(ASTNodes.Typedef_Measurement_Opt)
@@ -2845,7 +2944,8 @@ class RulesSections:
 
     def p_typedef_structure(self, p):
         """
-        typedef_structure : BEGIN TYPEDEF_STRUCTURE ident string_literal constant END TYPEDEF_STRUCTURE
+        typedef_structure : BEGIN TYPEDEF_STRUCTURE ident string_literal constant \
+                            END TYPEDEF_STRUCTURE
                           | BEGIN TYPEDEF_STRUCTURE \
                                 ident string_literal constant \
                                 typedef_structure_opt_list \
@@ -2886,7 +2986,9 @@ class RulesSections:
         typedef_structure_opt : structure_component
         """
         node = self.stack.get_or_create_node(ASTNodes.Typedef_Structure_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Structure_Component], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Structure_Component], param=p[1]
+        )
         p[0] = node
 
     def p_unit(self, p):
@@ -2913,8 +3015,11 @@ class RulesSections:
                  | unit_conversion
         """
         node = self.stack.get_or_create_node(ASTNodes.Unit_Opt)
-        self.stack.add_node_object(node_class=node, ast_node_names=[
-                                   ASTNodes.Si_Exponents, ASTNodes.Unit_Conversion], param=p[1])
+        self.stack.add_node_object(
+            node_class=node,
+            ast_node_names=[ASTNodes.Si_Exponents, ASTNodes.Unit_Conversion],
+            param=p[1],
+        )
         p[0] = node
 
     def p_unit_opt_list(self, p):
@@ -2959,7 +3064,9 @@ class RulesSections:
         user_rights_opt : ref_group
         """
         node = self.stack.get_or_create_node(ASTNodes.User_Rights_Opt)
-        self.stack.add_node_object_list(node_class=node, ast_node_names=[ASTNodes.Ref_Group], param=p[1])
+        self.stack.add_node_object_list(
+            node_class=node, ast_node_names=[ASTNodes.Ref_Group], param=p[1]
+        )
         p[0] = node
 
     def p_user_rights_opt_list(self, p):
@@ -2980,7 +3087,8 @@ class RulesSections:
         """
         var_characteristic : BEGIN VAR_CHARACTERISTIC ident END VAR_CHARACTERISTIC
                            | BEGIN VAR_CHARACTERISTIC ident ident_list END VAR_CHARACTERISTIC
-                           | BEGIN VAR_CHARACTERISTIC ident ident_list var_address END VAR_CHARACTERISTIC
+                           | BEGIN VAR_CHARACTERISTIC ident ident_list var_address \
+                             END VAR_CHARACTERISTIC
         """
         if len(p) == 8:
             p[0] = ASTNodes.Var_Characteristic(Name=p[3], CriterionName=p[4], Var_Address=p[5])
@@ -2993,10 +3101,13 @@ class RulesSections:
         """
         var_criterion : BEGIN VAR_CRITERION ident string_literal END VAR_CRITERION
                       | BEGIN VAR_CRITERION ident string_literal ident_list END VAR_CRITERION
-                      | BEGIN VAR_CRITERION ident string_literal ident_list var_criterion_opt_list END VAR_CRITERION
+                      | BEGIN VAR_CRITERION ident string_literal ident_list var_criterion_opt_list \
+                        END VAR_CRITERION
         """
         if len(p) == 9:
-            p[0] = ASTNodes.Var_Criterion(Name=p[3], LongIdentifier=p[4], Value=p[5], OptionalParams=p[6])
+            p[0] = ASTNodes.Var_Criterion(
+                Name=p[3], LongIdentifier=p[4], Value=p[5], OptionalParams=p[6]
+            )
             self.stack.remove_node(ASTNodes.Var_Criterion_Opt)
         elif len(p) == 8:
             p[0] = ASTNodes.Var_Criterion(Name=p[3], LongIdentifier=p[4], Value=p[5])
@@ -3011,7 +3122,9 @@ class RulesSections:
         """
         node = self.stack.get_or_create_node(ASTNodes.Var_Criterion_Opt)
         self.stack.add_node_param(
-            node_class=node, ast_node_names=[ASTNodes.Var_Measurement, ASTNodes.Var_Selection_Characteristic], param=p[1]
+            node_class=node,
+            ast_node_names=[ASTNodes.Var_Measurement, ASTNodes.Var_Selection_Characteristic],
+            param=p[1],
         )
         p[0] = node
 
@@ -3066,7 +3179,11 @@ class RulesSections:
 
         """
         node = self.stack.get_or_create_node(ASTNodes.Variant_Coding_Opt)
-        self.stack.add_node_param(node_class=node, ast_node_names=[ASTNodes.Var_Naming, ASTNodes.Var_Separator], param=p[1])
+        self.stack.add_node_param(
+            node_class=node,
+            ast_node_names=[ASTNodes.Var_Naming, ASTNodes.Var_Separator],
+            param=p[1],
+        )
         p[0] = node
 
     def p_variant_coding_opt_objects_list(self, p):
@@ -3078,7 +3195,11 @@ class RulesSections:
         node = self.stack.get_or_create_node(ASTNodes.Variant_Coding_Opt)
         self.stack.add_node_object_list(
             node_class=node,
-            ast_node_names=[ASTNodes.Var_Characteristic, ASTNodes.Var_Criterion, ASTNodes.Var_Forbidden_Comb],
+            ast_node_names=[
+                ASTNodes.Var_Characteristic,
+                ASTNodes.Var_Criterion,
+                ASTNodes.Var_Forbidden_Comb,
+            ],
             param=p[1],
         )
         p[0] = node
@@ -3104,8 +3225,10 @@ class RulesSections:
 
     def p_virtual_characteristic(self, p):
         """
-        virtual_characteristic : BEGIN VIRTUAL_CHARACTERISTIC string_literal END VIRTUAL_CHARACTERISTIC
-                               | BEGIN VIRTUAL_CHARACTERISTIC string_literal ident_list END VIRTUAL_CHARACTERISTIC
+        virtual_characteristic : BEGIN VIRTUAL_CHARACTERISTIC string_literal \
+                                 END VIRTUAL_CHARACTERISTIC
+                               | BEGIN VIRTUAL_CHARACTERISTIC string_literal ident_list \
+                                 END VIRTUAL_CHARACTERISTIC
         """
         if len(p) == 7:
             p[0] = ASTNodes.Virtual_Characteristic(Formula=p[3], Characteristic=p[4])

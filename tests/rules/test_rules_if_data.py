@@ -79,7 +79,10 @@ def test_rules_if_data():
 
     daq_timestamp_supported = if_data_daq["TIMESTAMP_SUPPORTED"]
     assert daq_timestamp_supported["Name"] == "TIMESTAMP_SUPPORTED"
-    assert daq_timestamp_supported["DataParams"] == ["TIMESTAMP_SUPPORTED_PARAM_FIRST", "TIMESTAMP_SUPPORTED_PARAM_LAST"]
+    assert daq_timestamp_supported["DataParams"] == [
+        "TIMESTAMP_SUPPORTED_PARAM_FIRST",
+        "TIMESTAMP_SUPPORTED_PARAM_LAST",
+    ]
 
     daq_event = daq_timestamp_supported["EVENT"]
     assert daq_event["Name"] == "EVENT"
@@ -151,7 +154,9 @@ def test_rules_if_data_including_keywords():
         /begin DISTAB_CFG 0xD 0x122 0x2 0x0 0x0
           TRG_MOD 0x0
         /end DISTAB_CFG
-        ETK_CFG 0x10 0x1D 0x61 0x1 0x1 0xFF 0xFF 0x63 0xCF 0x7F 0x81 0x84 0x79 0x64 0xB 0x65 0x8C 0x66 0xA0 0x67 0x91
+        ETK_CFG 0x10 0x1D 0x61 0x1 0x1 0xFF
+          0xFF 0x63 0xCF 0x7F 0x81 0x84 0x79
+          0x64 0xB 0x65 0x8C 0x66 0xA0 0x67 0x91
         ETK_MAILBOX 0x11223344
         EXRAM    0xAFF7FF00  0xFF
         EXRAM    0xAFF7FF00  0xFF
@@ -345,7 +350,15 @@ def test_rules_if_data_including_keywords():
     tp_blob_distab_cfg = tp_blob["DISTAB_CFG"]
     assert tp_blob_distab_cfg
     assert tp_blob_distab_cfg["Name"] == "DISTAB_CFG"
-    assert tp_blob_distab_cfg["DataParams"] == ["0xD", "0x122", "0x2", "0x0", "0x0", "TRG_MOD", "0x0"]
+    assert tp_blob_distab_cfg["DataParams"] == [
+        "0xD",
+        "0x122",
+        "0x2",
+        "0x0",
+        "0x0",
+        "TRG_MOD",
+        "0x0",
+    ]
 
 
 def test_rules_if_data_empty_ident_block():
@@ -413,20 +426,49 @@ def test_rules_if_data_empty_ident_block():
 
     daq = if_data["DAQ"]
     assert daq["Name"] == "DAQ"
-    assert daq["DataParams"] == ["STATIC", "0x0004", "GRANULARITY_ENTRY_SIZE_DAQ_BYTE", "0x04", "NO_OVERLOAD_INDICATION"]
+    assert daq["DataParams"] == [
+        "STATIC",
+        "0x0004",
+        "GRANULARITY_ENTRY_SIZE_DAQ_BYTE",
+        "0x04",
+        "NO_OVERLOAD_INDICATION",
+    ]
     assert daq["DAQ_LIST"]
 
     daq_list = daq["DAQ_LIST"]
     assert len(daq_list) == 3
     assert daq_list[0]["Name"] == "DAQ_LIST"
-    assert daq_list[0]["DataParams"] == ["DAQ_LIST_TYPE", "DAQ", "MAX_ODT", "0x01", "EVENT_FIXED", "0x1001"]
+    assert daq_list[0]["DataParams"] == [
+        "DAQ_LIST_TYPE",
+        "DAQ",
+        "MAX_ODT",
+        "0x01",
+        "EVENT_FIXED",
+        "0x1001",
+    ]
     assert daq_list[0]["PREDEFINED"]
     assert daq_list[0]["PREDEFINED"]["ODT"]["DataParams"] == ["0x00", "ODT_ENTRY", "0x04"]
     assert daq_list[1]["Name"] == "DAQ_LIST"
-    assert daq_list[1]["DataParams"] == ["0x01", "DAQ_LIST_TYPE", "DAQ", "MAX_ODT", "0x10", "EVENT_FIXED", "0x2001"]
+    assert daq_list[1]["DataParams"] == [
+        "0x01",
+        "DAQ_LIST_TYPE",
+        "DAQ",
+        "MAX_ODT",
+        "0x10",
+        "EVENT_FIXED",
+        "0x2001",
+    ]
     assert daq_list[1]["PREDEFINED"]
     assert daq_list[2]["Name"] == "DAQ_LIST"
-    assert daq_list[2]["DataParams"] == ["0x02", "DAQ_LIST_TYPE", "DAQ", "MAX_ODT", "0x00", "EVENT_FIXED", "0x4001"]
+    assert daq_list[2]["DataParams"] == [
+        "0x02",
+        "DAQ_LIST_TYPE",
+        "DAQ",
+        "MAX_ODT",
+        "0x00",
+        "EVENT_FIXED",
+        "0x4001",
+    ]
     assert daq_list[2]["PREDEFINED"]
 
     daq_event = daq["EVENT"]

@@ -74,34 +74,34 @@ def test_rules_variant_coding():
 
     variant_coding = ast["VARIANT_CODING"]
     assert variant_coding
-    assert variant_coding['VAR_NAMING'] == 'NUMERIC'
-    assert variant_coding['VAR_SEPARATOR'] == '"."'
-    assert variant_coding['VAR_CHARACTERISTIC'][0]['Name'] == 'PUMKF'
-    assert variant_coding['VAR_CHARACTERISTIC'][0]['CriterionName'][0] == 'Gear'
-    assert variant_coding['VAR_CHARACTERISTIC'][0]['CriterionName'][1] == 'Car'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['Name'] == 'NLLM'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['CriterionName'][0] == 'Gear'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['CriterionName'][1] == 'Car'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['VAR_ADDRESS']['Address'][0] == '0x8840'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['VAR_ADDRESS']['Address'][1] == '0x8858'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['VAR_ADDRESS']['Address'][2] == '0x8870'
-    assert variant_coding['VAR_CHARACTERISTIC'][1]['VAR_ADDRESS']['Address'][3] == '0x8888'
-    assert variant_coding['VAR_CRITERION'][0]['Name'] == 'Car'
-    assert variant_coding['VAR_CRITERION'][0]['LongIdentifier'] == '"Car body"'
-    assert variant_coding['VAR_CRITERION'][0]['VALUE'][0] == 'Limousine'
-    assert variant_coding['VAR_CRITERION'][0]['VALUE'][1] == 'Kombi'
-    assert variant_coding['VAR_CRITERION'][0]['VALUE'][2] == 'Cabrio'
-    assert variant_coding['VAR_CRITERION'][0]['VAR_MEASUREMENT'] == 'S_CAR'
-    assert variant_coding['VAR_CRITERION'][0]['VAR_SELECTION_CHARACTERISTIC'] == 'V_CAR'
-    assert variant_coding['VAR_CRITERION'][1]['Name'] == 'Gear'
-    assert variant_coding['VAR_CRITERION'][1]['LongIdentifier'] == '"Type of gear box"'
-    assert variant_coding['VAR_CRITERION'][1]['VALUE'][0] == 'Manual'
-    assert variant_coding['VAR_CRITERION'][1]['VALUE'][1] == 'Automatic'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][0]['CriterionList'][0][0] == 'Car'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][0]['CriterionList'][0][1] == 'Limousine'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][0]['CriterionList'][1][0] == 'Gear'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][0]['CriterionList'][1][1] == 'Manual'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][1]['CriterionList'][0][0] == 'Car'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][1]['CriterionList'][0][1] == 'Cabrio'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][1]['CriterionList'][1][0] == 'Gear'
-    assert variant_coding['VAR_FORBIDDEN_COMB'][1]['CriterionList'][1][1] == 'Automatic'
+    assert variant_coding["VAR_NAMING"] == "NUMERIC"
+    assert variant_coding["VAR_SEPARATOR"] == '"."'
+    assert variant_coding["VAR_CHARACTERISTIC"][0]["Name"] == "PUMKF"
+    assert variant_coding["VAR_CHARACTERISTIC"][0]["CriterionName"][0] == "Gear"
+    assert variant_coding["VAR_CHARACTERISTIC"][0]["CriterionName"][1] == "Car"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["Name"] == "NLLM"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["CriterionName"][0] == "Gear"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["CriterionName"][1] == "Car"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["VAR_ADDRESS"]["Address"][0] == "0x8840"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["VAR_ADDRESS"]["Address"][1] == "0x8858"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["VAR_ADDRESS"]["Address"][2] == "0x8870"
+    assert variant_coding["VAR_CHARACTERISTIC"][1]["VAR_ADDRESS"]["Address"][3] == "0x8888"
+    assert variant_coding["VAR_CRITERION"][0]["Name"] == "Car"
+    assert variant_coding["VAR_CRITERION"][0]["LongIdentifier"] == '"Car body"'
+    assert variant_coding["VAR_CRITERION"][0]["VALUE"][0] == "Limousine"
+    assert variant_coding["VAR_CRITERION"][0]["VALUE"][1] == "Kombi"
+    assert variant_coding["VAR_CRITERION"][0]["VALUE"][2] == "Cabrio"
+    assert variant_coding["VAR_CRITERION"][0]["VAR_MEASUREMENT"] == "S_CAR"
+    assert variant_coding["VAR_CRITERION"][0]["VAR_SELECTION_CHARACTERISTIC"] == "V_CAR"
+    assert variant_coding["VAR_CRITERION"][1]["Name"] == "Gear"
+    assert variant_coding["VAR_CRITERION"][1]["LongIdentifier"] == '"Type of gear box"'
+    assert variant_coding["VAR_CRITERION"][1]["VALUE"][0] == "Manual"
+    assert variant_coding["VAR_CRITERION"][1]["VALUE"][1] == "Automatic"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][0]["CriterionList"][0][0] == "Car"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][0]["CriterionList"][0][1] == "Limousine"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][0]["CriterionList"][1][0] == "Gear"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][0]["CriterionList"][1][1] == "Manual"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][1]["CriterionList"][0][0] == "Car"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][1]["CriterionList"][0][1] == "Cabrio"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][1]["CriterionList"][1][0] == "Gear"
+    assert variant_coding["VAR_FORBIDDEN_COMB"][1]["CriterionList"][1][1] == "Automatic"

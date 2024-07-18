@@ -105,4 +105,13 @@ def test_error_handling_module_erroneous_section_post():
     assert module["INSTANCE"]["Address"] == "0xEECCDD00"
 
     assert module["IF_DATA"]["Name"] == "ISO"
-    assert module["IF_DATA"]["DataParams"] == ['SND', '0x10', '0x00', '0x05', '0x08', 'RCV', '4', 'long']
+    assert module["IF_DATA"]["DataParams"] == [
+        "SND",
+        "0x10",
+        "0x00",
+        "0x05",
+        "0x08",
+        "RCV",
+        "4",
+        "long",
+    ]

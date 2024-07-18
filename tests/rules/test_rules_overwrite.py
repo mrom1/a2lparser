@@ -62,9 +62,9 @@ def test_rules_overwrite_full():
     assert overwrite["Name"] == "XcpInstance"
     assert overwrite["AxisNumber"] == "3"
     assert overwrite["CONVERSION"] == "ConversionMethod1"
-    assert overwrite["EXTENDED_LIMITS"] == {'LowerLimit': '0', 'UpperLimit': '200'}
+    assert overwrite["EXTENDED_LIMITS"] == {"LowerLimit": "0", "UpperLimit": "200"}
     assert overwrite["FORMAT"] == '"%.2f"'
     assert overwrite["INPUT_QUANTITY"] == "Speed2"
-    assert overwrite["LIMITS"] == {'LowerLimit': '0', 'UpperLimit': '160'}
+    assert overwrite["LIMITS"] == {"LowerLimit": "0", "UpperLimit": "160"}
     assert overwrite["MONOTONY"] == "STRICT_DECREASE"
     assert overwrite["PHYS_UNIT"] == '"km/h"'

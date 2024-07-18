@@ -21,12 +21,17 @@
 
 class ASTNodeStack:
     """
-    AST Node Stack.
+    ASTNodeStack.
 
-    Keeps track of current nodes parsed in the grammar rules.
+    Utility class to keep track of current nodes parsed in the grammar rules.
     """
 
     def __init__(self):
+        """
+        Initializes the ASTNodeStack.
+
+        Creates an instance of ASTNodeStack with an empty stack.
+        """
         self._stack = []
 
     def create_node(self, node):

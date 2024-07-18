@@ -23,7 +23,7 @@ import tempfile
 from pathlib import Path
 from a2lparser import A2L_PACKAGE_DIR
 from a2lparser.main import main
-from tests.fixture_utils import compare_files, check_files_exist
+# from tests.fixture_utils import compare_files, check_files_exist
 
 
 def test_integration_nested_includes(monkeypatch, compare_files, check_files_exist):
@@ -34,12 +34,21 @@ def test_integration_nested_includes(monkeypatch, compare_files, check_files_exi
     temp_test_output_path = A2L_PACKAGE_DIR / "../testfiles"
     temp_test_dir_prefix = "temp_dir_output_"
 
-    with tempfile.TemporaryDirectory(dir=temp_test_output_path, prefix=temp_test_dir_prefix) as tempdir:
-        monkeypatch.setattr("sys.argv", [
-            "a2lparser",  f"testfiles/A2L/{a2l_filename}",
-            "--json", "--xml", "--yaml",
-            "--output-dir",  f"\"{Path(tempdir).resolve().as_posix()}\"",
-        ])
+    with tempfile.TemporaryDirectory(
+        dir=temp_test_output_path, prefix=temp_test_dir_prefix
+    ) as tempdir:
+        monkeypatch.setattr(
+            "sys.argv",
+            [
+                "a2lparser",
+                f"testfiles/A2L/{a2l_filename}",
+                "--json",
+                "--xml",
+                "--yaml",
+                "--output-dir",
+                f'"{Path(tempdir).resolve().as_posix()}"',
+            ],
+        )
         main()
 
         # Check if files were generated

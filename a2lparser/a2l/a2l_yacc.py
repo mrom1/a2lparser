@@ -65,7 +65,10 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
         """
         super().__init__()
         self.a2l_lex = A2LLex(
-            debug=debug, optimize=optimize, generated_files_dir=generated_files_dir, lex_table_file=lex_table_file
+            debug=debug,
+            optimize=optimize,
+            generated_files_dir=generated_files_dir,
+            lex_table_file=lex_table_file,
         )
         self.tokens = self.a2l_lex.tokens
         self.experimental_error_resolve = False
@@ -114,8 +117,18 @@ class A2LYacc(RulesEnum, RulesDatatypes, RulesMeta, RulesSections, RulesSections
         if not p:
             # End of file reached. This section could be used for validation.
             return
-        logger.error(f"Syntax error at line {p.lineno} on token \"{p.value}\" in section {self.a2l_lex.current_section}.")
+        logger.error(
+            (
+                f"Syntax error at line {p.lineno} on token '{p.value}' "
+                f"in section {self.a2l_lex.current_section}. "
+                f"No Grammar rule found for this token."
+            )
+        )
 
+    ##################################################
+    # This is the final rule which defines the end   #
+    # and the root of the parsed content.            #
+    ##################################################
     def p_abstract_syntax_tree_final(self, p):
         """
         abstract_syntax_tree_final : a2l_final
